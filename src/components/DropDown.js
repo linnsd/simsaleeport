@@ -34,7 +34,6 @@ export default class DropDown extends React.Component {
               key={index}
               value={data}
               text={data.label}
-              customStyles={{ backgroundColor: "red" }}
             />
           );
         });
@@ -113,12 +112,13 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   triggerText: {
-    flex: 1,
     fontSize: 14,
     margin: 10,
-    backgroundColor:"red",
     justifyContent:"center",
-    alignItems:"center"
+    alignItems:"center",
+    // backgroundColor:"red",
+    flex:1,
+    height:25
   },
   activeText: {
     color: "black",
@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: "row",
     borderWidth:1,
-    borderColor:"#707070"
+    borderColor:"#707070",
+    // flex:1
   },
 });
 
