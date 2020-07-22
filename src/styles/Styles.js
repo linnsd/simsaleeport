@@ -7,10 +7,11 @@ const Styles = StyleSheet.create({
     borderWidth: 1,
     alignItems:"center",
     justifyContent:"space-between",
-    width:"45%",
+    // width:"50%",
     height:35,
     borderRadius: 5,
-    borderColor:"#707070"
+    borderColor:"#707070",
+    flex:1
   },
   datePickerDateIcon: {
     height: 20,
@@ -19,7 +20,6 @@ const Styles = StyleSheet.create({
   datePickerDateInput: {
     borderWidth: 0,
     justifyContent: "center",
-    marginLeft: 10
   },
   datePickerDateText: {
     textAlignVertical: "center",
