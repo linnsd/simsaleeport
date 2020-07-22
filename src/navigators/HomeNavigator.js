@@ -6,6 +6,7 @@ import HeaderLeft from "@components/HeaderLeft";
 
 //import screens
 import Home from "@screens/home/Home";
+import CreateTopup from "@screens/home/topup/CreateTopup";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -13,12 +14,12 @@ import DrawerNavigator from "./DrawerNavigator";
 export default createAppContainer(
   createStackNavigator(
     {
-        DrawerNavigator: {
-            screen: DrawerNavigator,
-            navigationOptions:({navigation})=>({
-                headerShown:false
-            })
-          },
+      DrawerNavigator: {
+        screen: DrawerNavigator,
+        navigationOptions: ({ navigation }) => ({
+          headerShown: false,
+        }),
+      },
       Home: {
         screen: Home,
         navigationOptions: ({ navigation }) => ({
@@ -34,10 +35,15 @@ export default createAppContainer(
             justifyContent: "center",
           },
 
-          headerLeft: () => <HeaderLeft navigation={navigation}/>,
+          headerLeft: () => <HeaderLeft navigation={navigation} />,
         }),
       },
-     
+      CreateTopup: {
+        screen: CreateTopup,
+        navigationOptions: ({ navigation }) => ({
+          headerShown: false,
+        }),
+      },
     },
     {
       initialRouteName: "Home",

@@ -1,5 +1,5 @@
-import {createAppContainer} from "react-navigation";
-import {createDrawerNavigator} from "react-navigation-drawer";
+import { createAppContainer } from "react-navigation";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
 //import screens
 import Customer from "@screens/leftmenu/customer";
@@ -10,23 +10,21 @@ import Topup from "@screens/leftmenu/Topup";
 import DrawerSideBar from "@components/DrawerSideBar";
 
 export default createAppContainer(
-    createDrawerNavigator(
-        {
-
-            Customer:{
-                screen:Customer
-            },
-            SIMCard:{
-                screen:SIMCard
-            },
-            Topup:{
-                screen:Topup
-            }
-        },
-        {
-            initialRouteName:"",
-            contentComponent : DrawerSideBar
-  
-        }
-    )
-)
+  createDrawerNavigator(
+    {
+      Customer: {
+        screen: Customer,
+      },
+      SIMCard: {
+        screen: SIMCard,
+      },
+      Topup: {
+        screen: Topup,
+      },
+    },
+    {
+      initialRouteName: "",
+      contentComponent: DrawerSideBar,
+    }
+  )
+);
