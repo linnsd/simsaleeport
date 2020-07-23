@@ -19,6 +19,11 @@ const BRANCH = [
   { value: 3, label: "Linn2" },
 ];
 export default class Topup extends React.Component {
+  _handleOnPressEdit(arrIndex) {
+    if (arrIndex == 1) {
+      this.props.navigation.navigate("EditTopup");
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -74,6 +79,8 @@ export default class Topup extends React.Component {
             operator="MPT"
             topuptype="1000"
             qty="100"
+            onPressEdit={this._handleOnPressEdit.bind(this)}
+            arrIndex={1}
           />
           <TopupCard
             date="1.1.2020"

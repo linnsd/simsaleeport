@@ -7,6 +7,7 @@ import HeaderLeft from "@components/HeaderLeft";
 //import screens
 import Home from "@screens/home/Home";
 import CreateTopup from "@screens/home/topup/CreateTopup";
+import EditTopup from "@screens/home/topup/EditTopup";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -40,6 +41,12 @@ export default createAppContainer(
       },
       CreateTopup: {
         screen: CreateTopup,
+        navigationOptions: ({ navigation }) => ({
+          headerShown: false,
+        }),
+      },
+      EditTopup: {
+        screen: EditTopup,
         navigationOptions: ({ navigation }) => ({
           headerShown: false,
         }),

@@ -1,7 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
+//import component
+import Actionpopupmenu from "@components/Actionpopupmenu";
+const ACTION_POPUP_DATA = [
+  { label: "Edit", action: "EDIT" },
+  { label: "Delete", action: "DELETE" },
+];
+
 export default class Card extends React.Component {
+  _handleOnSelectActionPopup(arrIndex, action) {
+    if (action === "EDIT") {
+      this.props.onPressEdit(arrIndex);
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -11,7 +23,9 @@ export default class Card extends React.Component {
             <Text style={[styles.text, { fontWeight: "bold" }]}>Branch</Text>
             <Text style={[styles.text, { fontWeight: "bold" }]}>Name</Text>
             <Text style={[styles.text, { fontWeight: "bold" }]}>Operator</Text>
-            <Text style={[styles.text, { fontWeight: "bold" }]}>Topup Type</Text>
+            <Text style={[styles.text, { fontWeight: "bold" }]}>
+              Topup Type
+            </Text>
             <Text>Qty</Text>
           </View>
           <View style={{ width: "60%" }}>
@@ -21,6 +35,13 @@ export default class Card extends React.Component {
             <Text style={styles.text}>{this.props.topuptype}</Text>
             <Text style={styles.text}>{this.props.qty}</Text>
           </View>
+        </View>
+        <View style={{ alignItems: "flex-end" }}>
+          <Actionpopupmenu
+            arrIndex={this.props.arrIndex}
+            options={ACTION_POPUP_DATA}
+            onSelect={this._handleOnSelectActionPopup.bind(this)}
+          />
         </View>
       </View>
     );
