@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   ScrollView,
+  TouchableOpacity
 } from "react-native";
 
 //import component
@@ -30,7 +31,7 @@ export default class Customer extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header name="Customer" />
+        <Header name="Customer" Onpress={()=>this.props.navigation.navigate("#")}/>
         <ScrollView>
           <View style={styles.secondContainer}>
             <View style={styles.thirdContainer}>
@@ -42,9 +43,9 @@ export default class Customer extends React.Component {
                   source={require("@images/search.png")}
                   style={styles.searchImg}
                 />
-                <TextInput>
+                <TouchableOpacity>
                   <Text style={styles.text}>Search</Text>
-                </TextInput>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.dateContainer}>

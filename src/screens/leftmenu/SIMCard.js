@@ -49,9 +49,9 @@ export default class SIMCard extends React.Component {
                   source={require("@images/search.png")}
                   style={styles.searchImg}
                 />
-                <TextInput>
+                <TouchableOpacity>
                   <Text style={styles.text}>Search</Text>
-                </TextInput>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.dateContainer}>
