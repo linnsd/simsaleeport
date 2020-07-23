@@ -8,6 +8,8 @@ import HeaderLeft from "@components/HeaderLeft";
 import Home from "@screens/home/Home";
 import CreateTopup from "@screens/home/topup/CreateTopup";
 import EditTopup from "@screens/home/topup/EditTopup";
+import SimCardAdd from "@screens/leftmenu/actionSimCard/Add";
+import EditSimCard from "@screens/leftmenu/actionSimCard/Edit";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -47,6 +49,18 @@ export default createAppContainer(
       },
       EditTopup: {
         screen: EditTopup,
+        navigationOptions: ({ navigation }) => ({
+          headerShown: false,
+        }),
+      },
+      SimCardAdd: {
+        screen: SimCardAdd,
+        navigationOptions: ({ navigation }) => ({
+          headerShown: false,
+        }),
+      },
+      EditSimCard: {
+        screen: EditSimCard,
         navigationOptions: ({ navigation }) => ({
           headerShown: false,
         }),
