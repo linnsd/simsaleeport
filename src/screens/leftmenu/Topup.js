@@ -37,6 +37,13 @@ export default class Topup extends React.Component {
     // alert(value);
     this.setState({ branch: { value: value, label: label } });
   }
+
+  componentDidMount = async () => {
+    const { navigation } = this.props;
+    this.focusListener = navigation.addListener("didFocus", async () => {
+      await this.setState({ isShow: false });
+    });
+  };
   render() {
     return (
       <View style={styles.container}>

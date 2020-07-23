@@ -16,9 +16,9 @@ export default class ActionPopupMenu extends React.Component {
 
   getActionIcon(action) {
     if (action == "DELETE") {
-      return require("@images/delete.png");
+      return require("@images/deletebk.png");
     } else if (action == "EDIT") {
-      return require("@images/edit.png");
+      return require("@images/editbk.png");
     }
   }
 
@@ -49,10 +49,10 @@ export default class ActionPopupMenu extends React.Component {
               style={styles.dotIcon}
               source={require("@images/setting.png")}
             />
-            <Text style={{color:"#ffffff",paddingLeft:10}}>Action</Text>
+            <Text style={{ color: "#ffffff", paddingLeft: 10 }}>Action</Text>
           </MenuTrigger>
           <MenuOptions
-            optionsContainerStyle={{ width: 100 ,backgroundColor:"#1FD449"}}
+            optionsContainerStyle={{ width: 100, backgroundColor: "#FFFFFF" }}
             customStyles={menuOptionsStyles}
           >
             <ScrollView>{this._renderMenuOptions()}</ScrollView>
@@ -66,17 +66,17 @@ export default class ActionPopupMenu extends React.Component {
 const styles = StyleSheet.create({
   triggerText: {
     flex: 1,
-    fontSize: 16
+    fontSize: 16,
   },
   activeText: {
-    color: "black"
+    color: "black",
   },
   inactiveText: {
-    color:"red"
+    color: "red",
   },
   dotIcon: {
     width: 20,
-    height: 20
+    height: 20,
   },
   actionIcon: {
     width: 20,
@@ -86,8 +86,8 @@ const styles = StyleSheet.create({
   actionLabel: {
     fontSize: 13,
     // fontFamily: Fonts.secondary,
-    marginLeft: 10
-  }
+    marginLeft: 10,
+  },
 });
 
 const triggerStyles = {
@@ -96,14 +96,14 @@ const triggerStyles = {
     alignItems: "center",
     padding: 5,
     width: 100,
-    height:40,
-    flexDirection:"row",
+    height: 40,
+    flexDirection: "row",
     // justifyContent:"space-around",
-    backgroundColor:"#1FD449",
-    borderWidth:1,
-    borderRadius:5,
-    borderColor:"#1FD449",
-  }
+    backgroundColor: "#1FD449",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#1FD449",
+  },
 };
 
 const menuOptionsStyles = {
@@ -113,9 +113,9 @@ const menuOptionsStyles = {
     flexDirection: "row",
     alignItems: "center",
     padding: 5,
-    height:40,
+    height: 40,
     borderBottomWidth: 1,
     borderBottomColor: "green",
-    borderStyle: "solid"
-  }
+    borderStyle: "solid",
+  },
 };

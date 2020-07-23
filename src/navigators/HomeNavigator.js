@@ -67,7 +67,7 @@ export default createAppContainer(
       },
     },
     {
-      initialRouteName: "Home",
+      initialRouteName: "DrawerNavigator",
     }
   )
 );
