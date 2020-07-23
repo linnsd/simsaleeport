@@ -7,6 +7,8 @@ import HeaderLeft from "@components/HeaderLeft";
 //import screens
 import Home from "@screens/home/Home";
 import CreateTopup from "@screens/home/topup/CreateTopup";
+import SimCardAdd from "@screens/leftmenu/actionSimCard/Add";
+import EditSimCard from "@screens/leftmenu/actionSimCard/Edit";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -44,6 +46,18 @@ export default createAppContainer(
           headerShown: false,
         }),
       },
+      SimCardAdd:{
+        screen:SimCardAdd,
+        navigationOptions:({navigation})=>({
+          headerShown:false
+        })
+      },
+      EditSimCard:{
+        screen:EditSimCard,
+        navigationOptions:({navigation})=>({
+          headerShown:false
+        })
+      }
     },
     {
       initialRouteName: "Home",

@@ -26,5 +26,17 @@ const Styles = StyleSheet.create({
     textAlign:"center",
     fontSize: 14,
   },
+  datePickerContainerOne: {
+    borderStyle: "solid",
+    borderWidth: 1,
+    alignItems:"center",
+    // justifyContent:"space-between",
+    width:"100%",
+    height:35,
+    borderRadius: 5,
+    borderColor:"#707070",
+    flex:1
+  },
+  
 });
 export default Styles;

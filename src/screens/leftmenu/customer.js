@@ -1,9 +1,17 @@
 import React from "react";
-import { View, Text, StyleSheet, TextInput, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  ScrollView,
+} from "react-native";
 
 //import component
 import Header from "@components/Header";
 import DropDown from "@components/DropDown";
+import Card from "@components/CustomerCard";
 //import Datepicker
 import DatePicker from "react-native-datepicker";
 import Moment from "moment";
@@ -23,83 +31,119 @@ export default class Customer extends React.Component {
     return (
       <View style={styles.container}>
         <Header name="Customer" />
-        <View style={styles.secondContainer}>
-          <View style={styles.thirdContainer}>
-            <TextInput style={styles.textInput}>
-              <Text>Search...</Text>
-            </TextInput>
-            <View style={styles.secondSearchContainer}>
-              <Image
-                source={require("@images/search.png")}
-                style={styles.searchImg}
-              />
-              <TextInput>
-                <Text style={styles.text}>Search</Text>
+        <ScrollView>
+          <View style={styles.secondContainer}>
+            <View style={styles.thirdContainer}>
+              <TextInput style={styles.textInput}>
+                <Text>Search...</Text>
               </TextInput>
+              <View style={styles.secondSearchContainer}>
+                <Image
+                  source={require("@images/search.png")}
+                  style={styles.searchImg}
+                />
+                <TextInput>
+                  <Text style={styles.text}>Search</Text>
+                </TextInput>
+              </View>
             </View>
+            <View style={styles.dateContainer}>
+              <DatePicker
+                date="1/2/1997"
+                mode="date"
+                format="DD-MM-YYYY"
+                maxDate={Moment().endOf("day").toDate()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                iconSource={require("@images/calendar.png")}
+                style={Style.datePickerContainer}
+                customStyles={{
+                  dateIcon: Style.datePickerDateIcon,
+                  dateInput: Style.datePickerDateInput,
+                  dateText: Style.datePickerDateText,
+                }}
+                // onDateChange={(date) =>
+                //     this.setState({ date })
+                //   }
+              />
+              <DatePicker
+                date="1/2/1997"
+                mode="date"
+                format="DD-MM-YYYY"
+                maxDate={Moment().endOf("day").toDate()}
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                iconSource={require("@images/calendar.png")}
+                style={[Style.datePickerContainer, { marginLeft: 10 }]}
+                customStyles={{
+                  dateIcon: Style.datePickerDateIcon,
+                  dateInput: Style.datePickerDateInput,
+                  dateText: Style.datePickerDateText,
+                }}
+                // onDateChange={(date) =>
+                //     this.setState({ date })
+                //   }
+              />
+            </View>
+            <View style={styles.fourthContainer}>
+              <DropDown
+                value={this.state.chooseItem}
+                optionsContainerWidth="47%"
+                //   widthContainer="67%"
+                placeholder="Select Branch"
+                //   heightContainer={40}
+                onSelect={(itemvalue, itemIndex) =>
+                  this.setState({
+                    chooseItem: itemvalue,
+                    chooseIndex: itemIndex,
+                  })
+                }
+              />
+              <DropDown
+                value={this.state.chooseItem}
+                optionsContainerWidth="47%"
+                widthContainer="100%"
+                placeholder="Select Operator"
+                //   heightContainer={40}
+
+                onSelect={(itemvalue, itemIndex) =>
+                  this.setState({
+                    chooseItem: itemvalue,
+                    chooseIndex: itemIndex,
+                  })
+                }
+              />
+            </View>
+            <Card
+              date="1.1.2020"
+              name="Ma Ma"
+              phone="091234554"
+              nrc="7/kathakha(N)111111"
+              address="Naypyi"
+            />
+            <Card
+              date="1.1.2020"
+              name="Ma Ma"
+              phone="091234554"
+              nrc="7/kathakha(N)111111"
+              address="Naypyi"
+            />
+            <Card
+              date="1.1.2020"
+              name="Ma Ma"
+              phone="091234554"
+              nrc="7/kathakha(N)111111"
+              address="Naypyi"
+            />
+            <Card
+              date="1.1.2020"
+              name="Ma Ma"
+              phone="091234554"
+              nrc="7/kathakha(N)111111"
+              address="Naypyi"
+            />
           </View>
-          <View style={styles.dateContainer}>
-            <DatePicker
-              date="1/2/1997"
-              mode="date"
-              format="DD-MM-YYYY"
-              maxDate={Moment().endOf("day").toDate()}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              iconSource={require("@images/calendar.png")}
-              style={Style.datePickerContainer}
-              customStyles={{
-                dateIcon: Style.datePickerDateIcon,
-                dateInput: Style.datePickerDateInput,
-                dateText: Style.datePickerDateText,
-              }}
-              // onDateChange={(date) =>
-              //     this.setState({ date })
-              //   }
-            />
-            <DatePicker
-              date="1/2/1997"
-              mode="date"
-              format="DD-MM-YYYY"
-              maxDate={Moment().endOf("day").toDate()}
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              iconSource={require("@images/calendar.png")}
-              style={[Style.datePickerContainer, { marginLeft: 10 }]}
-              customStyles={{
-                dateIcon: Style.datePickerDateIcon,
-                dateInput: Style.datePickerDateInput,
-                dateText: Style.datePickerDateText,
-              }}
-              // onDateChange={(date) =>
-              //     this.setState({ date })
-              //   }
-            />
-          </View>
-          <View style={styles.fourthContainer}>
-            <DropDown
-              value={this.state.chooseItem}
-              optionsContainerWidth="47%"
-            //   widthContainer="67%"
-              placeholder="Select Branch"
-              //   heightContainer={40}
-              onSelect={(itemvalue, itemIndex) =>
-                this.setState({ chooseItem: itemvalue, chooseIndex: itemIndex })
-              }
-            />
-            <DropDown
-              value={this.state.chooseItem}
-              optionsContainerWidth="47%"
-              widthContainer="100%"
-              placeholder="Select Operator"
-              //   heightContainer={40}
-              style={{ flex: 1 }}
-              onSelect={(itemvalue, itemIndex) =>
-                this.setState({ chooseItem: itemvalue, chooseIndex: itemIndex })
-              }
-            />
-          </View>
-        </View>
+        </ScrollView>
       </View>
     );
   }
@@ -110,7 +154,7 @@ const styles = StyleSheet.create({
   },
   secondContainer: {
     margin: 10,
-    flex: 1,
+    // flex: 1,
   },
   textInput: {
     borderWidth: 1,
@@ -149,10 +193,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     margin: 10,
     justifyContent: "space-between",
+    // backgroundColor:"green"
   },
   fourthContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    margin:10
+    margin: 10,
+    height: 35,
   },
 });
