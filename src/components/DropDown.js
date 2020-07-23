@@ -13,7 +13,6 @@ import {
   MenuOptions,
   MenuOption,
   MenuTrigger,
-  MenuProvider,
 } from "react-native-popup-menu";
 
 export default class DropDown extends React.Component {
@@ -34,6 +33,7 @@ export default class DropDown extends React.Component {
               key={index}
               value={data}
               text={data.label}
+              customStyles={{ backgroundColor: "red" }}
             />
           );
         });
@@ -51,12 +51,10 @@ export default class DropDown extends React.Component {
         style={[
           styles.triggerWrapper,
           {
-            width: this.props.widthContainer
-              ? this.props.widthContainer
-              : "95%",
+            width: this.props.widthContainer ? this.props.widthContainer : 300,
             height: this.props.heightContainer
               ? this.props.heightContainer
-              : 35,
+              : 40,
             marginTop: this.props.marginContainer
               ? this.props.marginContainer
               : 0,
@@ -86,28 +84,26 @@ export default class DropDown extends React.Component {
   render() {
     // alert(this.props.backgroundColorContainer);
     return (
-      <MenuProvider>
-        <View>
-          <Menu
-            onSelect={({ value, label }) => this.handleOnSelect(value, label)}
+      <View style={this.props.style}>
+        <Menu
+          onSelect={({ value, label }) => this.handleOnSelect(value, label)}
+        >
+          {this._renderMenuTrigger()}
+          <MenuOptions
+            customStyles={menuOptionsStyles}
+            optionsContainerStyle={{
+              maxHeight: 300,
+              width: this.props.optionsContainerWidth
+                ? this.props.optionsContainerWidth
+                : 220,
+            }}
           >
-            {this._renderMenuTrigger()}
-            <MenuOptions
-              customStyles={menuOptionsStyles}
-              optionsContainerStyle={{
-                maxHeight: 300,
-                width: this.props.optionsContainerWidth
-                  ? this.props.optionsContainerWidth
-                  : 220,
-              }}
-            >
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {this._renderMenuOptions()}
-              </ScrollView>
-            </MenuOptions>
-          </Menu>
-        </View>
-      </MenuProvider>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {this._renderMenuOptions()}
+            </ScrollView>
+          </MenuOptions>
+        </Menu>
+      </View>
     );
   }
 }
@@ -119,13 +115,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   triggerText: {
+    flex: 1,
     fontSize: 14,
     margin: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    // backgroundColor:"red",
-    flex: 1,
-    height: 25,
   },
   activeText: {
     color: "black",
@@ -140,9 +132,6 @@ const styles = StyleSheet.create({
   triggerWrapper: {
     borderRadius: 5,
     flexDirection: "row",
-    borderWidth: 1,
-    borderColor: "#707070",
-    // flex:1
   },
 });
 

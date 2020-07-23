@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  StatusBar,
 } from "react-native";
 //import component
 import Header from "@components/Header";
@@ -19,17 +20,93 @@ const BRANCH = [
   { value: 3, label: "Linn2" },
 ];
 export default class Topup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      branch: { value: null, label: null },
+      isShow: false,
+    };
+  }
   _handleOnPressEdit(arrIndex) {
     if (arrIndex == 1) {
       this.props.navigation.navigate("EditTopup");
     }
   }
+
+  _handleOnSelectBranch(value, label) {
+    // alert(value);
+    this.setState({ branch: { value: value, label: label } });
+  }
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar hidden={true}></StatusBar>
         <Header name="Topup" />
         <View style={{ marginTop: 10 }}>
           <View style={styles.searchContainer}>
+            <View style={styles.searchTextInput}>
+              <Image
+                source={require("@images/searchbk.png")}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={{ flex: 1, height: 40 }}
+                placeholder="Search ..."
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              onPress={() => this.setState({ isShow: !this.state.isShow })}
+              // style={{ marginLeft: 10 }}
+            >
+              <Image
+                source={require("@images/more1.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+          </View>
+          {this.state.isShow == true ? (
+            <View>
+              <View style={[styles.searchContainer, { marginTop: 10 }]}>
+                <DropDown
+                  value={this.state.branch}
+                  widthContainer={182}
+                  placeholder="Select Branch..."
+                  options={BRANCH}
+                  onSelect={(value, label) =>
+                    this._handleOnSelectBranch(value, label)
+                  }
+                  style={{ flex: 1 }}
+                  optionsContainerWidth="40%"
+                />
+
+                <DropDown
+                  value={BRANCH}
+                  widthContainer={180}
+                  marginLeftContainer={5}
+                  placeholder="Select Operator..."
+                  style={{ flex: 1 }}
+                />
+              </View>
+              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                <DropDown
+                  value={BRANCH}
+                  widthContainer={182}
+                  placeholder="Select by user..."
+                />
+
+                <DropDown
+                  value={BRANCH}
+                  widthContainer={180}
+                  marginLeftContainer={5}
+                  placeholder="Select by topup..."
+                />
+              </View>
+            </View>
+          ) : (
+            // alert("Hi")
+            <View></View>
+          )}
+          {/* <View style={styles.searchContainer}>
             <TextInput
               style={styles.searchTextInput}
               placeholder="Search..."
@@ -41,26 +118,9 @@ export default class Topup extends React.Component {
               ></Image>
               <Text style={styles.btnText}>Search</Text>
             </TouchableOpacity>
-          </View>
-          <View style={[styles.searchContainer, { marginTop: 10 }]}>
-            <DropDown value={BRANCH} widthContainer="98%" />
+          </View> */}
 
-            <DropDown
-              value={BRANCH}
-              widthContainer="98%"
-              marginLeftContainer={5}
-            />
-          </View>
-          <View style={[styles.searchContainer, { marginTop: "11%" }]}>
-            <DropDown value={BRANCH} widthContainer="98%" />
-
-            <DropDown
-              value={BRANCH}
-              widthContainer="98%"
-              marginLeftContainer={5}
-            />
-          </View>
-          <View style={styles.addContainer}>
+          {/* <View style={styles.addContainer}>
             <TouchableOpacity
               style={styles.addBtn}
               onPress={() => this.props.navigation.navigate("CreateTopup")}
@@ -69,7 +129,7 @@ export default class Topup extends React.Component {
                 Add New Record
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         <ScrollView>
           <TopupCard
@@ -89,6 +149,8 @@ export default class Topup extends React.Component {
             operator="MPT"
             topuptype="1000"
             qty="100"
+            onPressEdit={this._handleOnPressEdit.bind(this)}
+            arrIndex={1}
           />
           <TopupCard
             date="1.1.2020"
@@ -97,8 +159,27 @@ export default class Topup extends React.Component {
             operator="MPT"
             topuptype="1000"
             qty="100"
+            onPressEdit={this._handleOnPressEdit.bind(this)}
+            arrIndex={1}
+          />
+          <TopupCard
+            date="1.1.2020"
+            branchname="HO"
+            name="MPT HO"
+            operator="MPT"
+            topuptype="1000"
+            qty="100"
+            onPressEdit={this._handleOnPressEdit.bind(this)}
+            arrIndex={1}
           />
         </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => this.props.navigation.navigate("CreateTopup")}
+          style={styles.newBtn}
+        >
+          <Image source={require("@images/add.png")} style={styles.btnImg} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -112,15 +193,21 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: "row",
     paddingHorizontal: 10,
+    width: "100%",
+    // backgroundColor: "green",
+    alignItems: "center",
   },
   searchTextInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: "#707070",
     height: 40,
-    marginRight: 10,
+    // marginRight: 10,
     borderRadius: 5,
-    paddingLeft: 20,
+    // paddingLeft: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   searchBtn: {
@@ -134,16 +221,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   searchIcon: {
-    width: 28,
-    height: 28,
-    marginRight: 5,
+    width: 50,
+    height: 50,
+    // backgroundColor: "green",
+    resizeMode: "contain",
+    // marginRight: 5,
   },
   btnText: {
     color: "white",
     fontSize: 18,
   },
   addContainer: {
-    marginTop: "13%",
+    marginTop: "5%",
     paddingHorizontal: 10,
     alignItems: "flex-end",
   },
@@ -154,5 +243,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+  },
+  newBtn: {
+    position: "absolute",
+    right: 20,
+    bottom: 40,
+  },
+  btnImg: {
+    resizeMode: "contain",
+    width: 60,
+    height: 60,
   },
 });

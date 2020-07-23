@@ -17,6 +17,15 @@ const Branch = [
   { value: 2, label: "Linn1" },
 ];
 export default class CreateTopup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      branch: { value: null, label: null },
+    };
+  }
+  _handleOnSelectBranch(value, label) {
+    this.setState({ value: value, label: label });
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -28,7 +37,14 @@ export default class CreateTopup extends React.Component {
                 <Text style={styles.labelStyle}>Branch*</Text>
               </View>
               <View style={styles.textInputContainer}>
-                <DropDown value={Branch} widthContainer="100%"></DropDown>
+                <DropDown
+                  value={Branch}
+                  widthContainer="100%"
+                  options={Branch}
+                  onSelect={(value, label) =>
+                    this._handleOnSelectBranch(value, label)
+                  }
+                ></DropDown>
               </View>
             </View>
             <View style={styles.formContainer}>
