@@ -75,6 +75,7 @@ export default class Login extends React.Component {
               onChangeText={(value) => this.setState({ user_id: value })}
             />
             <TextInput
+              secureTextEntry={true}
               value={this.state.pass}
               style={styles.textInput}
               placeholder="Password"
@@ -97,7 +98,7 @@ export default class Login extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FE7F0A",
+    // backgroundColor: "#FE7F0A",
   },
   secondContainer: {
     justifyContent: "center",
@@ -111,6 +112,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth:1,
+    borderColor:"#FE7F0A"
   },
   textInput: {
     margin: 10,

@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 
 export default class Card extends React.Component {
   render() {
+    const { data } = this.props;
+    // console.log(data[0].address);
     return (
       <View style={styles.container}>
         <Text style={styles.dateText}>{this.props.date}</Text>
