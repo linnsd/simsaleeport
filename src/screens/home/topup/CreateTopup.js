@@ -14,7 +14,7 @@ import { getBranchApi, getTopupApi, createTopupApi } from "@api/Url";
 import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import ErrorText from "@components/ErrorText";
-
+import SuccessModal from "@components/SuccessModal";
 const Operator = [
   { value: 1, label: "MPT" },
   { value: 2, label: "Telenor" },
@@ -36,6 +36,7 @@ export default class CreateTopup extends React.Component {
       ISOPERATORERROR: false,
       ISTOPUPTYPEERROR: false,
       ISQTYERROR: false,
+      isOpenSuccessModel: false,
     };
   }
 
@@ -43,7 +44,9 @@ export default class CreateTopup extends React.Component {
     await this._getAllBranch();
     await this._getAllTopupType();
   };
-
+  _handleOnClose() {
+    this.setState({ isOpenSuccessModel: false });
+  }
   //get all branch
   _getAllBranch = async () => {
     var self = this;
@@ -150,7 +153,7 @@ export default class CreateTopup extends React.Component {
         })
         .then(function (response) {
           // console.log(response.data);
-          alert(response.data.message);
+          self.setState({ isOpenSuccessModel: true });
         })
         .catch(function (err) {
           alert("Fail");
@@ -280,6 +283,11 @@ export default class CreateTopup extends React.Component {
             </View>
           </View>
         </ScrollView>
+        <SuccessModal
+          isOpen={this.state.isOpenSuccessModel}
+          text="Successfully topup created"
+          onClose={() => this._handleOnClose()}
+        />
       </View>
     );
   }

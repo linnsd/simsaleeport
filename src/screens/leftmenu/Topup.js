@@ -8,24 +8,51 @@ import {
   Image,
   ScrollView,
   StatusBar,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 //import component
 import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import TopupCard from "@components/TopupCard";
+import Loading from "@components/Loading";
 
-const BRANCH = [
-  { value: 1, label: "HO" },
-  { value: 2, label: "Linn1" },
-  { value: 3, label: "Linn2" },
+//import apis
+import AllTopup from "@api/AllTopup";
+import BranchApi from "@api/BranchApi";
+import TopupTypeApi from "@api/TopupTypeApi";
+import UserApi from "@api/UserApi";
+
+const OPERATORS = [
+  { value: 1, label: "MPT" },
+  { value: 2, label: "Telenor" },
+  { value: 3, label: "Ooredoo" },
+  { value: 4, label: "Mytel" },
 ];
 export default class Topup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      data: [],
+      branches: [],
       branch: { value: null, label: null },
+      topuptypes: [],
+      topuptype: { value: null, label: null },
+      users: [],
+      user: { value: null, label: null },
+      operator: { value: null, label: null },
+
+      isLoading: true,
+      refreshing: false,
+      isFooterLoading: false,
       isShow: false,
     };
+    this.page = 1;
+    this.BranchApi = new BranchApi();
+    this.AllTopup = new AllTopup();
+    this.TopupTypeApi = new TopupTypeApi();
+    this.UserApi = new UserApi();
   }
   _handleOnPressEdit(arrIndex) {
     if (arrIndex == 1) {
@@ -33,120 +60,224 @@ export default class Topup extends React.Component {
     }
   }
 
-  _handleOnSelectBranch(value, label) {
-    // alert(value);
-    this.setState({ branch: { value: value, label: label } });
-  }
-
   componentDidMount = async () => {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
     });
+
+    await this._getAllBranch();
+    await this._getAllUser();
+    await this._getAllTopupType();
+    await this._getAllTopup(this.page);
   };
-  render() {
+
+  _getAllBranch() {
+    const self = this;
+    self.BranchApi.getAllBranch()
+      .then(function (response) {
+        let data = response.data.branch;
+        // console.log(data);
+        let arr = [];
+        data.map((data, index) => {
+          var obj = { value: data.id, label: data.branch_name };
+          arr.push(obj);
+        });
+        self.setState({ branches: arr });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  _getAllUser() {
+    const self = this;
+    self.UserApi.getAllUser()
+      .then(function (response) {
+        let data = response.data.user;
+        // console.log(data);
+        let arr = [];
+        data.map((data, index) => {
+          var obj = { value: data.id, label: data.name };
+          arr.push(obj);
+        });
+        self.setState({ users: arr });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  _getAllTopupType() {
+    const self = this;
+    self.TopupTypeApi.getAllTopupType()
+      .then(function (response) {
+        let data = response.data.topupsetup;
+        // console.log(data);
+        let arr = [];
+        data.map((data, index) => {
+          var obj = { value: data.id, label: data.topup_type };
+          arr.push(obj);
+        });
+        self.setState({ topuptypes: arr });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+  _getAllTopup(page) {
+    const self = this; // *
+    this.AllTopup.getAllTopup(page)
+      .then(function (response) {
+        // console.log(response.data.topup);
+        self.setState({
+          tempBusiness: response.data.topup,
+          data: [...self.state.data, ...response.data.topup],
+          refreshing: false,
+          isLoading: false,
+          isFooterLoading: false,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        self.setState({
+          isLoading: false,
+          refreshing: false,
+          isFooterLoading: false,
+        });
+      });
+  }
+  _handleOnSelectBranch(value, label) {
+    // alert(value);
+    this.setState({ branch: { value: value, label: label } });
+  }
+  _handleOnSelectUser(value, label) {
+    this.setState({ user: { value: value, label: label } });
+  }
+  _handleOnSelectTopupType(value, label) {
+    this.setState({ topuptype: { value: value, label: label } });
+  }
+  _handleOnSelectOperator(value, label) {
+    this.setState({ operator: { value: value, label: label } });
+  }
+
+  onRefresh = () => {
+    this.setState({
+      data: [],
+      refreshing: true, // start top loading
+    });
+    this.page = 1;
+    this._getAllTopup(this.page);
+  };
+  //retrieve More data
+  handleLoadMore = () => {
+    // this.setState({ isFooterLoading: true }); // Start Footer loading
+    this.page = this.page + 1; // increase page by 1
+    this._getAllTopup(this.page); // method for API call
+  };
+
+  renderFilter() {
     return (
-      <View style={styles.container}>
-        <StatusBar hidden={true}></StatusBar>
-        <Header name="Topup" />
-        <View style={{ marginTop: 10 }}>
-          <View style={styles.searchContainer}>
-            <View style={styles.searchTextInput}>
-              <Image
-                source={require("@images/searchbk.png")}
-                style={styles.searchIcon}
-              />
-              <TextInput
-                style={{ flex: 1, height: 40 }}
-                placeholder="Search ..."
-              ></TextInput>
-            </View>
-            <TouchableOpacity
-              onPress={() => this.setState({ isShow: !this.state.isShow })}
-              // style={{ marginLeft: 10 }}
-            >
-              <Image
-                source={require("@images/more1.png")}
-                style={{ width: 30, height: 30 }}
-              />
-            </TouchableOpacity>
+      <View style={{ marginTop: 10 }}>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchTextInput}>
+            <Image
+              source={require("@images/searchbk.png")}
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={{ flex: 1, height: 40 }}
+              placeholder="Search ..."
+            ></TextInput>
           </View>
-          {this.state.isShow == true ? (
-            <View>
-              <View style={[styles.searchContainer, { marginTop: 10 }]}>
-              <View style={{flex:1}}>
+          <TouchableOpacity
+            onPress={() => this.setState({ isShow: !this.state.isShow })}
+            // style={{ marginLeft: 10 }}
+          >
+            <Image
+              source={require("@images/more1.png")}
+              style={{ width: 30, height: 30 }}
+            />
+          </TouchableOpacity>
+        </View>
+        {this.state.isShow == true ? (
+          <View>
+            <View style={[styles.searchContainer, { marginTop: 10 }]}>
+              <View style={{ flex: 1 }}>
                 <DropDown
                   value={this.state.branch}
                   widthContainer="100%"
                   placeholder="Select Branch..."
-                  options={BRANCH}
+                  options={this.state.branches}
                   onSelect={(value, label) =>
                     this._handleOnSelectBranch(value, label)
                   }
                 />
-                </View>
-                <View style={{flex:1}}>
-
+              </View>
+              <View style={{ flex: 1 }}>
                 <DropDown
-                  value={BRANCH}
+                  value={this.state.operator}
+                  options={OPERATORS}
                   widthContainer="100%"
                   marginLeftContainer={5}
                   placeholder="Select Operator..."
-                />
-                </View>
-              </View>
-              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-              <View style={{flex:1}}>
-                <DropDown
-                  value={this.state.branch}
-                  widthContainer="100%"
-                  placeholder="Select by user"
-                  options={BRANCH}
                   onSelect={(value, label) =>
-                    this._handleOnSelectBranch(value, label)
+                    this._handleOnSelectOperator(value, label)
                   }
                 />
-                </View>
-                <View style={{flex:1}}>
-
+              </View>
+            </View>
+            <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+              <View style={{ flex: 1 }}>
                 <DropDown
-                  value={BRANCH}
+                  value={this.state.user}
+                  widthContainer="100%"
+                  placeholder="Select by user"
+                  options={this.state.users}
+                  onSelect={(value, label) =>
+                    this._handleOnSelectUser(value, label)
+                  }
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <DropDown
+                  value={this.state.topuptype}
+                  options={this.state.topuptypes}
                   widthContainer="100%"
                   marginLeftContainer={5}
                   placeholder="Select topup type"
+                  onSelect={(value, label) =>
+                    this._handleOnSelectTopupType(value, label)
+                  }
                 />
-                </View>
               </View>
             </View>
-          ) : (
-            // alert("Hi")
-            <View></View>
-          )}
-          {/* <View style={styles.searchContainer}>
-            <TextInput
-              style={styles.searchTextInput}
-              placeholder="Search..."
-            ></TextInput>
-            <TouchableOpacity style={styles.searchBtn}>
-              <Image
-                source={require("@images/search.png")}
-                style={styles.searchIcon}
-              ></Image>
-              <Text style={styles.btnText}>Search</Text>
-            </TouchableOpacity>
-          </View> */}
-
-          {/* <View style={styles.addContainer}>
-            <TouchableOpacity
-              style={styles.addBtn}
-              onPress={() => this.props.navigation.navigate("CreateTopup")}
-            >
-              <Text style={{ color: "white", fontSize: 18 }}>
-                Add New Record
-              </Text>
-            </TouchableOpacity>
-          </View> */}
-        </View>
+          </View>
+        ) : (
+          <View></View>
+        )}
+      </View>
+    );
+  }
+  renderFooter = () => {
+    //it will show indicator at the bottom of the list when data is loading
+    if (this.state.isFooterLoading) {
+      return <ActivityIndicator size="large" style={{ color: "#000" }} />;
+    } else {
+      return null;
+    }
+  };
+  render() {
+    if (this.state.isLoading) {
+      return <Loading />;
+    }
+    const { data } = this.state;
+    const dataList = data;
+    return (
+      <View style={styles.container}>
+        <StatusBar hidden={true}></StatusBar>
+        <Header name="Topup" />
+        {/* 
         <ScrollView>
           <TopupCard
             date="1.1.2020"
@@ -178,17 +309,40 @@ export default class Topup extends React.Component {
             onPressEdit={this._handleOnPressEdit.bind(this)}
             arrIndex={1}
           />
-          <TopupCard
-            date="1.1.2020"
-            branchname="HO"
-            name="MPT HO"
-            operator="MPT"
-            topuptype="1000"
-            qty="100"
-            onPressEdit={this._handleOnPressEdit.bind(this)}
-            arrIndex={1}
-          />
-        </ScrollView>
+          
+        </ScrollView> */}
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={dataList}
+          extraData={this.state}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
+          renderItem={({ item }) => (
+            <View style={{ marginTop: 10 }}>
+              {/* {console.log(item)} */}
+              <TopupCard
+                date="1.1.2020"
+                branchname={item.branch_name}
+                name={item.name}
+                operator="MPT"
+                topuptype={item.topup_type}
+                qty={item.qty}
+                onPressEdit={this._handleOnPressEdit.bind(this)}
+                arrIndex={1}
+              />
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={this.renderFilter.bind(this)}
+          ListFooterComponent={this.renderFooter.bind(this)}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => this.handleLoadMore()}
+        />
+
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => this.props.navigation.navigate("CreateTopup")}

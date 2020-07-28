@@ -44,18 +44,17 @@ export default class Login extends React.Component {
           },
         })
         .then(function (response) {
-          // console.log(response.data);
-          if(response.data.status == "1"){
+          // console.log(response.data.access_token);
+          if (response.data.status == "1") {
             self.setState({
               access_token: response.data.access_token,
               user_id: response.data.email,
               pass: response.data.password,
             });
             self.props.navigation.navigate("Home");
-          }else{
-            alert("Invalid Username or Password")
+          } else {
+            alert("Invalid Username or Password");
           }
-         
         })
         .catch(function (err) {
           // console.log(err);
@@ -118,8 +117,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth:1,
-    borderColor:"#FE7F0A"
+    borderWidth: 1,
+    borderColor: "#FE7F0A",
   },
   textInput: {
     margin: 10,

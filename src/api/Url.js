@@ -22,3 +22,9 @@ export const createTopupApi = BaseUrl + "create_topup";
 
 //get simcard api
 export const getSimcardapi = BaseUrl + "cards";
+
+//get all user
+export const getalluserApi = BaseUrl + "user";
+
+//get all topup api
+export const getAlltopupApi = BaseUrl + "topup";
