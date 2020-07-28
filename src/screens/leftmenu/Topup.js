@@ -74,39 +74,48 @@ export default class Topup extends React.Component {
           {this.state.isShow == true ? (
             <View>
               <View style={[styles.searchContainer, { marginTop: 10 }]}>
+              <View style={{flex:1}}>
                 <DropDown
                   value={this.state.branch}
-                  widthContainer={182}
+                  widthContainer="100%"
                   placeholder="Select Branch..."
                   options={BRANCH}
                   onSelect={(value, label) =>
                     this._handleOnSelectBranch(value, label)
                   }
-                  style={{ flex: 1 }}
-                  optionsContainerWidth="40%"
                 />
+                </View>
+                <View style={{flex:1}}>
 
                 <DropDown
                   value={BRANCH}
-                  widthContainer={180}
+                  widthContainer="100%"
                   marginLeftContainer={5}
                   placeholder="Select Operator..."
-                  style={{ flex: 1 }}
                 />
+                </View>
               </View>
               <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+              <View style={{flex:1}}>
                 <DropDown
-                  value={BRANCH}
-                  widthContainer={182}
-                  placeholder="Select by user..."
+                  value={this.state.branch}
+                  widthContainer="100%"
+                  placeholder="Select by user"
+                  options={BRANCH}
+                  onSelect={(value, label) =>
+                    this._handleOnSelectBranch(value, label)
+                  }
                 />
+                </View>
+                <View style={{flex:1}}>
 
                 <DropDown
                   value={BRANCH}
-                  widthContainer={180}
+                  widthContainer="100%"
                   marginLeftContainer={5}
-                  placeholder="Select by topup..."
+                  placeholder="Select topup type"
                 />
+                </View>
               </View>
             </View>
           ) : (

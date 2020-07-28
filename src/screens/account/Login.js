@@ -44,16 +44,22 @@ export default class Login extends React.Component {
           },
         })
         .then(function (response) {
-          console.log(response.data);
-          self.setState({
-            access_token: response.data.access_token,
-            user_id: response.data.email,
-            pass: response.data.password,
-          });
-          self.props.navigation.navigate("Home");
+          // console.log(response.data);
+          if(response.data.status == "1"){
+            self.setState({
+              access_token: response.data.access_token,
+              user_id: response.data.email,
+              pass: response.data.password,
+            });
+            self.props.navigation.navigate("Home");
+          }else{
+            alert("Invalid Username or Password")
+          }
+         
         })
         .catch(function (err) {
-          alert("Email or Password id Incorrect");
+          // console.log(err);
+          alert("Username or Password is require!");
         });
     }
   };

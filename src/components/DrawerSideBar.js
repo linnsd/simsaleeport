@@ -38,9 +38,8 @@ export default class DrawerSideBar extends React.Component {
 
   _renderItem(data, index) {
     return (
-      <View>
+      <View  key={index}>
         <TouchableOpacity
-          key={index}
           style={[styles.linkBtn]}
           onPress={() => this.navigate(data.routeName)}
         >

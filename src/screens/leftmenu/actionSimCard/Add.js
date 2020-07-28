@@ -25,7 +25,7 @@ export default class Add extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header name="Topup" />
+        <Header name="Sim Card" />
         <ScrollView>
           <View style={{ marginTop: 10 }}>
             <View style={styles.formContainer}>
@@ -155,9 +155,9 @@ export default class Add extends React.Component {
             <View style={styles.formContainer}>
               <View style={styles.textContainer}></View>
               <View style={styles.btnContainer}>
-                <TouchableOpacity style={styles.backBtn}>
+                {/* <TouchableOpacity style={styles.backBtn}>
                   <Text style={styles.btnText}>Back</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.saveBtn}>
                   <Text style={styles.btnText}>Save</Text>
                 </TouchableOpacity>

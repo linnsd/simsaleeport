@@ -26,6 +26,8 @@ import Style from "@styles/Styles";
 
 // const axios = require("axios");
 import CustomerApi from "@api/CustomerApi";
+import { getBranchApi } from "@api/Url";
+const axios = require("axios");
 
 const BRANCH = [
   { value: 1, label: "HO" },
@@ -42,14 +44,16 @@ export default class Customer extends React.Component {
       isLoading: false,
       refreshing: false,
       isFooterLoading: false,
+      searchedCustomer: [],
+      isSearched: false,
+      branchs: [],
+      branch: { value: null, label: null },
     };
     this.page = 1;
     this.CustomerApi = new CustomerApi();
   }
-  _handleOnSelectBranch(value, label) {
-    // alert(value);
-    this.setState({ branch: { value: value, label: label } });
-  }
+
+
   async componentDidMount() {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener("didFocus", async () => {
@@ -57,8 +61,16 @@ export default class Customer extends React.Component {
     });
     this.setState({ isLoading: true }); // Start page loading
     this.getAllCustomers(this.page);
+    this.getAllBranch();
   }
   getAllCustomers(page) {
+    if (this.state.isSearched) {
+      this.setState({
+        data: [],
+        isSearched: false,
+        branch: { value: "", label: "" },
+      });
+    }
     // alert("Hello")
     var self = this;
     this.CustomerApi.getAllCustomer(page)
@@ -82,73 +94,75 @@ export default class Customer extends React.Component {
         console.log("Customer Error", err);
       });
   }
-  renderFooter = () => {
-    //it will show indicator at the bottom of the list when data is loading
-    if (this.state.isFooterLoading) {
-      return <ActivityIndicator size="large" style={{ color: "#000" }} />;
-    } else {
-      return null;
-    }
-  };
 
-  onRefresh = () => {
-    this.setState({
-      data: [],
-      refreshing: true, // start top loading
-    });
-    this.page = 1;
-    this.getAllCustomers(this.page);
-  };
+  getAllBranch() {
+    const self = this;
+    axios
+      .get(getBranchApi, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYwMTdmZmI0YThkMmRkNGI4MzI5NmI2ODdhNjMyM2ZkZDI2NGNmOTZlM2I3MTQwMDc5ZDZjMTczOTAxOWUxZjJjNTI1YWRjNjZhNmYyNzk4In0.eyJhdWQiOiIxIiwianRpIjoiZjAxN2ZmYjRhOGQyZGQ0YjgzMjk2YjY4N2E2MzIzZmRkMjY0Y2Y5NmUzYjcxNDAwNzlkNmMxNzM5MDE5ZTFmMmM1MjVhZGM2NmE2ZjI3OTgiLCJpYXQiOjE1OTU0NzkwNTUsIm5iZiI6MTU5NTQ3OTA1NSwiZXhwIjoxNjI3MDE1MDU1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.n35bsKhBe5bEvFspMnXFvrBXc1Sq6zjhu4fVOw7j_tJtzN8Myy9Tu6mtF5wt6iOXbFz_oMaf1bYapfcLxaPiNXtJznfw7N2wFaKsAfujs3fPiA4Ipvp8ZsBMH_7mXUJYcz0ad6gQFkFJBuZHRB9-HO94aZdnkdg9aeBvvHNGAS_eX0BhSdwnyTIFvNl5O7v1ndF85lJcOfmGn1ej_WwijWIEfbKa_gcJsDQw7EWFSwEU6IzSwQQZFPFp055soX9M6PbNKvcjZLkG6DaEGZXTrdf3lvGFqbiiYKTqjbktWbOYnfN7vCsL2-3swN6r7DV_JWs-rNXmSC1BMOqAVZTfc2nS8042YBDS_4JG7xQMeqEuQ761-Oyqpr-F6CdyapLB8Wqi1wqyBP1fqbQPAYgtiUbXqQeISO2Tcik2-sHxzFx-hacwdBd7EowMc553UKBags9XBapJ3G_0sqakUTprxvazDLd0HL4MDiapgsULvhrQwDvETdwjrIYRaV66AJFZSLlNhyMHdytxoAR6KcH_RXb3fCFy7MYS1KoUQ4O83NiXX-OW7PivvZ19nlGEPc5ksGxbCsRRc031oM6Oh50pOesBUk_RtrLDZWafzyUZ7mCBHCI7akYYS1WFvuYHvpUqCPWiBKs3RNAddSlKD4z29JKGLmUZ-9rp6huFFrMFSSQ",
+        },
+      })
+      .then(function (response) {
+        let data = response.data.branch;
+        // console.log(data);
+        let arr = [];
+        data.map((data, index) => {
+          console.log(data);
 
-  //retrieve More data
-  handleLoadMore = () => {
-    this.setState({ isFooterLoading: true }); // Start Footer loading
-    this.page = this.page + 1; // increase page by 1
-    this.getAllBusiness(this.page); // method for API call
-  };
+          var obj = { value: data.id, label: data.branch_name };
 
-  _handleOnPress() {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
+          arr.push(obj);
+        });
+        self.setState({ branchs: arr });
+      })
+      .catch(function (error) {
+        console.log("Branch Api Error",error);
+      });
   }
 
-  render() {
-    if (this.state.isLoading) {
-      return <Loading />;
-    }
+  _handleOnSelectBranch(value, label) {
+    this.setState(
+      {
+        branch: {
+          value: value,
+          label: label
+        }
+      },
+      // () => this.getAllCustomerByID()
+    );
+  }
+
+  renderFilter() {
     return (
-      <View style={styles.container}>
-        <Header
-          name="Customer"
-          img={require("@images/threeline.png")}
-          Onpress={() => this._handleOnPress()}
-        />
-        {/* <ScrollView> */}
-        <View style={{ marginTop: 10 }}>
-          <View style={styles.searchContainer}>
-            <View style={styles.searchTextInput}>
-              <Image
-                source={require("@images/searchbk.png")}
-                style={styles.searchIcon}
-              />
-              <TextInput
-                style={{ flex: 1, height: 40 }}
-                placeholder="Search ..."
-              ></TextInput>
-            </View>
-            <TouchableOpacity
-              onPress={() => this.setState({ isShow: !this.state.isShow })}
-              // style={{ marginLeft: 10 }}
-            >
-              <Image
-                source={require("@images/more1.png")}
-                style={{ width: 30, height: 30 }}
-              />
-            </TouchableOpacity>
-          </View>
-          {this.state.isShow == true ? (
-            <View>
-              <View style={[styles.searchContainer, { marginTop: 10}]}>
-              <View style={styles.dateContainer}>
+      <View style={{ marginTop: 10 }}>
+      <View style={styles.searchContainer}>
+        <View style={styles.searchTextInput}>
+          <Image
+            source={require("@images/searchbk.png")}
+            style={styles.searchIcon}
+          />
+          <TextInput
+            style={{ flex: 1, height: 40 }}
+            placeholder="Search ..."
+          ></TextInput>
+        </View>
+        <TouchableOpacity
+          onPress={() => this.setState({ isShow: !this.state.isShow })}
+          // style={{ marginLeft: 10 }}
+        >
+          <Image
+            source={require("@images/more1.png")}
+            style={{ width: 30, height: 30 }}
+          />
+        </TouchableOpacity>
+      </View>
+      {this.state.isShow == true ? (
+        <View>
+          <View style={[styles.searchContainer, { marginTop: 10 }]}>
+            <View style={styles.dateContainer}>
               <DatePicker
                 date="1/2/1997"
                 mode="date"
@@ -184,56 +198,86 @@ export default class Customer extends React.Component {
                 // onDateChange={(date) =>
                 //     this.setState({ date })
                 //   }
-                />
-                </View>
-              </View>
-              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-              <View style={{flex:1}}>
-                <DropDown
-                  value={this.state.branch}
-                  widthContainer="100%"
-                  placeholder="Select Branch..."
-                  options={BRANCH}
-                  onSelect={(value, label) =>
-                    this._handleOnSelectBranch(value, label)
-                  }
-                />
-                </View>
-                <View style={{flex:1}}>
-
-                <DropDown
-                  value={BRANCH}
-                  widthContainer="100%"
-                  marginLeftContainer={5}
-                  placeholder="Select Operator..."
-                />
-                </View>
-              </View>
+              />
             </View>
-          ) : (
-            // alert("Hi")
-            <View></View>
-          )}
+          </View>
+          <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+            <View style={{ flex: 1 }}>
+              <DropDown
+               value={this.state.branch}
+               options={this.state.branchs}
+                widthContainer="100%"
+                placeholder="Select Branch..."
+                onSelect={(value, label) =>
+                  this._handleOnSelectBranch(value, label)
+                }
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <DropDown
+                value={BRANCH}
+                widthContainer="100%"
+                marginLeftContainer={5}
+                placeholder="Select Operator..."
+              />
+            </View>
+          </View>
         </View>
-        {/* {this.state.data.map((data, index) => {
-          if (data.show) {
-            return (
-              <View key={index}>
-                <Card
-                  date={Moment(data.created_at).format("DD-MM-YYYY")}
-                  name={data.name}
-                  phone={data.phone}
-                  nrc={data.fullnrc}
-                  address={data.address}
-                />
-              </View>
-            );
-          }
-          //  alert("hello")
-        })} */}
+      ) : (
+        // alert("Hi")
+        <View></View>
+      )}
+    </View>
+    );
+  }
+
+
+  renderFooter = () => {
+    //it will show indicator at the bottom of the list when data is loading
+    if (this.state.isFooterLoading) {
+      return <ActivityIndicator size="large" style={{ color: "#000" }} />;
+    } else {
+      return null;
+    }
+  };
+
+  onRefresh = () => {
+    this.setState({
+      data: [],
+      refreshing: true, // start top loading
+    });
+    this.page = 1;
+    this.getAllCustomers(this.page);
+  };
+
+  //retrieve More data
+  handleLoadMore = () => {
+    this.setState({ isFooterLoading: true }); // Start Footer loading
+    this.page = this.page + 1; // increase page by 1
+    this.getAllCustomers(this.page); // method for API call
+  };
+
+  _handleOnPress() {
+    this.props.navigation.dispatch(DrawerActions.openDrawer());
+  }
+
+  render() {
+    if (this.state.isLoading) {
+      return <Loading />;
+    }
+    const { isSearched, data } = this.state;
+    const dataList =  data;
+    return (
+      <View style={styles.container}>
+        <Header
+          name="Customer"
+          img={require("@images/threeline.png")}
+          Onpress={() => this._handleOnPress()}
+        />
+   
         <FlatList
           showsVerticalScrollIndicator={false}
-          // data={dataList}
+          data={dataList}
           extraData={this.state}
           refreshControl={
             <RefreshControl
@@ -242,19 +286,20 @@ export default class Customer extends React.Component {
             />
           }
           renderItem={({ item }) => (
+            // console.log(item)
             <View style={{ marginTop: 10 }}>
               <Card
-                data={item}
-                // date={Moment(data.created_at).format("DD-MM-YYYY")}
-                // name={data.name}
-                // phone={data.phone}
-                // nrc={data.fullnrc}
-                // address={data.address}
+                // data={item}
+                date={Moment(item.created_at).format("DD-MM-YYYY")}
+                name={item.name}
+                phone={item.phone}
+                nrc={item.fullnrc}
+                address={item.address}
               />
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          // ListHeaderComponent={this.renderFilter.bind(this)}
+          ListHeaderComponent={this.renderFilter.bind(this)}
           ListFooterComponent={this.renderFooter.bind(this)}
           onEndReachedThreshold={0.5}
           onEndReached={() => (!isSearched ? this.handleLoadMore() : {})}
@@ -272,11 +317,10 @@ const styles = StyleSheet.create({
   searchContainer: {
     // flex: 1,
     flexDirection: "row",
-    justifyContent:"space-between",
+    justifyContent: "space-between",
     paddingHorizontal: 10,
     // width: "100%",
     alignItems: "center",
-    
   },
   searchTextInput: {
     flex: 1,
@@ -340,5 +384,5 @@ const styles = StyleSheet.create({
     // margin: 10,
     justifyContent: "space-between",
     // backgroundColor:"green"
-  }
+  },
 });

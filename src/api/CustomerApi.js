@@ -3,7 +3,7 @@ var axios = require("axios");
 export default class PostApi {
   getAllCustomer(page) {
     return axios.get(
-      "http://128.199.79.79/simsale/public/api/customers",
+      "http://128.199.79.79/simsale/public/api/customers?page=" + page,
       {
         headers: {
           Accept: "application/json",
@@ -13,4 +13,6 @@ export default class PostApi {
       } 
     );
   }
+
+  
 }

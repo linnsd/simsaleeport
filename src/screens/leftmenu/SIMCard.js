@@ -44,6 +44,7 @@ export default class SIMCard extends React.Component {
     this.setState({ branch: { value: value, label: label } });
   }
   async componentDidMount(){
+    const {navigation}=this.props;
     this.getSimcard();
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
@@ -191,6 +192,13 @@ export default class SIMCard extends React.Component {
             />
           </View>
         </ScrollView>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => this.props.navigation.navigate("SimCardAdd")}
+          style={styles.newBtn}
+        >
+          <Image source={require("@images/add.png")} style={styles.btnImg} />
+        </TouchableOpacity>
       </View>
     );
   }

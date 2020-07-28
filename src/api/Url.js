@@ -1,25 +1,24 @@
+export const BaseUrl = "http://128.199.79.79/simsale/public/api/";
 // get customers
-export const getCustomersapi =
-  "http://128.199.79.79/simsale/public/api/customers";
+export const getCustomersapi = BaseUrl + "customers";
 
 //get login api
-export const getLoginapi = "http://128.199.79.79/simsale/public/api/login";
+export const getLoginapi = BaseUrl + "login";
 
 //get branch api
-export const getBranchApi = "http://128.199.79.79/simsale/public/api/branch";
+export const getBranchApi = BaseUrl + "branch";
 
 //get topup type api
-export const getTopupApi = "http://128.199.79.79/simsale/public/api/topupsetup";
+export const getTopupApi = BaseUrl + "topupsetup";
 
 //create topup api
-export const createTopupApi =
-  "http://128.199.79.79/simsale/public/api/create_topup";
+export const createTopupApi = BaseUrl + "create_topup";
 
 // // get customers
-// export const getCustomersapi = "http://128.199.79.79/simsale/public/api/customers";
+// export const getCustomersapi = "customers";
 
 //get login api
-// export const getLoginapi= "http://128.199.79.79/simsale/public/api/login";
+// export const getLoginapi= "login";
 
 //get simcard api
-export const getSimcardapi = "http://128.199.79.79/simsale/public/api/cards";
+export const getSimcardapi = BaseUrl + "cards";
