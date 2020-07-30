@@ -19,13 +19,19 @@ import DropDown from "@components/DropDown";
 import TopupCard from "@components/TopupCard";
 import Loading from "@components/Loading";
 import SuccessModal from "@components/SuccessModal";
+import Moment from "moment";
 
 //import apis
 import AllTopup from "@api/AllTopup";
 import BranchApi from "@api/BranchApi";
 import TopupTypeApi from "@api/TopupTypeApi";
 import UserApi from "@api/UserApi";
-import { getAlltopupApi } from "@api/Url";
+import {
+  getAlltopupApi,
+  getBranchApi,
+  getTopupApi,
+  getAllUserApi,
+} from "@api/Url";
 const axios = require("axios");
 
 const OPERATORS = [
@@ -99,60 +105,113 @@ export default class Topup extends React.Component {
     await this._getAllTopup(this.page);
   };
 
-  _getAllBranch() {
-    const self = this;
-    self.BranchApi.getAllBranch()
+  _getAllBranch = async () => {
+    var access_token = await AsyncStorage.getItem("access_token");
+    // console.log("Branch Access Token is", access_token);
+    var self = this;
+    axios
+      .get(getBranchApi, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      })
       .then(function (response) {
         let data = response.data.branch;
         // console.log(data);
         let arr = [];
         data.map((data, index) => {
-          var obj = { value: data.id, label: data.branch_name };
+          // alert("Hi");
+          var obj = {
+            value: data.id ? data.id : "",
+            label: data.branch_name ? data.branch_name : "",
+          };
+          // console.log(obj);
           arr.push(obj);
         });
+        // console.log(arr);
         self.setState({ branches: arr });
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (err) {
+        console.log(err);
       });
-  }
+  };
 
-  _getAllUser() {
-    const self = this;
-    self.UserApi.getAllUser()
+  _getAllUser = async () => {
+    var self = this;
+    var access_token = await AsyncStorage.getItem("access_token");
+    // console.log(access_token);
+    axios
+      .get(getAllUserApi, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      })
       .then(function (response) {
         let data = response.data.user;
         // console.log(data);
         let arr = [];
         data.map((data, index) => {
-          var obj = { value: data.id, label: data.name };
+          // console.log(data);
+          // alert("Hi");
+          var obj = {
+            value: data.id ? data.id : "",
+            label: data.name ? data.name : "",
+          };
+          // console.log(obj);
           arr.push(obj);
         });
+        // console.log(arr);
         self.setState({ users: arr });
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (err) {
+        console.log(err);
       });
-  }
+  };
 
-  _getAllTopupType() {
-    const self = this;
-    self.TopupTypeApi.getAllTopupType()
+  _getAllTopupType = async () => {
+    var self = this;
+    var access_token = await AsyncStorage.getItem("access_token");
+    // console.log(access_token);
+    axios
+      .get(getTopupApi, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      })
       .then(function (response) {
         let data = response.data.topupsetup;
         // console.log(data);
         let arr = [];
         data.map((data, index) => {
-          var obj = { value: data.id, label: data.topup_type };
+          // alert("Hi");
+          var obj = {
+            value: data.id ? data.id : "",
+            label: data.topup_type ? data.topup_type : "",
+          };
+          // console.log(obj);
           arr.push(obj);
         });
+        // console.log(arr);
         self.setState({ topuptypes: arr });
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function (err) {
+        console.log(err);
       });
-  }
+  };
   _getAllTopup(page) {
+    if (this.state.isSearched) {
+      this.setState({
+        data: [],
+        isSearched: false,
+        branch: { value: null, label: null },
+        user: { value: null, label: null },
+        topuptype: { value: null, label: null },
+      });
+    }
+
     const self = this; // *
     this.AllTopup.getAllTopup(page)
       .then(function (response) {
@@ -175,10 +234,17 @@ export default class Topup extends React.Component {
   }
 
   getTopupByID() {
+    // alert(this.state.branch.value);
     const self = this; // *
     self.setState({ isLoading: true, isSearched: true });
-    const { branch, user, topuptype } = this.state;
-    this.AllTopup.getTopupByID(branch.value, user.value, topuptype.value)
+    // const { branch, user, topuptype } = self.state;
+
+    self.AllTopup.getTopupByID(
+      self.state.branch.value,
+      self.state.user.value,
+      self.state.topuptype.value,
+      self.state.operator.value
+    )
       .then(function (response) {
         // console.log(response.data);
         self.setState({
@@ -232,6 +298,7 @@ export default class Topup extends React.Component {
   };
   //retrieve More data
   handleLoadMore = () => {
+    this.setState({ isFooterLoading: true });
     this.page = this.page + 1; // increase page by 1
     this._getAllTopup(this.page); // method for API call
   };
@@ -277,8 +344,10 @@ export default class Topup extends React.Component {
     if (this.state.isLoading) {
       return <Loading />;
     }
-    const { data } = this.state;
-    const dataList = data;
+    // const { data } = this.state;
+    // const dataList = data;
+    const { isSearched, data, searchTopup } = this.state;
+    const dataList = isSearched ? searchTopup : data;
     return (
       <View style={styles.container}>
         <StatusBar hidden={true}></StatusBar>
@@ -395,7 +464,7 @@ export default class Topup extends React.Component {
             <View style={{ marginTop: 10 }}>
               {/* {this._handleOperator(item)} */}
               <TopupCard
-                date="1.1.2020"
+                date={Moment(item.created_at).format("D.MM.Y")}
                 branchname={item.branch_name}
                 name={item.name}
                 operator={
@@ -421,7 +490,7 @@ export default class Topup extends React.Component {
           // ListHeaderComponent={this.renderFilter.bind(this)}
           ListFooterComponent={this.renderFooter.bind(this)}
           onEndReachedThreshold={0.5}
-          onEndReached={() => this.handleLoadMore()}
+          onEndReached={() => (!isSearched ? this.handleLoadMore() : {})}
         />
 
         <TouchableOpacity

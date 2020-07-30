@@ -28,3 +28,6 @@ export const getalluserApi = BaseUrl + "user";
 
 //get all topup api
 export const getAlltopupApi = BaseUrl + "topup";
+
+//get all user api
+export const getAllUserApi = BaseUrl + "user";

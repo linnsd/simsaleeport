@@ -2,7 +2,7 @@ const axios = require("axios");
 
 export default class TopupTypeApi {
   getAllTopupType() {
-    return axios.get("http://128.199.79.79/simsale/public/api/topupsetup", {
+    return axios.get("http://128.199.79.79/simsale-dev/public/api/topupsetup", {
       headers: {
         Accept: "application/json",
         Authorization:

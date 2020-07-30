@@ -22,16 +22,28 @@ export default class PostApi extends React.Component {
     );
   };
 
-  getTopupByID = async (branch_id, user_id, topuptype_id) => {
-    var access_token = AsyncStorage.getItem("access_token");
-    return axios.get(
-      "http://128.199.79.79/simsale-dev/public/api/" +
-        `topup/search?branch_id=${branch_id}&user_id=${user_id}&topuptype_id=${topuptype_id}`,
+  getTopupByID = async (branch_id, user_id, topuptype_id, operator_id) => {
+    // alert(operator_id);
+    var access_token = await AsyncStorage.getItem("access_token");
+    let bodyParam = {
+      form: "2020-01-2",
+      to: "2020-08-2",
+      type_id: topuptype_id ? topuptype_id : null,
+      user_id: user_id ? user_id : null,
+      branch_id: branch_id ? branch_id : null,
+      operator_id: operator_id ? operator_id : null,
+    };
+    // console.log(bodyParam);
+    let headers = {
+      Accept: "application/json",
+      Authorization: "Bearer " + access_token,
+    };
+    // console.log(headers);
+    return axios.post(
+      "http://128.199.79.79/simsale-dev/public/api/topup",
+      bodyParam,
       {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + access_token,
-        },
+        headers,
       }
     );
   };

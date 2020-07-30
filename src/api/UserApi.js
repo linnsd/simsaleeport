@@ -2,7 +2,7 @@ const axios = require("axios");
 
 export default class UserApi {
   getAllUser() {
-    return axios.get("http://128.199.79.79/simsale/public/api/user", {
+    return axios.get("http://128.199.79.79/simsale-dev/public/api/user", {
       headers: {
         Accept: "application/json",
         Authorization:
