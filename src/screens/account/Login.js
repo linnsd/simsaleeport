@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  AsyncStorage
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 const axios = require("axios");
@@ -46,6 +47,18 @@ export default class Login extends React.Component {
         .then(function (response) {
           // console.log(response.data.access_token);
           if (response.data.status == "1") {
+            AsyncStorage.multiSet(
+              [
+                ["access_token", response.data.access_token],
+              ],
+              (err) => {
+                if (err) {
+                  alert("Asynstorage Error");
+                } else {
+                  self.props.navigation.navigate("Home");
+                }
+              }
+            );
             self.setState({
               access_token: response.data.access_token,
               user_id: response.data.email,

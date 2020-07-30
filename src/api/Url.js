@@ -1,6 +1,6 @@
 export const BaseUrl = "http://128.199.79.79/simsale/public/api/";
 // get customers
-export const getCustomersapi = BaseUrl + "customers";
+export const getCustomersapi = BaseUrl + "customers?page=";
 
 //get login api
 export const getLoginapi = BaseUrl + "login";
@@ -21,7 +21,7 @@ export const createTopupApi = BaseUrl + "create_topup";
 // export const getLoginapi= "login";
 
 //get simcard api
-export const getSimcardapi = BaseUrl + "cards";
+export const getSimcardapi = BaseUrl + "cards?page=";
 
 //get all user
 export const getalluserApi = BaseUrl + "user";

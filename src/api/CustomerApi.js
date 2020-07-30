@@ -1,18 +1,20 @@
+
 var axios = require("axios");
 
-export default class PostApi {
+export default class PostApi{
   getAllCustomer(page) {
-    return axios.get(
-      "http://128.199.79.79/simsale/public/api/customers?page=" + page,
+    let bodyParam = {
+      page: page,
+    };
+    return axios.post(
+      "http://128.199.79.79/simsale/public/api/customers?page=",bodyParam,
       {
         headers: {
           Accept: "application/json",
           Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYwMTdmZmI0YThkMmRkNGI4MzI5NmI2ODdhNjMyM2ZkZDI2NGNmOTZlM2I3MTQwMDc5ZDZjMTczOTAxOWUxZjJjNTI1YWRjNjZhNmYyNzk4In0.eyJhdWQiOiIxIiwianRpIjoiZjAxN2ZmYjRhOGQyZGQ0YjgzMjk2YjY4N2E2MzIzZmRkMjY0Y2Y5NmUzYjcxNDAwNzlkNmMxNzM5MDE5ZTFmMmM1MjVhZGM2NmE2ZjI3OTgiLCJpYXQiOjE1OTU0NzkwNTUsIm5iZiI6MTU5NTQ3OTA1NSwiZXhwIjoxNjI3MDE1MDU1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.n35bsKhBe5bEvFspMnXFvrBXc1Sq6zjhu4fVOw7j_tJtzN8Myy9Tu6mtF5wt6iOXbFz_oMaf1bYapfcLxaPiNXtJznfw7N2wFaKsAfujs3fPiA4Ipvp8ZsBMH_7mXUJYcz0ad6gQFkFJBuZHRB9-HO94aZdnkdg9aeBvvHNGAS_eX0BhSdwnyTIFvNl5O7v1ndF85lJcOfmGn1ej_WwijWIEfbKa_gcJsDQw7EWFSwEU6IzSwQQZFPFp055soX9M6PbNKvcjZLkG6DaEGZXTrdf3lvGFqbiiYKTqjbktWbOYnfN7vCsL2-3swN6r7DV_JWs-rNXmSC1BMOqAVZTfc2nS8042YBDS_4JG7xQMeqEuQ761-Oyqpr-F6CdyapLB8Wqi1wqyBP1fqbQPAYgtiUbXqQeISO2Tcik2-sHxzFx-hacwdBd7EowMc553UKBags9XBapJ3G_0sqakUTprxvazDLd0HL4MDiapgsULvhrQwDvETdwjrIYRaV66AJFZSLlNhyMHdytxoAR6KcH_RXb3fCFy7MYS1KoUQ4O83NiXX-OW7PivvZ19nlGEPc5ksGxbCsRRc031oM6Oh50pOesBUk_RtrLDZWafzyUZ7mCBHCI7akYYS1WFvuYHvpUqCPWiBKs3RNAddSlKD4z29JKGLmUZ-9rp6huFFrMFSSQ",
+            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImUzYjY2Yzc3MjNkNWJjZjkwNTk0NTk1OGEzOTU5MjJmYWViNDQwNWEyZjk1MzQ2YWFkODk5Mjc3MGJiYWFmZDA5MmVjM2ZhMTk0NTczZTdlIn0.eyJhdWQiOiIxIiwianRpIjoiZTNiNjZjNzcyM2Q1YmNmOTA1OTQ1OTU4YTM5NTkyMmZhZWI0NDA1YTJmOTUzNDZhYWQ4OTkyNzcwYmJhYWZkMDkyZWMzZmExOTQ1NzNlN2UiLCJpYXQiOjE1OTU4NTAwNDcsIm5iZiI6MTU5NTg1MDA0NywiZXhwIjoxNjI3Mzg2MDQ3LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.ALhHc9igzS7GPjKwwTmdO_6X9YXMFHm5h2rLJ8k9gtj7Kq9NQF_bl-0rJxc8DorKPYvNkNjaeiDM6ZpxzzEcKMthWP7lvGlMIi-DrG-87garKoCqdkih31Mvyb6dZwBuySe9C2jzLtu65knft1Ss9bFae6KwGEDzSztQWHEsYQLj9PaSgo0xvs1g3GgE-kBG3_yx939SbHdm73H7r5zZz01_DWd-b16RKGubhTGWDMjnUwEaLHal9ureJifIPPHRmdU1TsyU5NnzfWfz5ZL1iZj0oiNAA9GJ6fGdiMlyaPC5mGTCqY6jUREJTWEjM9E68zboQ6ApNVSJ6_23m5pyzBOSGSvNlKg6eCs9zh2UnPN-VuDNxuo8TrWWrfWjFBbVnPVK3mLAC2r2nRrt_vLTiNOQ6O8NIlhGGzCrUJFVnSAMuPLtEBz1WyxBhf3P8_TQ_w4CiDyIAcyaDr8CcjvrlEaHIjmwDb27z88V5A7icYQ0kpnQ1VgYScDUP0TdMp9STHf6YusWO--WWJvKvJ4uJ6RxS2eg_avhgMWzRziRcj_7jbwhCeSmhcwqt925PKXVgQ45fvwQ6vC4D_mwmshENgkFApp9QKCSGZdum4FfZgMojvQe41GAtKbfEmFXNcc4Z_NfFrYj60pc6AYU_KLv8Op0FEdou2goM0dCu6vChCk",
         },
-      } 
+      }
     );
   }
-
-  
 }

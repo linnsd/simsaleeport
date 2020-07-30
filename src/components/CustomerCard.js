@@ -28,11 +28,13 @@ export default class Card extends React.Component {
 }
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
+    marginTop:5,
     borderWidth: 1,
     borderRadius: 5,
     borderColor: "#707070",
     padding: 10,
+    marginLeft:10,
+    marginRight:10
   },
   text: {
     paddingTop: 5,

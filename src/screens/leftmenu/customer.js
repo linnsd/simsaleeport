@@ -24,22 +24,26 @@ import Moment from "moment";
 //import styles
 import Style from "@styles/Styles";
 
+//import services
+import { getToken } from "@services/GetToken";
+
 // const axios = require("axios");
 import CustomerApi from "@api/CustomerApi";
-import { getBranchApi } from "@api/Url";
+import { getBranchApi, getCustomersapi } from "@api/Url";
 const axios = require("axios");
 
-const BRANCH = [
-  { value: 1, label: "HO" },
-  { value: 2, label: "Linn1" },
-  { value: 3, label: "Linn2" },
+const OPERATOR = [
+  { value: 1, label: "MPT" },
+  { value: 2, label: "Telenor" },
+  { value: 3, label: "Ooredoo" },
+  { value: 4, label: "Mytel" },
 ];
 export default class Customer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      branch: { value: null, label: null },
+      operator: { value: null, label: null },
       isShow: false,
       isLoading: false,
       refreshing: false,
@@ -48,22 +52,31 @@ export default class Customer extends React.Component {
       isSearched: false,
       branchs: [],
       branch: { value: null, label: null },
+      changeDate: null,
+      secondChangeDate: null,
+      keyword: null,
+      tempData: [],
+      access_token: null,
+      name: "",
     };
     this.page = 1;
     this.CustomerApi = new CustomerApi();
   }
 
-
   async componentDidMount() {
     const { navigation } = this.props;
+    const access_token = await getToken();
+    // console.log("Access_Token", access_token);
+    this.setState({ access_token: access_token });
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
     });
     this.setState({ isLoading: true }); // Start page loading
-    this.getAllCustomers(this.page);
-    this.getAllBranch();
+    await this.getAllCustomer(this.page);
+    await this.getAllBranch();
   }
-  getAllCustomers(page) {
+  getAllCustomer = async (page) => {
+    // console.log(getCustomersapi);
     if (this.state.isSearched) {
       this.setState({
         data: [],
@@ -73,14 +86,27 @@ export default class Customer extends React.Component {
     }
     // alert("Hello")
     var self = this;
-    this.CustomerApi.getAllCustomer(page)
+    // console.log("Self access_token",self.state.access_token);
+    let bodyParam = { page: page };
+    axios
+      .post(getCustomersapi, bodyParam, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.state.access_token,
+        },
+      })
+      // this.CustomerApi.getAllCustomer(page)
       .then(function (response) {
-        // console.log(response.data)
+        console.log("customer", response.data.customers[0].name);
         self.setState({
-          data: response.data.customers,
+          // data: response.data.customers,
+          data: [...self.state.data, ...response.data.customers],
           refreshing: false,
           isLoading: false,
           isFooterLoading: false,
+          keyword: null,
+          tempData: response.data.customers,
+          name: response.data.customers[0].name,
         });
         // console.log(response.data.customers);
       })
@@ -93,16 +119,15 @@ export default class Customer extends React.Component {
         });
         console.log("Customer Error", err);
       });
-  }
+  };
 
-  getAllBranch() {
+  getAllBranch = async () => {
     const self = this;
     axios
       .get(getBranchApi, {
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYwMTdmZmI0YThkMmRkNGI4MzI5NmI2ODdhNjMyM2ZkZDI2NGNmOTZlM2I3MTQwMDc5ZDZjMTczOTAxOWUxZjJjNTI1YWRjNjZhNmYyNzk4In0.eyJhdWQiOiIxIiwianRpIjoiZjAxN2ZmYjRhOGQyZGQ0YjgzMjk2YjY4N2E2MzIzZmRkMjY0Y2Y5NmUzYjcxNDAwNzlkNmMxNzM5MDE5ZTFmMmM1MjVhZGM2NmE2ZjI3OTgiLCJpYXQiOjE1OTU0NzkwNTUsIm5iZiI6MTU5NTQ3OTA1NSwiZXhwIjoxNjI3MDE1MDU1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.n35bsKhBe5bEvFspMnXFvrBXc1Sq6zjhu4fVOw7j_tJtzN8Myy9Tu6mtF5wt6iOXbFz_oMaf1bYapfcLxaPiNXtJznfw7N2wFaKsAfujs3fPiA4Ipvp8ZsBMH_7mXUJYcz0ad6gQFkFJBuZHRB9-HO94aZdnkdg9aeBvvHNGAS_eX0BhSdwnyTIFvNl5O7v1ndF85lJcOfmGn1ej_WwijWIEfbKa_gcJsDQw7EWFSwEU6IzSwQQZFPFp055soX9M6PbNKvcjZLkG6DaEGZXTrdf3lvGFqbiiYKTqjbktWbOYnfN7vCsL2-3swN6r7DV_JWs-rNXmSC1BMOqAVZTfc2nS8042YBDS_4JG7xQMeqEuQ761-Oyqpr-F6CdyapLB8Wqi1wqyBP1fqbQPAYgtiUbXqQeISO2Tcik2-sHxzFx-hacwdBd7EowMc553UKBags9XBapJ3G_0sqakUTprxvazDLd0HL4MDiapgsULvhrQwDvETdwjrIYRaV66AJFZSLlNhyMHdytxoAR6KcH_RXb3fCFy7MYS1KoUQ4O83NiXX-OW7PivvZ19nlGEPc5ksGxbCsRRc031oM6Oh50pOesBUk_RtrLDZWafzyUZ7mCBHCI7akYYS1WFvuYHvpUqCPWiBKs3RNAddSlKD4z29JKGLmUZ-9rp6huFFrMFSSQ",
+          Authorization: "Bearer " + this.state.access_token,
         },
       })
       .then(function (response) {
@@ -110,7 +135,7 @@ export default class Customer extends React.Component {
         // console.log(data);
         let arr = [];
         data.map((data, index) => {
-          console.log(data);
+          // console.log(data);
 
           var obj = { value: data.id, label: data.branch_name };
 
@@ -119,118 +144,180 @@ export default class Customer extends React.Component {
         self.setState({ branchs: arr });
       })
       .catch(function (error) {
-        console.log("Branch Api Error",error);
+        console.log("Branch Api Error", error);
       });
-  }
+  };
 
   _handleOnSelectBranch(value, label) {
     this.setState(
       {
         branch: {
           value: value,
-          label: label
-        }
-      },
+          label: label,
+        },
+      }
       // () => this.getAllCustomerByID()
     );
+  }
+
+  _handleOnSelectOperator(value, label) {
+    this.setState(
+      {
+        operator: {
+          value: value,
+          label: label,
+        },
+      }
+      // () => this.getAllCustomerByID()
+    );
+  }
+
+  //search
+  searching(word) {
+    return this.state.tempData.filter((customer) => {
+      const regex = new RegExp(word);
+      const name = customer.name != null ? customer.name : "";
+      return name.match(regex);
+      // // return name.toLowerCase().includes(word.toLowerCase());
+    });
+  }
+
+  handleOnChangeSearchInput(value) {
+    if (value) {
+      setTimeout(() => {
+        var searchdata = this.searching(value);
+        // console.log("Serache data",searchdata);
+        this.setState({ data: searchdata, keyword: value });
+      }, 100);
+    } else {
+      this.setState({
+        data: this.state.tempData,
+        keyword: null,
+      });
+    }
+  }
+
+  onRefresh = () => {
+    this.setState({
+      data: [],
+      refreshing: true, // start top loading
+    });
+    this.page = 1;
+    this.getAllCustomer(this.page);
+  };
+
+  //retrieve More data
+  handleLoadMore = () => {
+    this.setState({ isFooterLoading: true }); // Start Footer loading
+    this.page = this.page + 1; // increase page by 1
+    this.getAllCustomer(this.page); // method for API call
+  };
+
+  _handleOnPress() {
+    this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
 
   renderFilter() {
     return (
       <View style={{ marginTop: 10 }}>
-      <View style={styles.searchContainer}>
-        <View style={styles.searchTextInput}>
-          <Image
-            source={require("@images/searchbk.png")}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={{ flex: 1, height: 40 }}
-            placeholder="Search ..."
-          ></TextInput>
+        <View style={styles.searchContainer}>
+          <View style={styles.searchTextInput}>
+            <Image
+              source={require("@images/searchbk.png")}
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={{ flex: 1, height: 40 }}
+              placeholder="Search ..."
+              value={this.state.keyword}
+              onChangeText={(keyword) =>
+                this.handleOnChangeSearchInput({ keyword })
+              }
+            ></TextInput>
+          </View>
+          <TouchableOpacity
+            onPress={() => this.setState({ isShow: !this.state.isShow })}
+            // style={{ marginLeft: 10 }}
+          >
+            <Image
+              source={require("@images/more1.png")}
+              style={{ width: 30, height: 30 }}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => this.setState({ isShow: !this.state.isShow })}
-          // style={{ marginLeft: 10 }}
-        >
-          <Image
-            source={require("@images/more1.png")}
-            style={{ width: 30, height: 30 }}
-          />
-        </TouchableOpacity>
+        {this.state.isShow == true ? (
+          <View>
+            <View style={[styles.searchContainer, { marginTop: 10 }]}>
+              <View style={styles.dateContainer}>
+                <DatePicker
+                  date={this.state.changeDate}
+                  mode="date"
+                  format="DD-MM-YYYY"
+                  maxDate={Moment().endOf("day").toDate()}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  iconSource={require("@images/calendar.png")}
+                  style={Style.datePickerContainer}
+                  customStyles={{
+                    dateIcon: Style.datePickerDateIcon,
+                    dateInput: Style.datePickerDateInput,
+                    dateText: Style.datePickerDateText,
+                  }}
+                  onDateChange={(date) => this.setState({ changeDate: date })}
+                />
+                <DatePicker
+                  date={this.state.secondChangeDate}
+                  mode="date"
+                  format="DD-MM-YYYY"
+                  maxDate={Moment().endOf("day").toDate()}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  iconSource={require("@images/calendar.png")}
+                  style={[Style.datePickerContainer, { marginLeft: 10 }]}
+                  customStyles={{
+                    dateIcon: Style.datePickerDateIcon,
+                    dateInput: Style.datePickerDateInput,
+                    dateText: Style.datePickerDateText,
+                  }}
+                  onDateChange={(date) =>
+                    this.setState({ secondChangeDate: date })
+                  }
+                />
+              </View>
+            </View>
+            <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+              <View style={{ flex: 1 }}>
+                <DropDown
+                  value={this.state.branch}
+                  options={this.state.branchs}
+                  widthContainer="100%"
+                  placeholder="Select Branch..."
+                  onSelect={(value, label) =>
+                    this._handleOnSelectBranch(value, label)
+                  }
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <DropDown
+                  value={this.state.operator}
+                  options={OPERATOR}
+                  widthContainer="100%"
+                  marginLeftContainer={5}
+                  placeholder="Select Operator..."
+                  onSelect={(value, label) =>
+                    this._handleOnSelectOperator(value, label)
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        ) : (
+          // alert("Hi")
+          <View></View>
+        )}
       </View>
-      {this.state.isShow == true ? (
-        <View>
-          <View style={[styles.searchContainer, { marginTop: 10 }]}>
-            <View style={styles.dateContainer}>
-              <DatePicker
-                date="1/2/1997"
-                mode="date"
-                format="DD-MM-YYYY"
-                maxDate={Moment().endOf("day").toDate()}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconSource={require("@images/calendar.png")}
-                style={Style.datePickerContainer}
-                customStyles={{
-                  dateIcon: Style.datePickerDateIcon,
-                  dateInput: Style.datePickerDateInput,
-                  dateText: Style.datePickerDateText,
-                }}
-                // onDateChange={(date) =>
-                //     this.setState({ date })
-                //   }
-              />
-              <DatePicker
-                date="1/2/1997"
-                mode="date"
-                format="DD-MM-YYYY"
-                maxDate={Moment().endOf("day").toDate()}
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconSource={require("@images/calendar.png")}
-                style={[Style.datePickerContainer, { marginLeft: 10 }]}
-                customStyles={{
-                  dateIcon: Style.datePickerDateIcon,
-                  dateInput: Style.datePickerDateInput,
-                  dateText: Style.datePickerDateText,
-                }}
-                // onDateChange={(date) =>
-                //     this.setState({ date })
-                //   }
-              />
-            </View>
-          </View>
-          <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-            <View style={{ flex: 1 }}>
-              <DropDown
-               value={this.state.branch}
-               options={this.state.branchs}
-                widthContainer="100%"
-                placeholder="Select Branch..."
-                onSelect={(value, label) =>
-                  this._handleOnSelectBranch(value, label)
-                }
-              />
-            </View>
-            <View style={{ flex: 1 }}>
-              <DropDown
-                value={BRANCH}
-                widthContainer="100%"
-                marginLeftContainer={5}
-                placeholder="Select Operator..."
-              />
-            </View>
-          </View>
-        </View>
-      ) : (
-        // alert("Hi")
-        <View></View>
-      )}
-    </View>
     );
   }
-
 
   renderFooter = () => {
     //it will show indicator at the bottom of the list when data is loading
@@ -241,32 +328,13 @@ export default class Customer extends React.Component {
     }
   };
 
-  onRefresh = () => {
-    this.setState({
-      data: [],
-      refreshing: true, // start top loading
-    });
-    this.page = 1;
-    this.getAllCustomers(this.page);
-  };
-
-  //retrieve More data
-  handleLoadMore = () => {
-    this.setState({ isFooterLoading: true }); // Start Footer loading
-    this.page = this.page + 1; // increase page by 1
-    this.getAllCustomers(this.page); // method for API call
-  };
-
-  _handleOnPress() {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
   render() {
+    // console.log(this.state.access_token);
     if (this.state.isLoading) {
       return <Loading />;
     }
     const { isSearched, data } = this.state;
-    const dataList =  data;
+    const dataList = data;
     return (
       <View style={styles.container}>
         <Header
@@ -274,7 +342,7 @@ export default class Customer extends React.Component {
           img={require("@images/threeline.png")}
           Onpress={() => this._handleOnPress()}
         />
-   
+
         <FlatList
           showsVerticalScrollIndicator={false}
           data={dataList}
