@@ -11,18 +11,22 @@ import {
   FlatList,
   RefreshControl,
   ActivityIndicator,
+  AsyncStorage,
 } from "react-native";
 //import component
 import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import TopupCard from "@components/TopupCard";
 import Loading from "@components/Loading";
+import SuccessModal from "@components/SuccessModal";
 
 //import apis
 import AllTopup from "@api/AllTopup";
 import BranchApi from "@api/BranchApi";
 import TopupTypeApi from "@api/TopupTypeApi";
 import UserApi from "@api/UserApi";
+import { getAlltopupApi } from "@api/Url";
+const axios = require("axios");
 
 const OPERATORS = [
   { value: 1, label: "MPT" },
@@ -42,11 +46,13 @@ export default class Topup extends React.Component {
       users: [],
       user: { value: null, label: null },
       operator: { value: null, label: null },
-
+      searchTopup: [],
+      keyword: "",
       isLoading: true,
       refreshing: false,
       isFooterLoading: false,
       isShow: false,
+      isOpenSuccessModel: false,
     };
     this.page = 1;
     this.BranchApi = new BranchApi();
@@ -54,12 +60,33 @@ export default class Topup extends React.Component {
     this.TopupTypeApi = new TopupTypeApi();
     this.UserApi = new UserApi();
   }
-  _handleOnPressEdit(arrIndex) {
+  _handleOnPressEdit(arrIndex, data) {
+    // console.log(data);
     if (arrIndex == 1) {
-      this.props.navigation.navigate("EditTopup");
+      this.props.navigation.navigate("EditTopup", { data: data });
     }
   }
-
+  _handleOnPressDelete = async (item) => {
+    // alert(item.id);
+    const self = this;
+    var access_token = await AsyncStorage.getItem("access_token");
+    // console.log(getAlltopupApi);
+    axios
+      .delete(getAlltopupApi + "/" + item.id, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({ isOpenSuccessModel: true });
+        // this._getAllTopup(this.page);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   componentDidMount = async () => {
     const { navigation } = this.props;
     this.focusListener = navigation.addListener("didFocus", async () => {
@@ -129,7 +156,6 @@ export default class Topup extends React.Component {
     const self = this; // *
     this.AllTopup.getAllTopup(page)
       .then(function (response) {
-        // console.log(response.data.topup);
         self.setState({
           tempBusiness: response.data.topup,
           data: [...self.state.data, ...response.data.topup],
@@ -147,18 +173,53 @@ export default class Topup extends React.Component {
         });
       });
   }
+
+  getTopupByID() {
+    const self = this; // *
+    self.setState({ isLoading: true, isSearched: true });
+    const { branch, user, topuptype } = this.state;
+    this.AllTopup.getTopupByID(branch.value, user.value, topuptype.value)
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({
+          searchTopup: response.data.topup,
+          isLoading: false,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        self.setState({
+          isLoading: false,
+        });
+      });
+  }
+
   _handleOnSelectBranch(value, label) {
-    // alert(value);
-    this.setState({ branch: { value: value, label: label } });
+    this.setState(
+      {
+        branch: {
+          value: value,
+          label: label,
+        },
+      },
+      () => this.getTopupByID()
+    );
   }
   _handleOnSelectUser(value, label) {
-    this.setState({ user: { value: value, label: label } });
+    this.setState({ user: { value: value, label: label } }, () =>
+      this.getTopupByID()
+    );
   }
   _handleOnSelectTopupType(value, label) {
-    this.setState({ topuptype: { value: value, label: label } });
+    this.setState({ topuptype: { value: value, label: label } }, () =>
+      this.getTopupByID()
+    );
   }
   _handleOnSelectOperator(value, label) {
-    this.setState({ operator: { value: value, label: label } });
+    this.setState(
+      { operator: { value: value, label: label } },
+      this.getTopupByID()
+    );
   }
 
   onRefresh = () => {
@@ -171,94 +232,39 @@ export default class Topup extends React.Component {
   };
   //retrieve More data
   handleLoadMore = () => {
-    // this.setState({ isFooterLoading: true }); // Start Footer loading
     this.page = this.page + 1; // increase page by 1
     this._getAllTopup(this.page); // method for API call
   };
+  _handleOnClose = () => {
+    this.setState({ isOpenSuccessModel: false });
+    this._getAllTopup(this.page);
+  };
+  _handleSearchKeyword = async (keyword) => {
+    // alert(keyword);
+    const self = this;
+    // this.setState({ keyword: keyword });
+    var access_token = await AsyncStorage.getItem("access_token");
+    let param = {
+      keyword: keyword,
+      from: "2020-05-1",
+      to: "2020-10-30",
+    };
+    axios
+      .post(getAlltopupApi, param, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + access_token,
+        },
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({ data: response.data.topup });
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
 
-  renderFilter() {
-    return (
-      <View style={{ marginTop: 10 }}>
-        <View style={styles.searchContainer}>
-          <View style={styles.searchTextInput}>
-            <Image
-              source={require("@images/searchbk.png")}
-              style={styles.searchIcon}
-            />
-            <TextInput
-              style={{ flex: 1, height: 40 }}
-              placeholder="Search ..."
-            ></TextInput>
-          </View>
-          <TouchableOpacity
-            onPress={() => this.setState({ isShow: !this.state.isShow })}
-            // style={{ marginLeft: 10 }}
-          >
-            <Image
-              source={require("@images/more1.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </TouchableOpacity>
-        </View>
-        {this.state.isShow == true ? (
-          <View>
-            <View style={[styles.searchContainer, { marginTop: 10 }]}>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.branch}
-                  widthContainer="100%"
-                  placeholder="Select Branch..."
-                  options={this.state.branches}
-                  onSelect={(value, label) =>
-                    this._handleOnSelectBranch(value, label)
-                  }
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.operator}
-                  options={OPERATORS}
-                  widthContainer="100%"
-                  marginLeftContainer={5}
-                  placeholder="Select Operator..."
-                  onSelect={(value, label) =>
-                    this._handleOnSelectOperator(value, label)
-                  }
-                />
-              </View>
-            </View>
-            <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.user}
-                  widthContainer="100%"
-                  placeholder="Select by user"
-                  options={this.state.users}
-                  onSelect={(value, label) =>
-                    this._handleOnSelectUser(value, label)
-                  }
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.topuptype}
-                  options={this.state.topuptypes}
-                  widthContainer="100%"
-                  marginLeftContainer={5}
-                  placeholder="Select topup type"
-                  onSelect={(value, label) =>
-                    this._handleOnSelectTopupType(value, label)
-                  }
-                />
-              </View>
-            </View>
-          </View>
-        ) : (
-          <View></View>
-        )}
-      </View>
-    );
-  }
   renderFooter = () => {
     //it will show indicator at the bottom of the list when data is loading
     if (this.state.isFooterLoading) {
@@ -276,41 +282,105 @@ export default class Topup extends React.Component {
     return (
       <View style={styles.container}>
         <StatusBar hidden={true}></StatusBar>
-        <Header name="Topup" />
-        {/* 
-        <ScrollView>
-          <TopupCard
-            date="1.1.2020"
-            branchname="HO"
-            name="MPT HO"
-            operator="MPT"
-            topuptype="1000"
-            qty="100"
-            onPressEdit={this._handleOnPressEdit.bind(this)}
-            arrIndex={1}
-          />
-          <TopupCard
-            date="1.1.2020"
-            branchname="HO"
-            name="MPT HO"
-            operator="MPT"
-            topuptype="1000"
-            qty="100"
-            onPressEdit={this._handleOnPressEdit.bind(this)}
-            arrIndex={1}
-          />
-          <TopupCard
-            date="1.1.2020"
-            branchname="HO"
-            name="MPT HO"
-            operator="MPT"
-            topuptype="1000"
-            qty="100"
-            onPressEdit={this._handleOnPressEdit.bind(this)}
-            arrIndex={1}
-          />
-          
-        </ScrollView> */}
+        <Header
+          name="Topup"
+          Onpress={() => this.props.navigation.navigate("Home")}
+        />
+        <View style={{ marginTop: 10 }}>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchTextInput}>
+              {/* <Image
+                source={require("@images/searchbk.png")}
+                style={styles.searchIcon}
+              /> */}
+              <TextInput
+                style={{ flex: 1, height: 40, paddingHorizontal: 10 }}
+                placeholder="Search ..."
+                value={this.state.keyword}
+                onChangeText={(value) => this.setState({ keyword: value })}
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#1FD449",
+                width: "15%",
+                height: 40,
+                marginLeft: 10,
+                borderRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => this._handleSearchKeyword(this.state.keyword)}
+            >
+              <Text style={{ color: "white", fontSize: 15 }}>Search</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ isShow: !this.state.isShow })}
+              // style={{ marginLeft: 10 }}
+            >
+              <Image
+                source={require("@images/more1.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+          </View>
+          {this.state.isShow == true ? (
+            <View>
+              <View style={[styles.searchContainer, { marginTop: 10 }]}>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.branch}
+                    widthContainer="100%"
+                    placeholder="Select Branch..."
+                    options={this.state.branches}
+                    onSelect={(value, label) =>
+                      this._handleOnSelectBranch(value, label)
+                    }
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.operator}
+                    options={OPERATORS}
+                    widthContainer="100%"
+                    marginLeftContainer={5}
+                    placeholder="Select Operator..."
+                    onSelect={(value, label) =>
+                      this._handleOnSelectOperator(value, label)
+                    }
+                  />
+                </View>
+              </View>
+              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.user}
+                    widthContainer="100%"
+                    placeholder="Select by user"
+                    options={this.state.users}
+                    onSelect={(value, label) =>
+                      this._handleOnSelectUser(value, label)
+                    }
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.topuptype}
+                    options={this.state.topuptypes}
+                    widthContainer="100%"
+                    marginLeftContainer={5}
+                    placeholder="Select topup type"
+                    onSelect={(value, label) =>
+                      this._handleOnSelectTopupType(value, label)
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View></View>
+          )}
+        </View>
         <FlatList
           showsVerticalScrollIndicator={false}
           data={dataList}
@@ -323,21 +393,32 @@ export default class Topup extends React.Component {
           }
           renderItem={({ item }) => (
             <View style={{ marginTop: 10 }}>
-              {/* {console.log(item)} */}
+              {/* {this._handleOperator(item)} */}
               <TopupCard
                 date="1.1.2020"
                 branchname={item.branch_name}
                 name={item.name}
-                operator="MPT"
+                operator={
+                  item.operator_id == "1"
+                    ? "MPT"
+                    : item.operator_id == "2"
+                    ? "Telenor"
+                    : item.operator_id == "3"
+                    ? "Ooredoo"
+                    : item.operator_id == "4"
+                    ? "Mytel"
+                    : ""
+                }
                 topuptype={item.topup_type}
                 qty={item.qty}
-                onPressEdit={this._handleOnPressEdit.bind(this)}
+                onPressEdit={() => this._handleOnPressEdit(1, item)}
+                onPressDelete={() => this._handleOnPressDelete(item)}
                 arrIndex={1}
               />
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          ListHeaderComponent={this.renderFilter.bind(this)}
+          // ListHeaderComponent={this.renderFilter.bind(this)}
           ListFooterComponent={this.renderFooter.bind(this)}
           onEndReachedThreshold={0.5}
           onEndReached={() => this.handleLoadMore()}
@@ -350,6 +431,11 @@ export default class Topup extends React.Component {
         >
           <Image source={require("@images/add.png")} style={styles.btnImg} />
         </TouchableOpacity>
+        <SuccessModal
+          isOpen={this.state.isOpenSuccessModel}
+          text="Successfully topup deleted"
+          onClose={() => this._handleOnClose()}
+        />
       </View>
     );
   }
