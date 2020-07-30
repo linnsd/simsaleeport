@@ -7,7 +7,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  ToastAndroid,
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 const axios = require("axios");
@@ -29,50 +30,59 @@ export default class Login extends React.Component {
     });
   };
   handleLogin = async () => {
-    var self = this;
-    if (this.state.isOnline) {
-      let appuser = {
-        email: self.state.user_id,
-        password: self.state.pass,
-      };
-      // console.log(appuser);
-      axios
-        .post(getLoginapi, appuser, {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        })
-        .then(function (response) {
-          // console.log(response.data.access_token);
-          if (response.data.status == "1") {
-            AsyncStorage.multiSet(
-              [
-                ["access_token", response.data.access_token],
-              ],
-              (err) => {
-                if (err) {
-                  alert("Asynstorage Error");
-                } else {
-                  self.props.navigation.navigate("Home");
+    if (this.state.user_id == "" || this.state.pass == "") {
+      ToastAndroid.show("Email or Password is required!", ToastAndroid.SHORT);
+    } else {
+      const self = this;
+      if (self.state.isOnline) {
+        let appuser = {
+          email: self.state.user_id,
+          password: self.state.pass,
+        };
+        axios
+          .post(getLoginapi, appuser, {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Origin": "*",
+            },
+          })
+          .then(function (response) {
+            // console.log("Authorization is ", response.data);
+            if (response.data.status == "1") {
+              AsyncStorage.multiSet(
+                [["access_token", response.data.access_token]],
+                (err) => {
+                  if (err) {
+                    alert("Asynstorage Error");
+                  } else {
+                    self.props.navigation.navigate("Home");
+                  }
                 }
-              }
+              );
+              self.setState({
+                access_token: response.data.access_token,
+                user_id: response.data.email,
+                pass: response.data.password,
+              });
+              self.props.navigation.navigate("Home");
+            } else {
+              // alert("Invalid Username or Password");
+              ToastAndroid.show(
+                "Invalid Username or Password",
+                ToastAndroid.SHORT
+              );
+            }
+          })
+          .catch(function (err) {
+            // console.log(err);
+            // alert("Username or Password is require!");
+            ToastAndroid.show(
+              "Email or password is invalid",
+              ToastAndroid.SHORT
             );
-            self.setState({
-              access_token: response.data.access_token,
-              user_id: response.data.email,
-              pass: response.data.password,
-            });
-            self.props.navigation.navigate("Home");
-          } else {
-            alert("Invalid Username or Password");
-          }
-        })
-        .catch(function (err) {
-          // console.log(err);
-          alert("Username or Password is require!");
-        });
+          });
+      }
     }
   };
   render() {

@@ -10,8 +10,12 @@ const ACTION_POPUP_DATA = [
 
 export default class Card extends React.Component {
   _handleOnSelectActionPopup(arrIndex, action) {
+    // alert(action);
     if (action === "EDIT") {
       this.props.onPressEdit(arrIndex);
+    }
+    if (action === "DELETE") {
+      this.props.onPressDelete(arrIndex);
     }
   }
   render() {
