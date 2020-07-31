@@ -73,7 +73,7 @@ export default class Add extends React.Component {
     this.setState({ access_token: access_token });
     await this.getAllBranch();
     await this.getAllNrcCode();
-    await this.getAllNrcState();
+    // await this.getAllNrcState();
   }
   createSimcard = async () => {
     var self = this;
@@ -171,7 +171,7 @@ export default class Add extends React.Component {
         let data = response.data.nrccode;
         let arr = [];
         data.map((data, index) => {
-          // console.log("Data Branch",data.id);
+          // console.log("Get NRC",data.id);
 
           var obj = { value: data.id, label: data.nrc_en };
 
@@ -183,17 +183,21 @@ export default class Add extends React.Component {
         console.log("NRC Code Error", err);
       });
   };
-  getAllNrcState = async () => {
+  getAllNrcState = (nrc_code) => {
     const self = this;
+    let bodyParam = {
+      nrc_code:nrc_code,
+    };
+    // console.log("body",bodyParam);
     axios
-      .get(getAllNrcStateApi, {
+      .post(getAllNrcStateApi , bodyParam,{
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
+          Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
-        // console.log(response.data.nrcstate[0]);
+        // console.log("NRC State",response.data);
         let data = response.data.nrcstate;
         let arr = [];
         data.map((data, index) => {
@@ -234,12 +238,15 @@ export default class Add extends React.Component {
     );
   }
   _handleSelectNrcCode(value, label) {
-    this.setState({
+    this.setState(
+      {
       nrccode: {
         value: value,
         label: label,
       },
-    });
+    }
+    );
+    this.getAllNrcState(value);
   }
   _handleSelectState(value, label) {
     this.setState({
@@ -262,7 +269,7 @@ export default class Add extends React.Component {
   }
 
   render() {
-    // console.log(this.state.nrcstate.value);
+    console.log("nrc code",this.state.nrccode.value);
     // console.log("Create ticket",this.props.navigation.getParam("simcard").state_id);
     return (
       <View style={styles.container}>
@@ -358,9 +365,7 @@ export default class Add extends React.Component {
                     widthContainer={55}
                     placeholder="1"
                     // widthContainer="100%"
-                    onSelect={(value, label) =>
-                      this._handleSelectNrcCode(value, label)
-                    }
+                    onSelect={(value,label)=>this._handleSelectNrcCode(value,label)}
                   ></DropDown>
                 </View>
                 <View>

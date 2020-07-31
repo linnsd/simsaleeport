@@ -49,7 +49,7 @@ export default class ActionPopupMenu extends React.Component {
               style={styles.dotIcon}
               source={require("@images/setting.png")}
             />
-            <Text style={{ color: "#ffffff", paddingLeft: 10 }}>Action</Text>
+            {/* <Text style={{ color: "#ffffff", paddingLeft: 10 }}>Action</Text> */}
           </MenuTrigger>
           <MenuOptions
             optionsContainerStyle={{ width: 100, backgroundColor: "#FFFFFF" }}
@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     color: "red",
   },
   dotIcon: {
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
   },
   actionIcon: {
     width: 20,
@@ -95,9 +95,10 @@ const triggerStyles = {
     // justifyContent: "center",
     alignItems: "center",
     padding: 5,
-    width: 100,
+    width:50,
     height: 40,
     flexDirection: "row",
+    justifyContent:"center",
     // justifyContent:"space-around",
     backgroundColor: "#1FD449",
     borderWidth: 1,
