@@ -222,11 +222,11 @@ export default class SIMCard extends React.Component {
       isOpenSuccessModal: true,
     });
     let simcard = this.state.simcard;
-    const id = simcard[this.state.arrIndex].card[0].id;
+    const id = simcard[this.state.arrIndex].id;
     const url = deleteSimcardApi + id;
-    console.log(url);
+    console.log(simcard);
     axios
-      .delete(url, {
+      .delete(url,{
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.state.access_token,

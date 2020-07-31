@@ -54,10 +54,9 @@ export default class Customer extends React.Component {
       branch: { value: null, label: null },
       changeDate: null,
       secondChangeDate: null,
-      keyword: null,
+      keyword: "",
       tempData: [],
       access_token: null,
-      name: "",
     };
     this.page = 1;
     this.CustomerApi = new CustomerApi();
@@ -97,16 +96,14 @@ export default class Customer extends React.Component {
       })
       // this.CustomerApi.getAllCustomer(page)
       .then(function (response) {
-        console.log("customer", response.data.customers[0].name);
+        console.log("customer", response.data);
         self.setState({
           // data: response.data.customers,
           data: [...self.state.data, ...response.data.customers],
           refreshing: false,
           isLoading: false,
           isFooterLoading: false,
-          keyword: null,
           tempData: response.data.customers,
-          name: response.data.customers[0].name,
         });
         // console.log(response.data.customers);
       })
@@ -172,30 +169,30 @@ export default class Customer extends React.Component {
     );
   }
 
-  //search
-  searching(word) {
-    return this.state.tempData.filter((customer) => {
-      const regex = new RegExp(word);
-      const name = customer.name != null ? customer.name : "";
-      return name.match(regex);
-      // // return name.toLowerCase().includes(word.toLowerCase());
-    });
-  }
-
-  handleOnChangeSearchInput(value) {
-    if (value) {
-      setTimeout(() => {
-        var searchdata = this.searching(value);
-        // console.log("Serache data",searchdata);
-        this.setState({ data: searchdata, keyword: value });
-      }, 100);
-    } else {
-      this.setState({
-        data: this.state.tempData,
-        keyword: null,
+  _handleSearchKeyword = async (keyword) => {
+    // alert(keyword);
+    const self = this;
+    // this.setState({ keyword: keyword });
+    // var access_token = await AsyncStorage.getItem("access_token");
+    let param = {
+      keyword: keyword,
+    };
+    axios
+      .post(getCustomersapi, param, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + this.state.data,
+        },
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({ data: response.data.customers });
+      })
+      .catch(function (err) {
+        console.log(err);
       });
-    }
-  }
+  };
+
 
   onRefresh = () => {
     this.setState({
@@ -220,31 +217,43 @@ export default class Customer extends React.Component {
   renderFilter() {
     return (
       <View style={{ marginTop: 10 }}>
-        <View style={styles.searchContainer}>
-          <View style={styles.searchTextInput}>
-            <Image
-              source={require("@images/searchbk.png")}
-              style={styles.searchIcon}
-            />
-            <TextInput
-              style={{ flex: 1, height: 40 }}
-              placeholder="Search ..."
-              value={this.state.keyword}
-              onChangeText={(keyword) =>
-                this.handleOnChangeSearchInput({ keyword })
-              }
-            ></TextInput>
+      <View style={styles.searchContainer}>
+            <View style={styles.searchTextInput}>
+              {/* <Image
+                source={require("@images/searchbk.png")}
+                style={styles.searchIcon}
+              /> */}
+              <TextInput
+                style={{ flex: 1, height: 40, paddingHorizontal: 10 }}
+                placeholder="Search ..."
+                value={this.state.keyword}
+                onChangeText={(value) => this.setState({ keyword: value })}
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#1FD449",
+                width: "15%",
+                height: 40,
+                marginLeft: 10,
+                borderRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => this._handleSearchKeyword(this.state.keyword)}
+            >
+               <Image source={require("@images/search.png")} style={{width:30,height:30}}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ isShow: !this.state.isShow })}
+              // style={{ marginLeft: 10 }}
+            >
+              <Image
+                source={require("@images/more1.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => this.setState({ isShow: !this.state.isShow })}
-            // style={{ marginLeft: 10 }}
-          >
-            <Image
-              source={require("@images/more1.png")}
-              style={{ width: 30, height: 30 }}
-            />
-          </TouchableOpacity>
-        </View>
         {this.state.isShow == true ? (
           <View>
             <View style={[styles.searchContainer, { marginTop: 10 }]}>

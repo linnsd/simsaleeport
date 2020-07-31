@@ -66,13 +66,12 @@ export default class Add extends React.Component {
   componentWillMount() {
     let data = this.props.navigation.getParam("data");
     this.setState({
-      id: data.card[0] ? data.card[0].id : null,
       name: data.name,
       nrc_no: data.nrc_number,
       address: data.address,
       contact_phone: data.phone,
-      simcard_no: data.card ? data.card[0].card_no : null,
-      serial_no: data.card ? data.card[0].serial : null,
+      simcard_no: data.card_no ,
+      serial_no:data.serial ,
       imei1: data.imei,
       imei2: data.imei2,
       topupAmt: data.topup,
@@ -100,7 +99,7 @@ export default class Add extends React.Component {
     this.setState({ access_token: access_token });
     await this.getAllBranch();
     await this.getAllNrcCode();
-    await this.getAllNrcState();
+    // await this.getAllNrcState();
   }
 
   getAllBranch = async () => {
@@ -156,10 +155,13 @@ export default class Add extends React.Component {
         console.log("NRC Code Error", err);
       });
   };
-  getAllNrcState = async () => {
+  getAllNrcState = async (nrc_code) => {
     const self = this;
+    let bodyParam={
+      nrc_code:nrc_code,
+    };
     axios
-      .get(getAllNrcStateApi, {
+      .post(getAllNrcStateApi,bodyParam,{
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.state.access_token,
@@ -210,7 +212,7 @@ export default class Add extends React.Component {
     };
     console.log(bodyParam);
     axios
-      .post(url, bodyParam, {
+      .put(url,bodyParam, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + self.state.access_token,
@@ -254,6 +256,7 @@ export default class Add extends React.Component {
         label: label,
       },
     });
+    // this.getAllNrcState(value);
   }
   _handleSelectState(value, label) {
     this.setState({
@@ -273,7 +276,7 @@ export default class Add extends React.Component {
   }
 
   render() {
-    // console.log("Edit Sim Card",this.props.navigation.getParam("data"));
+    console.log("Edit Sim Card",this.props.navigation.getParam("data"));
     return (
       <View style={styles.container}>
         <Header
