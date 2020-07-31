@@ -209,6 +209,7 @@ export default class Topup extends React.Component {
         branch: { value: null, label: null },
         user: { value: null, label: null },
         topuptype: { value: null, label: null },
+        operator: { value: null, label: null },
       });
     }
 
@@ -313,8 +314,8 @@ export default class Topup extends React.Component {
     var access_token = await AsyncStorage.getItem("access_token");
     let param = {
       keyword: keyword,
-      from: "2020-05-1",
-      to: "2020-10-30",
+      from: new Date(),
+      to: new Date(),
     };
     axios
       .post(getAlltopupApi, param, {
@@ -462,7 +463,7 @@ export default class Topup extends React.Component {
           }
           renderItem={({ item }) => (
             <View style={{ marginTop: 10 }}>
-              {/* {this._handleOperator(item)} */}
+              {/* {console.log(item)} */}
               <TopupCard
                 date={Moment(item.created_at).format("D.MM.Y")}
                 branchname={item.branch_name}

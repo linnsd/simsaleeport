@@ -7,8 +7,8 @@ export default class PostApi extends React.Component {
     var access_token = await AsyncStorage.getItem("access_token");
     let bodyParam = {
       page: page,
-      from: "2020-05-1",
-      to: "2020-09-20",
+      form: new Date(),
+      to: new Date(),
     };
     return axios.post(
       "http://128.199.79.79/simsale-dev/public/api/topup",
@@ -23,11 +23,11 @@ export default class PostApi extends React.Component {
   };
 
   getTopupByID = async (branch_id, user_id, topuptype_id, operator_id) => {
-    // alert(operator_id);
+    // alert(branch_id);
     var access_token = await AsyncStorage.getItem("access_token");
     let bodyParam = {
-      form: "2020-01-2",
-      to: "2020-08-2",
+      form: new Date(),
+      to: new Date(),
       type_id: topuptype_id ? topuptype_id : null,
       user_id: user_id ? user_id : null,
       branch_id: branch_id ? branch_id : null,
