@@ -43,3 +43,5 @@ export const updateSimcardApi = BaseUrl + "cards/";
 
 //delete sim card
 export const deleteSimcardApi = BaseUrl + "cards/";
+//get all user api
+export const getAllUserApi = BaseUrl + "user";

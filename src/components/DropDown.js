@@ -58,8 +58,9 @@ export default class DropDown extends React.Component {
             marginTop: this.props.marginContainer
               ? this.props.marginContainer
               : 0,
-            marginRight:this.props.marginRightContainer ?
-            this.props.marginRightContainer : 0,
+            marginRight: this.props.marginRightContainer
+              ? this.props.marginRightContainer
+              : 0,
 
             marginLeft: this.props.marginLeftContainer
               ? this.props.marginLeftContainer
