@@ -57,7 +57,9 @@ export default class SimcardCard extends React.Component {
 }
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
+    marginTop:5,
+    marginLeft:10,
+    marginRight:10,
     borderWidth: 1,
     borderRadius: 5,
     borderColor: "#707070",

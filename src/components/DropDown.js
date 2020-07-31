@@ -51,7 +51,7 @@ export default class DropDown extends React.Component {
         style={[
           styles.triggerWrapper,
           {
-            width: this.props.widthContainer ? this.props.widthContainer : 300,
+            width: this.props.widthContainer ? this.props.widthContainer :55,
             height: this.props.heightContainer
               ? this.props.heightContainer
               : 40,

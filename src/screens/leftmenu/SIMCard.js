@@ -7,12 +7,20 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 
 //import component
 import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import SimcardCard from "@components/SimcardCard";
+import Loading from "@components/Loading";
+import DeleteConfromModa from "@components/DeleteConfirmModal";
+
+//import services
+import {getToken} from "@services/GetToken";
 
 //import Datepicker
 import { DrawerActions } from "react-navigation-drawer";
@@ -23,182 +31,410 @@ import Moment from "moment";
 import Style from "@styles/Styles";
 //import api
 const axios = require("axios");
-import { getSimcardapi } from "@api/Url";
+import { getSimcardapi,getBranchApi,deleteSimcardApi } from "@api/Url";
+import DeleteConfirmModal from "@components/DeleteConfirmModal";
 
-const BRANCH = [
-  { value: 1, label: "HO" },
-  { value: 2, label: "Linn1" },
-  { value: 3, label: "Linn2" },
+const OPERATOR = [
+  { value: 1, label: "MPT" },
+  { value: 2, label: "Telenor" },
+  { value: 3, label: "Ooredoo" },
+  { value: 4, label: "Mytel" },
 ];
 export default class SIMCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      branch: { value: null, label: null },
+      operator: { value: null, label: null },
       isShow: false,
+      isLoading: false,
+      refreshing: false,
+      isFooterLoading: false,
+      searchedCustomer: [],
+      isSearched: false,
+      branchs: [],
+      branch: { value: null, label: null },
+      changeDate: null,
+      secondChangeDate: null,
+      keyword: "",
+      tempData: [],
+      access_token: null,
+      arrIndex:null,
+      simcard:[],
+      isOpenDeleteConfirmModal: false,
+      deleteid:[]
     };
-  }
-  _handleOnSelectBranch(value, label) {
-    // alert(value);
-    this.setState({ branch: { value: value, label: label } });
+    this.page = 1;
   }
   async componentDidMount(){
     const {navigation}=this.props;
-    this.getSimcard();
+    const access_token=await getToken();
+    this.setState({access_token:access_token})
+    await this.getSimcard(this.page);
+    await this.getAllBranch()
     this.focusListener = navigation.addListener("didFocus", async () => {
-      await this.setState({ isShow: false });
+   await this.setState({ isShow: false });
     });
   }
-  getSimcard(){
+  getSimcard=async(page)=>{
     var self = this;
+    let bodyparam={
+      from:new Date(),
+      to:new Date(),
+      page:page,
+    }
     axios
-      .get(getSimcardapi, {
+      .post(getSimcardapi,bodyparam, {
         headers: {
           Accept: "application/json",
-          Authorization:
-            "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImYwMTdmZmI0YThkMmRkNGI4MzI5NmI2ODdhNjMyM2ZkZDI2NGNmOTZlM2I3MTQwMDc5ZDZjMTczOTAxOWUxZjJjNTI1YWRjNjZhNmYyNzk4In0.eyJhdWQiOiIxIiwianRpIjoiZjAxN2ZmYjRhOGQyZGQ0YjgzMjk2YjY4N2E2MzIzZmRkMjY0Y2Y5NmUzYjcxNDAwNzlkNmMxNzM5MDE5ZTFmMmM1MjVhZGM2NmE2ZjI3OTgiLCJpYXQiOjE1OTU0NzkwNTUsIm5iZiI6MTU5NTQ3OTA1NSwiZXhwIjoxNjI3MDE1MDU1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.n35bsKhBe5bEvFspMnXFvrBXc1Sq6zjhu4fVOw7j_tJtzN8Myy9Tu6mtF5wt6iOXbFz_oMaf1bYapfcLxaPiNXtJznfw7N2wFaKsAfujs3fPiA4Ipvp8ZsBMH_7mXUJYcz0ad6gQFkFJBuZHRB9-HO94aZdnkdg9aeBvvHNGAS_eX0BhSdwnyTIFvNl5O7v1ndF85lJcOfmGn1ej_WwijWIEfbKa_gcJsDQw7EWFSwEU6IzSwQQZFPFp055soX9M6PbNKvcjZLkG6DaEGZXTrdf3lvGFqbiiYKTqjbktWbOYnfN7vCsL2-3swN6r7DV_JWs-rNXmSC1BMOqAVZTfc2nS8042YBDS_4JG7xQMeqEuQ761-Oyqpr-F6CdyapLB8Wqi1wqyBP1fqbQPAYgtiUbXqQeISO2Tcik2-sHxzFx-hacwdBd7EowMc553UKBags9XBapJ3G_0sqakUTprxvazDLd0HL4MDiapgsULvhrQwDvETdwjrIYRaV66AJFZSLlNhyMHdytxoAR6KcH_RXb3fCFy7MYS1KoUQ4O83NiXX-OW7PivvZ19nlGEPc5ksGxbCsRRc031oM6Oh50pOesBUk_RtrLDZWafzyUZ7mCBHCI7akYYS1WFvuYHvpUqCPWiBKs3RNAddSlKD4z29JKGLmUZ-9rp6huFFrMFSSQ",
+          Authorization: "Bearer "+self.state.access_token,
         },
       })
       .then(function (response) {
-        // self.setState({ data: response.data.customers });
-        // console.log(response.data);
+        
+        console.log("Sim Card",response.data);
+        self.setState({
+          simcard:response.data.customers,
+          data: [...self.state.data, ...response.data.customers],
+          refreshing: false,
+          isLoading: false,
+          isFooterLoading: false,
+          keyword: "",
+          tempData: response.data.customers,
+        })
       })
       .catch(function (err) {
-        alert("Error");
-        console.log("Customer Error", err);
+        self.setState({
+          refreshing: false,
+          isLoading: false,
+          isFooterLoading: false,
+        });
+        console.log("SimCard Error", err);
       });
   }
-  _handleOnPressEdit(){
-      this.props.navigation.navigate("EditSimCard")
+
+  getAllBranch = async () => {
+    const self = this;
+    axios
+      .get(getBranchApi, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.state.access_token,
+        },
+      })
+      .then(function (response) {
+        let data = response.data.branch;
+        // console.log(data);
+        let arr = [];
+        data.map((data, index) => {
+          // console.log(data);
+
+          var obj = { value: data.id, label: data.branch_name };
+
+          arr.push(obj);
+        });
+        self.setState({ branchs: arr });
+      })
+      .catch(function (error) {
+        console.log("Branch Api Error", error);
+      });
+  };
+
+  _handleOnSelectBranch(value, label) {
+    this.setState(
+      {
+        branch: {
+          value: value,
+          label: label,
+        },
+      }
+      // () => this.getAllCustomerByID()
+    );
   }
-  _handleOnPressDelete(){
-      this.props.navigation.navigate("#")
+
+  _handleOnSelectOperator(value, label) {
+    this.setState(
+      {
+        operator: {
+          value: value,
+          label: label,
+        },
+      }
+      // () => this.getAllCustomerByID()
+    );
+  }
+
+  _handleSearchKeyword = async (keyword) => {
+    // alert(keyword);
+    const self = this;
+    // this.setState({ keyword: keyword })
+    let param = {
+      keyword: keyword,
+      from:new Date(),
+      to:new Date(),
+    };
+    axios
+      .post(getSimcardapi, param, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + this.state.access_token,
+        },
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({ data: response.data.customers });
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
+
+  onRefresh = () => {
+    this.setState({
+      data: [],
+      refreshing: true, // start top loading
+    });
+    this.page = 1;
+    this.getSimcard(this.page);
+  };
+
+  //retrieve More data
+  handleLoadMore = () => {
+    this.setState({ isFooterLoading: true }); // Start Footer loading
+    this.page = this.page + 1; // increase page by 1
+    this.getSimcard(this.page); // method for API call
+  };
+
+  _handleOnPress() {
+    this.props.navigation.dispatch(DrawerActions.openDrawer());
+  }
+
+  renderFilter() {
+    return (
+      <View style={{ marginTop: 10 }}>
+           <View style={styles.searchContainer}>
+            <View style={styles.searchTextInput}>
+              {/* <Image
+                source={require("@images/searchbk.png")}
+                style={styles.searchIcon}
+              /> */}
+              <TextInput
+                style={{ flex: 1, height: 40, paddingHorizontal: 10 }}
+                placeholder="Search ..."
+                value={this.state.keyword}
+                onChangeText={(value) => this.setState({ keyword: value })}
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#1FD449",
+                width: "15%",
+                height: 40,
+                marginLeft: 10,
+                borderRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => this._handleSearchKeyword(this.state.keyword)}
+            >
+              <Image source={require("@images/search.png")} style={{width:30,height:30}}/>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ isShow: !this.state.isShow })}
+              // style={{ marginLeft: 10 }}
+            >
+              <Image
+                source={require("@images/more1.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+          </View>
+        {this.state.isShow == true ? (
+          <View>
+            <View style={[styles.searchContainer, { marginTop: 10 }]}>
+              <View style={styles.dateContainer}>
+                <DatePicker
+                  date={this.state.changeDate}
+                  mode="date"
+                  format="DD-MM-YYYY"
+                  maxDate={Moment().endOf("day").toDate()}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  iconSource={require("@images/calendar.png")}
+                  style={Style.datePickerContainer}
+                  customStyles={{
+                    dateIcon: Style.datePickerDateIcon,
+                    dateInput: Style.datePickerDateInput,
+                    dateText: Style.datePickerDateText,
+                  }}
+                  onDateChange={(date) => this.setState({ changeDate: date })}
+                />
+                <DatePicker
+                  date={this.state.secondChangeDate}
+                  mode="date"
+                  format="DD-MM-YYYY"
+                  maxDate={Moment().endOf("day").toDate()}
+                  confirmBtnText="Confirm"
+                  cancelBtnText="Cancel"
+                  iconSource={require("@images/calendar.png")}
+                  style={[Style.datePickerContainer, { marginLeft: 10 }]}
+                  customStyles={{
+                    dateIcon: Style.datePickerDateIcon,
+                    dateInput: Style.datePickerDateInput,
+                    dateText: Style.datePickerDateText,
+                  }}
+                  onDateChange={(date) =>
+                    this.setState({ secondChangeDate: date })
+                  }
+                />
+              </View>
+            </View>
+            <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+              <View style={{ flex: 1 }}>
+                <DropDown
+                  value={this.state.branch}
+                  options={this.state.branchs}
+                  widthContainer="100%"
+                  placeholder="Select Branch..."
+                  onSelect={(value, label) =>
+                    this._handleOnSelectBranch(value, label)
+                  }
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <DropDown
+                  value={this.state.operator}
+                  options={OPERATOR}
+                  widthContainer="100%"
+                  marginLeftContainer={5}
+                  placeholder="Select Operator..."
+                  onSelect={(value, label) =>
+                    this._handleOnSelectOperator(value, label)
+                  }
+                />
+              </View>
+            </View>
+          </View>
+        ) : (
+          // alert("Hi")
+          <View></View>
+        )}
+      </View>
+    );
+  }
+
+  renderFooter = () => {
+    //it will show indicator at the bottom of the list when data is loading
+    if (this.state.isFooterLoading) {
+      return <ActivityIndicator size="large" style={{ color: "#000" }} />;
+    } else {
+      return null;
+    }
+  };
+
+
+  _handleOnConfirmToDelete() {
+    this.setState({
+      isOpenDeleteConfirmModal: false,
+      isOpenSuccessModal: true
+    });
+    let simcard = this.state.simcard;
+    const id = simcard[this.state.arrIndex].card[0].id;
+    const url= deleteSimcardApi + id;
+    console.log(url);
+    axios
+      .delete(url,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.state.access_token,
+        },
+      })
+      .then(function(response){
+        alert("Delete Sucessfully");
+      
+      })
+      .catch(function(error) {
+        console.log("Delete Sim Card Error",error);
+      });
+  }
+
+  _handleOnPressEdit(arrIndex){
+      this.props.navigation.navigate("EditSimCard",{
+        data:this.state.simcard[arrIndex],
+      })
+  }
+  _handleOnPressDelete(arrIndex){
+    this.setState({ isOpenDeleteConfirmModal: true, arrIndex });
   }
   _handleOnPress() {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
   render() {
+    // console.log("Sim Card",this.state.simcard);
+    if (this.state.isLoading) {
+      return <Loading />;
+    }
+    const { isSearched, data } = this.state;
+    const dataList = data;
     return (
       <View style={styles.container}>
         <Header
-         name="SIM Cards" 
-         img={require("@images/threeline.png")}
-         Onpress={() => this._handleOnPress()}
+          name="Sim Card"
+          img={require("@images/threeline.png")}
+          Onpress={() => this._handleOnPress()}
         />
-        <ScrollView>
-        <View style={{ marginTop: 10 }}>
-            <View style={styles.searchContainer}>
-              <View style={styles.searchTextInput}>
-                <Image
-                  source={require("@images/searchbk.png")}
-                  style={styles.searchIcon}
-                />
-                <TextInput
-                  style={{ flex: 1, height: 40 }}
-                  placeholder="Search ..."
-                ></TextInput>
-              </View>
-              <TouchableOpacity
-                onPress={() => this.setState({ isShow: !this.state.isShow })}
-                // style={{ marginLeft: 10 }}
-              >
-                <Image
-                  source={require("@images/more1.png")}
-                  style={{ width: 30, height: 30 }}
-                />
-              </TouchableOpacity>
-            </View>
-            {this.state.isShow == true ? (
-               <View>
-               <View style={[styles.searchContainer, { marginTop: 10}]}>
-               <View style={styles.dateContainer}>
-               <DatePicker
-                 date="1/2/1997"
-                 mode="date"
-                 format="DD-MM-YYYY"
-                 maxDate={Moment().endOf("day").toDate()}
-                 confirmBtnText="Confirm"
-                 cancelBtnText="Cancel"
-                 iconSource={require("@images/calendar.png")}
-                 style={Style.datePickerContainer}
-                 customStyles={{
-                   dateIcon: Style.datePickerDateIcon,
-                   dateInput: Style.datePickerDateInput,
-                   dateText: Style.datePickerDateText,
-                 }}
-                 // onDateChange={(date) =>
-                 //     this.setState({ date })
-                 //   }
-               />
-               <DatePicker
-                 date="1/2/1997"
-                 mode="date"
-                 format="DD-MM-YYYY"
-                 maxDate={Moment().endOf("day").toDate()}
-                 confirmBtnText="Confirm"
-                 cancelBtnText="Cancel"
-                 iconSource={require("@images/calendar.png")}
-                 style={[Style.datePickerContainer, { marginLeft: 10 }]}
-                 customStyles={{
-                   dateIcon: Style.datePickerDateIcon,
-                   dateInput: Style.datePickerDateInput,
-                   dateText: Style.datePickerDateText,
-                 }}
-                 // onDateChange={(date) =>
-                 //     this.setState({ date })
-                 //   }
-                 />
-                 </View>
-               </View>
-               <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-               <View style={{flex:1}}>
-                 <DropDown
-                   value={this.state.branch}
-                   widthContainer="100%"
-                   placeholder="Select Branch..."
-                   options={BRANCH}
-                   onSelect={(value, label) =>
-                     this._handleOnSelectBranch(value, label)
-                   }
-                 />
-                 </View>
-                 <View style={{flex:1}}>
- 
-                 <DropDown
-                   value={BRANCH}
-                   widthContainer="100%"
-                   marginLeftContainer={5}
-                   placeholder="Select Operator..."
-                 />
-                 </View>
-               </View>
-             </View>
-           ) : (
-             // alert("Hi")
-             <View></View>
-           )}
 
-            <SimcardCard
-              date="1.1.2020"
-              name="Ma Ma"
-              nrc="7/kathakha(N)111111"
-              cardno="0912434345"
-              serialno="00012231221122211"
-              topup="1000"
-              model="Tecno"
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={dataList}
+          extraData={this.state}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh.bind(this)}
+            />
+          }
+          renderItem={({ item,index }) => (
+            // console.log("item card",item.card[0].created_at)
+            <View style={{ marginTop: 10 }} key={index}>
+             
+           <SimcardCard
+              date={Moment(item.card[0].created_at).format("DD-MM-YYYY")}
+              name={item.name}
+              nrc={item.fullnrc}
+              cardno={item.card[0].card_no}
+              serialno={item.card[0].serial}
+              topup={item.topup}
+              model={item.model}
               onPressEdit={this._handleOnPressEdit.bind(this)}
               onPressDelete={this._handleOnPressDelete.bind(this)}
+              arrIndex={index}
             />
-          </View>
-        </ScrollView>
-        <TouchableOpacity
+            </View>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          ListHeaderComponent={this.renderFilter.bind(this)}
+          ListFooterComponent={this.renderFooter.bind(this)}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => (!isSearched ? this.handleLoadMore() : {})}
+        />
+         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => this.props.navigation.navigate("SimCardAdd")}
           style={styles.newBtn}
         >
           <Image source={require("@images/add.png")} style={styles.btnImg} />
         </TouchableOpacity>
+
+        <DeleteConfirmModal
+          text="Are you sure delete sim card"
+          isOpen={this.state.isOpenDeleteConfirmModal}
+          onClose={() => this.setState({ isOpenDeleteConfirmModal: false })}
+          notConfirm={() => this.setState({ isOpenDeleteConfirmModal: false })}
+          onConfirm={this._handleOnConfirmToDelete.bind(this)}
+        />
+        {/* </ScrollView> */}
       </View>
     );
   }

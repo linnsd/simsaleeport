@@ -17,7 +17,11 @@ export default class Header extends React.Component {
                 ? this.props.img
                 : require("@images/back_arrow.png")
             }
-            style={styles.img}
+            style={{
+              width: this.props.widthheader ? this.props.widthheader : 25,
+              height: this.props.heightheader ? this.props.heightheader : 25,
+              marginLeft: 10,
+            }}
           />
         </TouchableOpacity>
 
@@ -44,6 +48,6 @@ const styles = StyleSheet.create({
   img: {
     width: 25,
     height: 25,
-    marginLeft: 5,
+    marginLeft: 10,
   },
 });

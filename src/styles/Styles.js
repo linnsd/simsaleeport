@@ -5,12 +5,12 @@ const Styles = StyleSheet.create({
   datePickerContainer: {
     borderStyle: "solid",
     borderWidth: 1,
-    alignItems:"center",
+    // alignItems:"center",
     justifyContent:"space-between",
     // width:"50%",
     height:35,
     borderRadius: 5,
-    borderColor:"#707070",
+    borderColor:"#ffffff",
     flex:1
   },
   datePickerDateIcon: {
@@ -19,23 +19,24 @@ const Styles = StyleSheet.create({
   },
   datePickerDateInput: {
     borderWidth: 0,
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   datePickerDateText: {
-    textAlignVertical: "center",
-    textAlign:"center",
+    textAlign:"left",
     fontSize: 14,
+    // backgroundColor:"red",
+    // position:"absolute"
   },
   datePickerContainerOne: {
     borderStyle: "solid",
     borderWidth: 1,
-    alignItems:"center",
+    // alignItems:"center",
     // justifyContent:"space-between",
     width:"100%",
     height:35,
     borderRadius: 5,
-    borderColor:"#707070",
-    flex:1
+    borderColor:"#ffffff",
+    backgroundColor:"#ffffff",
   },
   
 });

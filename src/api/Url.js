@@ -23,8 +23,23 @@ export const createTopupApi = BaseUrl + "create_topup";
 //get simcard api
 export const getSimcardapi = BaseUrl + "cards?page=";
 
+//create simcard api
+export const creatSimcardApi = BaseUrl + "create_cards";
+
 //get all user
 export const getalluserApi = BaseUrl + "user";
 
 //get all topup api
 export const getAlltopupApi = BaseUrl + "topup";
+
+//get nrc code
+export const getAllNrcCodeApi = BaseUrl + "nrccode";
+
+//get nrc state
+export const getAllNrcStateApi = BaseUrl + "nrcstate";
+
+//update sim card
+export const updateSimcardApi = BaseUrl + "cards/";
+
+//delete sim card
+export const deleteSimcardApi = BaseUrl + "cards/";
