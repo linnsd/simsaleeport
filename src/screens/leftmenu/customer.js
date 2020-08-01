@@ -30,6 +30,7 @@ import { getToken } from "@services/GetToken";
 // const axios = require("axios");
 import CustomerApi from "@api/CustomerApi";
 import { getBranchApi, getCustomersapi } from "@api/Url";
+import { StatusBar } from "expo-status-bar";
 const axios = require("axios");
 
 const OPERATOR = [
@@ -169,19 +170,20 @@ export default class Customer extends React.Component {
     );
   }
 
-  _handleSearchKeyword = async (keyword) => {
-    // alert(keyword);
+  _handleSearchKeyword = async (keyword,date,secondDate,branch_id,operator_id) => {
     const self = this;
-    // this.setState({ keyword: keyword });
-    // var access_token = await AsyncStorage.getItem("access_token");
     let param = {
       keyword: keyword,
+      from:date,
+      to:secondDate,
+      branch_id:branch_id,
+      operator_id:operator_id
     };
     axios
       .post(getCustomersapi, param, {
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + this.state.data,
+          Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
@@ -192,7 +194,6 @@ export default class Customer extends React.Component {
         console.log(err);
       });
   };
-
 
   onRefresh = () => {
     this.setState({
@@ -212,120 +213,6 @@ export default class Customer extends React.Component {
 
   _handleOnPress() {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
-  renderFilter() {
-    return (
-      <View style={{ marginTop: 10 }}>
-      <View style={styles.searchContainer}>
-            <View style={styles.searchTextInput}>
-              {/* <Image
-                source={require("@images/searchbk.png")}
-                style={styles.searchIcon}
-              /> */}
-              <TextInput
-                style={{ flex: 1, height: 40, paddingHorizontal: 10 }}
-                placeholder="Search ..."
-                value={this.state.keyword}
-                onChangeText={(value) => this.setState({ keyword: value })}
-              ></TextInput>
-            </View>
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#1FD449",
-                width: "15%",
-                height: 40,
-                marginLeft: 10,
-                borderRadius: 5,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onPress={() => this._handleSearchKeyword(this.state.keyword)}
-            >
-               <Image source={require("@images/search.png")} style={{width:30,height:30}}/>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.setState({ isShow: !this.state.isShow })}
-              // style={{ marginLeft: 10 }}
-            >
-              <Image
-                source={require("@images/more1.png")}
-                style={{ width: 30, height: 30 }}
-              />
-            </TouchableOpacity>
-          </View>
-        {this.state.isShow == true ? (
-          <View>
-            <View style={[styles.searchContainer, { marginTop: 10 }]}>
-              <View style={styles.dateContainer}>
-                <DatePicker
-                  date={this.state.changeDate}
-                  mode="date"
-                  format="DD-MM-YYYY"
-                  maxDate={Moment().endOf("day").toDate()}
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  iconSource={require("@images/calendar.png")}
-                  style={Style.datePickerContainer}
-                  customStyles={{
-                    dateIcon: Style.datePickerDateIcon,
-                    dateInput: Style.datePickerDateInput,
-                    dateText: Style.datePickerDateText,
-                  }}
-                  onDateChange={(date) => this.setState({ changeDate: date })}
-                />
-                <DatePicker
-                  date={this.state.secondChangeDate}
-                  mode="date"
-                  format="DD-MM-YYYY"
-                  maxDate={Moment().endOf("day").toDate()}
-                  confirmBtnText="Confirm"
-                  cancelBtnText="Cancel"
-                  iconSource={require("@images/calendar.png")}
-                  style={[Style.datePickerContainer, { marginLeft: 10 }]}
-                  customStyles={{
-                    dateIcon: Style.datePickerDateIcon,
-                    dateInput: Style.datePickerDateInput,
-                    dateText: Style.datePickerDateText,
-                  }}
-                  onDateChange={(date) =>
-                    this.setState({ secondChangeDate: date })
-                  }
-                />
-              </View>
-            </View>
-            <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.branch}
-                  options={this.state.branchs}
-                  widthContainer="100%"
-                  placeholder="Select Branch..."
-                  onSelect={(value, label) =>
-                    this._handleOnSelectBranch(value, label)
-                  }
-                />
-              </View>
-              <View style={{ flex: 1 }}>
-                <DropDown
-                  value={this.state.operator}
-                  options={OPERATOR}
-                  widthContainer="100%"
-                  marginLeftContainer={5}
-                  placeholder="Select Operator..."
-                  onSelect={(value, label) =>
-                    this._handleOnSelectOperator(value, label)
-                  }
-                />
-              </View>
-            </View>
-          </View>
-        ) : (
-          // alert("Hi")
-          <View></View>
-        )}
-      </View>
-    );
   }
 
   renderFooter = () => {
@@ -352,6 +239,120 @@ export default class Customer extends React.Component {
           Onpress={() => this._handleOnPress()}
         />
 
+        <View style={{ marginTop: 10 }}>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchTextInput}>
+              {/* <Image
+                source={require("@images/searchbk.png")}
+                style={styles.searchIcon}
+              /> */}
+              <TextInput
+                style={{ flex: 1, height: 40, paddingHorizontal: 10 }}
+                placeholder="Search ..."
+                value={this.state.keyword}
+                onChangeText={(value) => this.setState({ keyword: value })}
+              ></TextInput>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#1FD449",
+                width: "15%",
+                height: 40,
+                marginLeft: 10,
+                borderRadius: 5,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              onPress={() => this._handleSearchKeyword(this.state.keyword,this.state.changeDate,
+                this.state.secondChangeDate,this.state.branch.value,this.state.operator.value)}
+            >
+              <Image
+                source={require("@images/search.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({ isShow: !this.state.isShow })}
+              // style={{ marginLeft: 10 }}
+            >
+              <Image
+                source={require("@images/more1.png")}
+                style={{ width: 30, height: 30 }}
+              />
+            </TouchableOpacity>
+          </View>
+          {this.state.isShow == true ? (
+            <View>
+              <View style={[styles.searchContainer, { marginTop: 10 }]}>
+                <View style={styles.dateContainer}>
+                  <DatePicker
+                    date={this.state.changeDate}
+                    mode="date"
+                    format="DD-MM-YYYY"
+                    maxDate={Moment().endOf("day").toDate()}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    iconSource={require("@images/calendar.png")}
+                    style={Style.datePickerContainer}
+                    customStyles={{
+                      dateIcon: Style.datePickerDateIcon,
+                      dateInput: Style.datePickerDateInput,
+                      dateText: Style.datePickerDateText,
+                    }}
+                    onDateChange={(date) => this.setState({ changeDate: date })}
+                  />
+                  <DatePicker
+                    date={this.state.secondChangeDate}
+                    mode="date"
+                    format="DD-MM-YYYY"
+                    maxDate={Moment().endOf("day").toDate()}
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    iconSource={require("@images/calendar.png")}
+                    style={[Style.datePickerContainer, { marginLeft: 10 }]}
+                    customStyles={{
+                      dateIcon: Style.datePickerDateIcon,
+                      dateInput: Style.datePickerDateInput,
+                      dateText: Style.datePickerDateText,
+                    }}
+                    onDateChange={(date) =>
+                      this.setState({ secondChangeDate: date })
+                    }
+                  />
+                </View>
+              </View>
+              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.branch}
+                    options={this.state.branchs}
+                    widthContainer="100%"
+                    placeholder="Select Branch..."
+                    onSelect={(value, label) =>
+                      this._handleOnSelectBranch(value, label)
+                    }
+                  />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <DropDown
+                    value={this.state.operator}
+                    options={OPERATOR}
+                    widthContainer="100%"
+                    marginLeftContainer={5}
+                    placeholder="Select Operator..."
+                    onSelect={(value, label) =>
+                      this._handleOnSelectOperator(value, label)
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+          ) : (
+            // alert("Hi")
+            <View></View>
+          )}
+        </View>
+
         <FlatList
           showsVerticalScrollIndicator={false}
           data={dataList}
@@ -376,7 +377,7 @@ export default class Customer extends React.Component {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          ListHeaderComponent={this.renderFilter.bind(this)}
+          // ListHeaderComponent={this.renderFilter.bind(this)}
           ListFooterComponent={this.renderFooter.bind(this)}
           onEndReachedThreshold={0.5}
           onEndReached={() => (!isSearched ? this.handleLoadMore() : {})}

@@ -5,8 +5,10 @@ import { View, Text, StyleSheet,TouchableOpacity,Image } from "react-native";
 import ActionPopupmenu from "@components/Actionpopupmenu";
 
 const ACTION_POPUP_DATA = [
+  {label:"View",action:"VIEW"},
     { label: "Edit", action: "EDIT" },
-    { label: "Delete", action: "DELETE" }
+    { label: "Delete", action: "DELETE" },
+  
   ];
 
 export default class SimcardCard extends React.Component {
@@ -15,6 +17,8 @@ export default class SimcardCard extends React.Component {
           this.props.onPressEdit(arrIndex);
         } else if (action == "DELETE") {
           this.props.onPressDelete(arrIndex);
+        }else if(action == "VIEW"){
+          this.props.onPressView(arrIndex);
         }
       }
   render() {
@@ -25,18 +29,18 @@ export default class SimcardCard extends React.Component {
           <View style={{ width: "40%" }}>
             <Text style={[styles.text, { fontWeight: "bold" }]}>Name</Text>
             <Text style={[styles.text, { fontWeight: "bold" }]}>NRC</Text>
-            <Text style={[styles.text, { fontWeight: "bold" }]}>Card No</Text>
-            <Text style={[styles.text, { fontWeight: "bold" }]}>Serial No</Text>
+            <Text style={[styles.text, { fontWeight: "bold" }]}>Phone No</Text>
+            {/* <Text style={[styles.text, { fontWeight: "bold" }]}>Serial No</Text> */}
             <Text style={[styles.text, { fontWeight: "bold" }]}>Topup</Text>
-            <Text style={[styles.text, { fontWeight: "bold" }]}>Model</Text>
+            {/* <Text style={[styles.text, { fontWeight: "bold" }]}>Model</Text> */}
           </View>
           <View style={{ width: "60%" }}>
             <Text style={styles.text}>{this.props.name}</Text>
             <Text style={styles.text}>{this.props.nrc}</Text>
             <Text style={styles.text}>{this.props.cardno}</Text>
-            <Text style={styles.text}>{this.props.serialno}</Text>
+            {/* <Text style={styles.text}>{this.props.serialno}</Text> */}
             <Text style={styles.text}>{this.props.topup}</Text>
-            <Text style={styles.text}>{this.props.model}</Text>
+            {/* <Text style={styles.text}>{this.props.model}</Text> */}
           </View>
         </View>
         <View style={{alignItems:"flex-end"}}>

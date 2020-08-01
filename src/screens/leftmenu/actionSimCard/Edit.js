@@ -65,7 +65,42 @@ export default class Add extends React.Component {
   }
   componentWillMount() {
     let data = this.props.navigation.getParam("data");
+
+    if (data.operator_id == "1") {
+      this.setState({
+        operator: {
+          value: data.operator_id,
+          label: "MPT",
+        },
+      });
+    }
+    if (data.operator_id == "2") {
+      this.setState({
+        operator: {
+          value: data.operator_id,
+          label: "Telenor",
+        },
+      });
+    }
+    if (data.operator_id == "3") {
+      this.setState({
+        operator: {
+          value:data.operator_id,
+          label: "Ooredoo",
+        },
+      });
+    }
+    if (this.props.navigation.getParam("data").operator_id == "4") {
+      this.setState({
+        operator: {
+          value:data.operator_id,
+          label: "Mytel",
+        },
+      });
+    }
+    // alert("Props Data is ",this.props.navigation.getParam("data").id);
     this.setState({
+      id:data.id,
       name: data.name,
       nrc_no: data.nrc_number,
       address: data.address,
@@ -81,10 +116,10 @@ export default class Add extends React.Component {
         value: data.branch_id,
         label: data.branch_name ? data.branch_name : null,
       },
-      operator: {
-        value: data.operator_id,
-        label: data.operator_name ? data.operator_name : null,
-      },
+      // operator: {
+      //   value: data.operator_id,
+      //   label: data.operator_name ? data.operator_name : null,
+      // },
       nrccode: { value: data.code_id, label: data.nrc_en ? data.nrc_en : null },
       nrcstate: {
         value: data.state_id,
@@ -187,8 +222,10 @@ export default class Add extends React.Component {
 
   _handleUpdate() {
     const self = this;
-    const url = updateSimcardApi + self.state.id;
-    console.log(url);
+    // console.log(self.props.navigation.getParam("data"));
+    const url = updateSimcardApi + self.props.navigation.getParam("data").id;
+    // console.log(url);
+    // console.log(self.props.navigation.getParam("data").id);
     let bodyParam = {
       branch_id: self.state.branch.value,
       operator_id: self.state.operator.value,
@@ -204,22 +241,23 @@ export default class Add extends React.Component {
       imei2: self.state.imei2,
       model: self.state.model,
       topup: self.state.topupAmt,
-      // card: self.state.simcard_no,
+      card: self.state.simcard_no,
       serial: self.state.serial_no,
       sim_no: self.state.simcard_no,
       created_at: new Date(),
       updated_at: new Date(),
     };
-    console.log(bodyParam);
+    // console.log(bodyParam);
     axios
-      .put(url,bodyParam, {
+      .post(url,bodyParam, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
-        console.log(response);
+        // console.log(response.data);
+        alert("Update Simcard Successfully")
       })
       .catch(function (err) {
         console.log("Update Error", err);
@@ -276,14 +314,14 @@ export default class Add extends React.Component {
   }
 
   render() {
-    console.log("Edit Sim Card",this.props.navigation.getParam("data"));
+    // console.log("Edit Sim Card",this.props.navigation.getParam("data"));
     return (
       <View style={styles.container}>
         <Header
           name="Sim Card"
           Onpress={() => this.props.navigation.navigate("SIMCard")}
-          widthheader={15}
-          heightheader={15}
+          // widthheader={15}
+          // heightheader={15}
         />
         <ScrollView>
           <View style={{ marginTop: 10 }}>

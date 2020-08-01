@@ -235,7 +235,7 @@ export default class CreateTopup extends React.Component {
       <View style={styles.container}>
         <Header
           name="Topup"
-          onPress={() => this.props.navigation.navigate("Topup")}
+          Onpress={() => this.props.navigation.navigate("Topup")}
         />
         <ScrollView>
           <View style={{ marginTop: 10 }}>
@@ -358,20 +358,21 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     width: "30%",
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     justifyContent: "center",
   },
   textInputContainer: {
     flex: 1,
     marginLeft: 20,
   },
-  labelStyle: { fontSize: 19 },
+  labelStyle: { fontSize: 15 },
   textInputStyle: {
-    borderColor: "#707070",
+    borderColor: "#ffffff",
     borderWidth: 1,
     height: 40,
     borderRadius: 5,
     paddingLeft: 10,
+    backgroundColor:"#ffffff"
   },
   btnContainer: {
     flex: 1,
@@ -397,6 +398,6 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 15,
   },
 });

@@ -351,7 +351,7 @@ export default class Topup extends React.Component {
     const dataList = isSearched ? searchTopup : data;
     return (
       <View style={styles.container}>
-        <StatusBar hidden={true}></StatusBar>
+        {/* <StatusBar hidden={true}></StatusBar> */}
         <Header
           name="Topup"
           Onpress={() => this.props.navigation.navigate("Home")}
@@ -382,7 +382,10 @@ export default class Topup extends React.Component {
               }}
               onPress={() => this._handleSearchKeyword(this.state.keyword)}
             >
-              <Text style={{ color: "white", fontSize: 15 }}>Search</Text>
+               <Image
+                source={require("@images/search.png")}
+                style={{ width: 30, height: 30 }}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.setState({ isShow: !this.state.isShow })}

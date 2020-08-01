@@ -17,7 +17,7 @@ import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import SimcardCard from "@components/SimcardCard";
 import Loading from "@components/Loading";
-import DeleteConfromModa from "@components/DeleteConfirmModal";
+import SuccessModal from "@components/SuccessModal";
 
 //import services
 import { getToken } from "@services/GetToken";
@@ -63,6 +63,7 @@ export default class SIMCard extends React.Component {
       simcard: [],
       isOpenDeleteConfirmModal: false,
       deleteid: [],
+      isOpenSuccessModel: false,
     };
     this.page = 1;
   }
@@ -91,7 +92,7 @@ export default class SIMCard extends React.Component {
         },
       })
       .then(function (response) {
-        // console.log("Sim Card",response.data);
+        // console.log("Sim Card",response.data.customers);
         self.setState({
           simcard: response.data.customers,
           data: [...self.state.data, ...response.data.customers],
@@ -107,7 +108,7 @@ export default class SIMCard extends React.Component {
           isLoading: false,
           isFooterLoading: false,
         });
-        console.log("SimCard Error", err);
+        // console.log("SimCard Error", err);
       });
   };
 
@@ -134,7 +135,7 @@ export default class SIMCard extends React.Component {
         self.setState({ branchs: arr });
       })
       .catch(function (error) {
-        console.log("Branch Api Error", error);
+        // console.log("Branch Api Error", error);
       });
   };
 
@@ -158,18 +159,20 @@ export default class SIMCard extends React.Component {
           label: label,
         },
       }
-      // () => this.getAllCustomerByID()
+     
     );
   }
 
-  _handleSearchKeyword = async (keyword) => {
+  _handleSearchKeyword = async (keyword,date,seconddate,branch_id,operator_id) => {
     // alert(keyword);
     const self = this;
     // this.setState({ keyword: keyword })
     let param = {
-      from: new Date(),
-      to: new Date(),
+      from: date,
+      to:seconddate,
       keyword: keyword,
+      branch_id:branch_id,
+      operator_id:operator_id
     };
     axios
       .post(getSimcardapi, param, {
@@ -183,7 +186,7 @@ export default class SIMCard extends React.Component {
         self.setState({ data: response.data.customers });
       })
       .catch(function (err) {
-        console.log(err);
+        // console.log(err);
       });
   };
 
@@ -215,44 +218,49 @@ export default class SIMCard extends React.Component {
       return null;
     }
   };
+  _handleOnPressEdit(arrIndex,item) {
+    // console.log(item);
+    if(arrIndex == 1){
+      this.props.navigation.navigate("EditSimCard", {
+        data: item,
+      });
+    }
+ }
 
-  _handleOnConfirmToDelete() {
-    this.setState({
-      isOpenDeleteConfirmModal: false,
-      isOpenSuccessModal: true,
-    });
-    let simcard = this.state.simcard;
-    const id = simcard[this.state.arrIndex].id;
-    const url = deleteSimcardApi + id;
-    console.log(simcard);
+ handleOnPressView(arrIndex,item){
+   if(arrIndex == 2){
+     this.props.navigation.navigate("SimCardView",{
+       data:item
+     })
+   }
+ }
+  _handleOnPressDelete = async (item) => {
+    const self=this;
     axios
-      .delete(url,{
+      .delete(deleteSimcardApi + item.id,{
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
+          Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
-        alert("Delete Sucessfully");
+        self.setState({ isOpenSuccessModel: true });
       })
       .catch(function (error) {
         console.log("Delete Sim Card Error", error);
       });
   }
-
-  _handleOnPressEdit(arrIndex) {
-    this.props.navigation.navigate("EditSimCard", {
-      data: this.state.simcard[arrIndex],
-    });
-  }
-  _handleOnPressDelete(arrIndex) {
-    this.setState({ isOpenDeleteConfirmModal: true, arrIndex });
-  }
   _handleOnPress() {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
+
+  _handleOnClose = () => {
+    this.setState({ isOpenSuccessModel: false });
+    this.getSimcard(this.page);
+  };
+
   render() {
-    // console.log("Sim Card",this.state.simcard);
+    // console.log("Branch id",this.state.branch.value);
     if (this.state.isLoading) {
       return <Loading />;
     }
@@ -290,7 +298,8 @@ export default class SIMCard extends React.Component {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => this._handleSearchKeyword(this.state.keyword)}
+              onPress={() => this._handleSearchKeyword(this.state.keyword,this.state.changeDate,
+                this.state.secondChangeDate,this.state.branch.value,this.state.operator.value)}
             >
               <Image
                 source={require("@images/search.png")}
@@ -389,20 +398,21 @@ export default class SIMCard extends React.Component {
               onRefresh={this.onRefresh.bind(this)}
             />
           }
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             // console.log("item card",item.card[0].created_at)
-            <View style={{ marginTop: 10 }} key={index}>
+            <View style={{ marginTop: 10 }}>
               <SimcardCard
                 date={Moment(item.created_at).format("DD-MM-YYYY")}
                 name={item.name}
                 nrc={item.fullnrc}
-                cardno={item.card_no}
+                cardno={item.phone}
                 serialno={item.serial}
                 topup={item.topup}
                 model={item.model}
-                onPressEdit={this._handleOnPressEdit.bind(this)}
-                onPressDelete={this._handleOnPressDelete.bind(this)}
-                arrIndex={index}
+                onPressEdit={()=>this._handleOnPressEdit(1,item)}
+                onPressDelete={()=>this._handleOnPressDelete(item)}
+                onPressView={()=>this.handleOnPressView(2,item)}
+                arrIndex={1}
               />
             </View>
           )}
@@ -418,15 +428,11 @@ export default class SIMCard extends React.Component {
         >
           <Image source={require("@images/add.png")} style={styles.btnImg} />
         </TouchableOpacity>
-
-        <DeleteConfirmModal
-          text="Are you sure delete sim card"
-          isOpen={this.state.isOpenDeleteConfirmModal}
-          onClose={() => this.setState({ isOpenDeleteConfirmModal: false })}
-          notConfirm={() => this.setState({ isOpenDeleteConfirmModal: false })}
-          onConfirm={this._handleOnConfirmToDelete.bind(this)}
+        <SuccessModal
+          isOpen={this.state.isOpenSuccessModel}
+          text="Successfully Simcard deleted"
+          onClose={() => this._handleOnClose()}
         />
-        {/* </ScrollView> */}
       </View>
     );
   }

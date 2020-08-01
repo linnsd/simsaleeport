@@ -10,6 +10,7 @@ import CreateTopup from "@screens/home/topup/CreateTopup";
 import EditTopup from "@screens/home/topup/EditTopup";
 import SimCardAdd from "@screens/leftmenu/actionSimCard/Add";
 import EditSimCard from "@screens/leftmenu/actionSimCard/Edit";
+import SimCardView from "@screens/leftmenu/actionSimCard/View";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -65,6 +66,12 @@ export default createAppContainer(
           headerShown: false,
         }),
       },
+      SimCardView:{
+        screen:SimCardView,
+        navigationOptions:({navigation})=>({
+          headerShown:false,
+        })
+      }
     },
     {
       initialRouteName: "DrawerNavigator",

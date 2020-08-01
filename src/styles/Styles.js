@@ -8,9 +8,10 @@ const Styles = StyleSheet.create({
     // alignItems:"center",
     justifyContent:"space-between",
     // width:"50%",
-    height:35,
+    height:40,
     borderRadius: 5,
     borderColor:"#ffffff",
+    backgroundColor:"#ffffff",
     flex:1
   },
   datePickerDateIcon: {

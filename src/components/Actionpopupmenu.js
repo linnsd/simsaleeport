@@ -18,7 +18,10 @@ export default class ActionPopupMenu extends React.Component {
     if (action == "DELETE") {
       return require("@images/deletebk.png");
     } else if (action == "EDIT") {
-      return require("@images/editbk.png");
+      return require("@images/editbk1.png");
+    }
+    else if(action == "VIEW"){
+      return require("@images/eye.png");
     }
   }
 
@@ -116,7 +119,7 @@ const menuOptionsStyles = {
     padding: 5,
     height: 40,
     borderBottomWidth: 1,
-    borderBottomColor: "green",
+    borderBottomColor: "black",
     borderStyle: "solid",
   },
 };
