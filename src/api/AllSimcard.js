@@ -1,10 +1,9 @@
-
 const axios = require("axios");
 import React from "react";
 import {BaseUrl} from "@api/Url";
 import { AsyncStorage } from "react-native";
 export default class PostApi extends React.Component {
-  getAllCustomer = async (page) => {
+  getAllSimcard = async (page) => {
     // alert(page);
     var access_token = await AsyncStorage.getItem("access_token");
     let bodyParam = {
@@ -13,7 +12,7 @@ export default class PostApi extends React.Component {
       to: new Date(),
     };
     return axios.post(
-   BaseUrl  + "customers?page=",
+   BaseUrl  + "cards?page=",
       bodyParam,
       {
         headers: {
@@ -24,7 +23,7 @@ export default class PostApi extends React.Component {
     );
   };
 
-  getAllCustomerById = async (branch_id,operator_id) => {
+  getSimCardById = async (branch_id,operator_id) => {
     // alert(branch_id);
     var access_token = await AsyncStorage.getItem("access_token");
     let bodyParam = {
@@ -40,7 +39,7 @@ export default class PostApi extends React.Component {
     };
     // console.log(headers);
     return axios.post(
-     BaseUrl+ "customers?page=",
+     BaseUrl+ "cards?page=",
       bodyParam,
       {
         headers,

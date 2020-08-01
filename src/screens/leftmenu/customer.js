@@ -58,6 +58,7 @@ export default class Customer extends React.Component {
       keyword: "",
       tempData: [],
       access_token: null,
+      searchCustomer:[]
     };
     this.page = 1;
     this.CustomerApi = new CustomerApi();
@@ -81,21 +82,20 @@ export default class Customer extends React.Component {
       this.setState({
         data: [],
         isSearched: false,
-        branch: { value: "", label: "" },
+        branch: { value: null, label: null },
+        operator: { value: null, label: null },
       });
     }
-    // alert("Hello")
     var self = this;
-    // console.log("Self access_token",self.state.access_token);
     let bodyParam = { page: page };
     axios
-      .post(getCustomersapi, bodyParam, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
-        },
-      })
-      // this.CustomerApi.getAllCustomer(page)
+      // .post(getCustomersapi, bodyParam, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: "Bearer " + this.state.access_token,
+      //   },
+      // })
+      this.CustomerApi.getAllCustomer(page)
       .then(function (response) {
         console.log("customer", response.data);
         self.setState({
@@ -118,6 +118,30 @@ export default class Customer extends React.Component {
         console.log("Customer Error", err);
       });
   };
+  getAllCustomerByID() {
+    // alert(this.state.branch.value);
+    const self = this; // *
+    self.setState({ isLoading: true, isSearched: true });
+    // const { branch, user, topuptype } = self.state;
+
+    self.CustomerApi.getAllCustomerById(
+      self.state.branch.value,
+      self.state.operator.value
+    )
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({
+          searchCustomer: response.data.customers,
+          isLoading: false,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        self.setState({
+          isLoading: false,
+        });
+      });
+  }
 
   getAllBranch = async () => {
     const self = this;
@@ -153,8 +177,8 @@ export default class Customer extends React.Component {
           value: value,
           label: label,
         },
-      }
-      // () => this.getAllCustomerByID()
+      },
+      () => this.getAllCustomerByID()
     );
   }
 
@@ -165,8 +189,8 @@ export default class Customer extends React.Component {
           value: value,
           label: label,
         },
-      }
-      // () => this.getAllCustomerByID()
+      },
+      () => this.getAllCustomerByID()
     );
   }
 
@@ -229,8 +253,8 @@ export default class Customer extends React.Component {
     if (this.state.isLoading) {
       return <Loading />;
     }
-    const { isSearched, data } = this.state;
-    const dataList = data;
+    const { isSearched, data,searchCustomer } = this.state;
+    const dataList = isSearched ? searchCustomer : data;
     return (
       <View style={styles.container}>
         <Header

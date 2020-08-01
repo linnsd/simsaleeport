@@ -32,6 +32,7 @@ import Style from "@styles/Styles";
 //import api
 const axios = require("axios");
 import { getSimcardapi, getBranchApi, deleteSimcardApi } from "@api/Url";
+import AllSimCard from "@api/AllSimcard";
 import DeleteConfirmModal from "@components/DeleteConfirmModal";
 
 const OPERATOR = [
@@ -64,8 +65,10 @@ export default class SIMCard extends React.Component {
       isOpenDeleteConfirmModal: false,
       deleteid: [],
       isOpenSuccessModel: false,
+      searchSimCard: [],
     };
     this.page = 1;
+    this.AllSimCard = new AllSimCard();
   }
   async componentDidMount() {
     const { navigation } = this.props;
@@ -78,6 +81,14 @@ export default class SIMCard extends React.Component {
     });
   }
   getSimcard = async (page) => {
+    if (this.state.isSearched) {
+      this.setState({
+        data: [],
+        isSearched: false,
+        branch: { value: null, label: null },
+        operator: { value: null, label: null },
+      });
+    }
     var self = this;
     let bodyparam = {
       from: new Date(),
@@ -85,12 +96,7 @@ export default class SIMCard extends React.Component {
       page: page,
     };
     axios
-      .post(getSimcardapi, bodyparam, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + self.state.access_token,
-        },
-      })
+    this.AllSimCard.getAllSimcard(page)
       .then(function (response) {
         // console.log("Sim Card",response.data.customers);
         self.setState({
@@ -139,6 +145,32 @@ export default class SIMCard extends React.Component {
       });
   };
 
+
+  getSimCardById() {
+    // alert(this.state.branch.value);
+    const self = this; // *
+    self.setState({ isLoading: true, isSearched: true });
+    // const { branch, user, topuptype } = self.state;
+
+    self.AllSimCard.getSimCardById(
+      self.state.branch.value,
+      self.state.operator.value
+    )
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({
+          searchSimCard: response.data.customers,
+          isLoading: false,
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+        self.setState({
+          isLoading: false,
+        });
+      });
+  }
+
   _handleOnSelectBranch(value, label) {
     this.setState(
       {
@@ -146,8 +178,9 @@ export default class SIMCard extends React.Component {
           value: value,
           label: label,
         },
-      }
-      // () => this.getAllCustomerByID()
+      },
+
+      () => this.getSimCardById()
     );
   }
 
@@ -158,7 +191,8 @@ export default class SIMCard extends React.Component {
           value: value,
           label: label,
         },
-      }
+      },
+      () => this.getSimCardById()
      
     );
   }
@@ -189,6 +223,8 @@ export default class SIMCard extends React.Component {
         // console.log(err);
       });
   };
+
+ 
 
   onRefresh = () => {
     this.setState({
@@ -264,8 +300,8 @@ export default class SIMCard extends React.Component {
     if (this.state.isLoading) {
       return <Loading />;
     }
-    const { isSearched, data } = this.state;
-    const dataList = data;
+    const { isSearched, data,searchSimCard } = this.state;
+    const dataList = isSearched ? searchSimCard : data;
     return (
       <View style={styles.container}>
         <Header
