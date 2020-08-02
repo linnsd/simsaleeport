@@ -45,3 +45,9 @@ export const updateSimcardApi = BaseUrl + "cards/";
 export const deleteSimcardApi = BaseUrl + "cards/";
 //get all user api
 export const getAllUserApi = BaseUrl + "user";
+
+//get app stock api
+export const getAllStockApi = BaseUrl + "stocks";
+
+//create stock api
+export const createStockApi = BaseUrl + "create_stocks";

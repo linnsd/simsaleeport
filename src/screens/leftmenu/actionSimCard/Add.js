@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  AsyncStorage,
 } from "react-native";
 
 //import component
@@ -65,12 +66,87 @@ export default class Add extends React.Component {
       createDate: null,
       serialNO: "",
       isOpenSuccessModel: false,
+      role_id:""
     };
   }
 
   async componentDidMount() {
     const access_token = await getToken();
-    this.setState({ access_token: access_token });
+    const branchid = await AsyncStorage.getItem("branch_id");
+    const operatorid = await AsyncStorage.getItem("operator_id");
+    const roleid = await AsyncStorage.getItem("role_id");
+
+    if (operatorid == "1") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "MPT",
+        },
+      });
+    }
+    if (operatorid == "2") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Telenor",
+        },
+      });
+    }
+    if (operatorid == "3") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Ooredoo",
+        },
+      });
+    }
+    if (operatorid == "4") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Mytel",
+        },
+      });
+    }
+
+    if (branchid == "1") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "HO",
+        },
+      });
+    }
+    if (branchid == "2") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 1",
+        },
+      });
+    }
+    if (branchid == "3") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 2",
+        },
+      });
+    }
+    if (branchid == "4") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 3",
+        },
+      });
+    }
+
+
+   this.setState({
+       access_token: access_token ,
+       role_id: roleid,
+      });
     await this.getAllBranch();
     await this.getAllNrcCode();
     // await this.getAllNrcState();
@@ -215,6 +291,7 @@ export default class Add extends React.Component {
   };
 
   _handleOnSelectBranch(value, label) {
+   if(this.state.role_id == "1"){
     this.setState(
       {
         branch: {
@@ -224,18 +301,22 @@ export default class Add extends React.Component {
       }
       // () => this.getAllCustomerByID()
     );
-  }
+   }
+   }
 
   _handleOnSelectOperator(value, label) {
-    this.setState(
-      {
-        operator: {
-          value: value,
-          label: label,
-        },
-      }
-      // () => this.getAllCustomerByID()
-    );
+    if(this.state.role_id == "1"){
+      this.setState(
+        {
+          operator: {
+            value: value,
+            label: label,
+          },
+        }
+        // () => this.getAllCustomerByID()
+      );
+    }
+
   }
   _handleSelectNrcCode(value, label) {
     this.setState(
@@ -269,15 +350,16 @@ export default class Add extends React.Component {
   }
 
   render() {
-    console.log("nrc code",this.state.nrccode.value);
+    // alert(this.state.branchid);
+    // console.log("nrc code",this.state.nrccode.value);
     // console.log("Create ticket",this.props.navigation.getParam("simcard").state_id);
     return (
       <View style={styles.container}>
         <Header
           name="Sim Card"
           Onpress={() => this.props.navigation.navigate("SIMCard")}
-          widthheader={15}
-          heightheader={15}
+          // widthheader={15}
+          // heightheader={15}
         />
         <ScrollView>
           <View style={{ marginTop: 10 }}>
@@ -330,9 +412,9 @@ export default class Add extends React.Component {
                   value={this.state.operator}
                   options={OPERATOR}
                   widthContainer="100%"
-                  onSelect={(value, label) =>
-                    this._handleOnSelectOperator(value, label)
-                  }
+                  // onSelect={(value, label) =>
+                  //   this._handleOnSelectOperator(value, label)
+                  // }
                 ></DropDown>
               </View>
             </View>
@@ -411,7 +493,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
-                  style={styles.textInputStyle}
+                  style={styles.textAreaStyle}
                   value={this.state.address}
                   onChangeText={(value) => {
                     this.setState({ address: value });
@@ -570,6 +652,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 10,
     backgroundColor: "#ffffff",
+  },
+  textAreaStyle: {
+    borderColor: "#ffffff",
+    borderWidth: 1,
+    minHeight: 80,
+    borderRadius: 5,
+    paddingLeft: 10,
+    backgroundColor: "#ffffff",
+    textAlignVertical:"top"
   },
   btnContainer: {
     flex: 1,

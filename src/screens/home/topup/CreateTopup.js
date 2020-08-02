@@ -38,10 +38,83 @@ export default class CreateTopup extends React.Component {
       ISTOPUPTYPEERROR: false,
       ISQTYERROR: false,
       isOpenSuccessModel: false,
+      role_id:""
     };
   }
 
   componentDidMount = async () => {
+    const branchid = await AsyncStorage.getItem("branch_id");
+    const roleid = await AsyncStorage.getItem("role_id");
+    const operatorid = await AsyncStorage.getItem("operator_id");
+    this.setState({role_id:roleid});
+
+    if (operatorid == "1") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "MPT",
+        },
+      });
+    }
+    if (operatorid == "2") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Telenor",
+        },
+      });
+    }
+    if (operatorid == "3") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Ooredoo",
+        },
+      });
+    }
+    if (operatorid == "4") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Mytel",
+        },
+      });
+    }
+
+    if (branchid == "1") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "HO",
+        },
+      });
+    }
+    if (branchid == "2") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 1",
+        },
+      });
+    }
+    if (branchid == "3") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 2",
+        },
+      });
+    }
+    if (branchid == "4") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 3",
+        },
+      });
+    }
+
+
     await this._getAllBranch();
     await this._getAllTopupType();
   };
@@ -169,10 +242,13 @@ export default class CreateTopup extends React.Component {
     }
   };
   _handleOnSelectBranch(value, label) {
-    this.setState({
-      branch: { value: value, label: label },
-      ISBRANCHERROR: false,
-    });
+    if(this.state.role_id == "1"){
+      this.setState({
+        branch: { value: value, label: label },
+        ISBRANCHERROR: false,
+      });
+    }
+  
   }
 
   _handleOnSelectTopupType(value, label) {
@@ -182,10 +258,13 @@ export default class CreateTopup extends React.Component {
     });
   }
   _handleOnSelectOperator(value, label) {
-    this.setState({
-      operator: { value: value, label: label },
-      ISOPERATORERROR: false,
-    });
+    if(this.state.role_id == "1"){
+      this.setState({
+        operator: { value: value, label: label },
+        ISOPERATORERROR: false,
+      });
+    }
+   
   }
   render() {
     // console.log(this.state.branches);
@@ -263,6 +342,7 @@ export default class CreateTopup extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                keyboardType="number-pad"
                   style={styles.textInputStyle}
                   value={this.state.qty}
                   onChangeText={(value) =>
@@ -317,16 +397,17 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     width: "30%",
-    alignItems: "flex-end",
+    // alignItems: "flex-end",
     justifyContent: "center",
   },
   textInputContainer: {
     flex: 1,
     marginLeft: 20,
   },
-  labelStyle: { fontSize: 19 },
+  labelStyle: { fontSize: 15 },
   textInputStyle: {
-    borderColor: "#707070",
+    borderColor: "#ffffff",
+    backgroundColor:"#ffffff",
     borderWidth: 1,
     height: 40,
     borderRadius: 5,
@@ -338,7 +419,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   backBtn: {
-    backgroundColor: "#5799FC",
+    backgroundColor: "orange",
     height: 40,
     alignItems: "center",
     justifyContent: "center",
@@ -347,7 +428,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#1FD449",
+    backgroundColor: "#73A8DE",
     height: 40,
     flex: 1,
     alignItems: "center",
@@ -356,6 +437,6 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 15,
   },
 });

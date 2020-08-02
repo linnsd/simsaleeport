@@ -103,10 +103,10 @@ const triggerStyles = {
     flexDirection: "row",
     justifyContent:"center",
     // justifyContent:"space-around",
-    backgroundColor: "#1FD449",
+    backgroundColor: "#73A8DE",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#1FD449",
+    borderColor: "#73A8DE",
   },
 };
 

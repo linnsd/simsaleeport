@@ -21,6 +21,9 @@ import Loading from "@components/Loading";
 import SuccessModal from "@components/SuccessModal";
 import Moment from "moment";
 
+//import Datepicker
+import { DrawerActions } from "react-navigation-drawer";
+
 //import apis
 import AllTopup from "@api/AllTopup";
 import BranchApi from "@api/BranchApi";
@@ -59,6 +62,7 @@ export default class Topup extends React.Component {
       isFooterLoading: false,
       isShow: false,
       isOpenSuccessModel: false,
+      role_id: "",
     };
     this.page = 1;
     this.BranchApi = new BranchApi();
@@ -95,6 +99,10 @@ export default class Topup extends React.Component {
   };
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const roelid = await AsyncStorage.getItem("role_id");
+    this.setState({
+      role_id: roelid,
+    });
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
     });
@@ -333,6 +341,10 @@ export default class Topup extends React.Component {
       });
   };
 
+  _handleOnPress() {
+    this.props.navigation.dispatch(DrawerActions.openDrawer());
+  }
+
   renderFooter = () => {
     //it will show indicator at the bottom of the list when data is loading
     if (this.state.isFooterLoading) {
@@ -354,7 +366,8 @@ export default class Topup extends React.Component {
         {/* <StatusBar hidden={true}></StatusBar> */}
         <Header
           name="Topup"
-          Onpress={() => this.props.navigation.navigate("Home")}
+          img={require("@images/threeline.png")}
+          Onpress={() => this._handleOnPress()}
         />
         <View style={{ marginTop: 10 }}>
           <View style={styles.searchContainer}>
@@ -372,7 +385,7 @@ export default class Topup extends React.Component {
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "#1FD449",
+                backgroundColor: "#73A8DE",
                 width: "15%",
                 height: 40,
                 marginLeft: 10,
@@ -382,7 +395,7 @@ export default class Topup extends React.Component {
               }}
               onPress={() => this._handleSearchKeyword(this.state.keyword)}
             >
-               <Image
+              <Image
                 source={require("@images/search.png")}
                 style={{ width: 30, height: 30 }}
               />
@@ -399,56 +412,76 @@ export default class Topup extends React.Component {
           </View>
           {this.state.isShow == true ? (
             <View>
-              <View style={[styles.searchContainer, { marginTop: 10 }]}>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.branch}
-                    widthContainer="100%"
-                    placeholder="Select Branch..."
-                    options={this.state.branches}
-                    onSelect={(value, label) =>
-                      this._handleOnSelectBranch(value, label)
-                    }
-                  />
+              {this.state.role_id == "1" ? (
+                <View style={[styles.searchContainer, { marginTop: 10 }]}>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.branch}
+                      widthContainer="100%"
+                      placeholder="Select Branch..."
+                      options={this.state.branches}
+                      onSelect={(value, label) =>
+                        this._handleOnSelectBranch(value, label)
+                      }
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.operator}
+                      options={OPERATORS}
+                      widthContainer="100%"
+                      marginLeftContainer={5}
+                      placeholder="Select Operator..."
+                      onSelect={(value, label) =>
+                        this._handleOnSelectOperator(value, label)
+                      }
+                    />
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.operator}
-                    options={OPERATORS}
-                    widthContainer="100%"
-                    marginLeftContainer={5}
-                    placeholder="Select Operator..."
-                    onSelect={(value, label) =>
-                      this._handleOnSelectOperator(value, label)
-                    }
-                  />
+              ) : null}
+
+              {this.state.role_id == "1" ? (
+                <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.user}
+                      widthContainer="100%"
+                      placeholder="Select by user"
+                      options={this.state.users}
+                      onSelect={(value, label) =>
+                        this._handleOnSelectUser(value, label)
+                      }
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.topuptype}
+                      options={this.state.topuptypes}
+                      widthContainer="100%"
+                      marginLeftContainer={5}
+                      placeholder="Select topup type"
+                      onSelect={(value, label) =>
+                        this._handleOnSelectTopupType(value, label)
+                      }
+                    />
+                  </View>
                 </View>
-              </View>
-              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.user}
-                    widthContainer="100%"
-                    placeholder="Select by user"
-                    options={this.state.users}
-                    onSelect={(value, label) =>
-                      this._handleOnSelectUser(value, label)
-                    }
-                  />
+              ) : (
+                <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.topuptype}
+                      options={this.state.topuptypes}
+                      widthContainer="97%"
+                      marginLeftContainer={5}
+                      placeholder="Select topup type"
+                      onSelect={(value, label) =>
+                        this._handleOnSelectTopupType(value, label)
+                      }
+                    />
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.topuptype}
-                    options={this.state.topuptypes}
-                    widthContainer="100%"
-                    marginLeftContainer={5}
-                    placeholder="Select topup type"
-                    onSelect={(value, label) =>
-                      this._handleOnSelectTopupType(value, label)
-                    }
-                  />
-                </View>
-              </View>
+              )}
             </View>
           ) : (
             <View></View>
@@ -502,7 +535,7 @@ export default class Topup extends React.Component {
           onPress={() => this.props.navigation.navigate("CreateTopup")}
           style={styles.newBtn}
         >
-          <Image source={require("@images/add.png")} style={styles.btnImg} />
+          <Image source={require("@images/add1.png")} style={styles.btnImg} />
         </TouchableOpacity>
         <SuccessModal
           isOpen={this.state.isOpenSuccessModel}

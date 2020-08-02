@@ -10,6 +10,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  AsyncStorage,
 } from "react-native";
 
 //import component
@@ -58,7 +59,8 @@ export default class Customer extends React.Component {
       keyword: "",
       tempData: [],
       access_token: null,
-      searchCustomer:[]
+      searchCustomer:[],
+      role_id:""
     };
     this.page = 1;
     this.CustomerApi = new CustomerApi();
@@ -67,8 +69,9 @@ export default class Customer extends React.Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const access_token = await getToken();
+    const roleid = await AsyncStorage.getItem("role_id");
     // console.log("Access_Token", access_token);
-    this.setState({ access_token: access_token });
+    this.setState({ access_token: access_token ,role_id:roleid});
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
     });
@@ -279,7 +282,7 @@ export default class Customer extends React.Component {
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "#1FD449",
+                backgroundColor: "#73A8DE",
                 width: "15%",
                 height: 40,
                 marginLeft: 10,
@@ -345,32 +348,37 @@ export default class Customer extends React.Component {
                   />
                 </View>
               </View>
-              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.branch}
-                    options={this.state.branchs}
-                    widthContainer="100%"
-                    placeholder="Select Branch..."
-                    onSelect={(value, label) =>
-                      this._handleOnSelectBranch(value, label)
-                    }
-                  />
+              {
+                this.state.role_id == "1" ? (
+                  <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.branch}
+                      options={this.state.branchs}
+                      widthContainer="100%"
+                      placeholder="Select Branch..."
+                      onSelect={(value, label) =>
+                        this._handleOnSelectBranch(value, label)
+                      }
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.operator}
+                      options={OPERATOR}
+                      widthContainer="100%"
+                      marginLeftContainer={5}
+                      placeholder="Select Operator..."
+                      onSelect={(value, label) =>
+                        this._handleOnSelectOperator(value, label)
+                      }
+                    />
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.operator}
-                    options={OPERATOR}
-                    widthContainer="100%"
-                    marginLeftContainer={5}
-                    placeholder="Select Operator..."
-                    onSelect={(value, label) =>
-                      this._handleOnSelectOperator(value, label)
-                    }
-                  />
-                </View>
+            
+                ):null
+              }
               </View>
-            </View>
           ) : (
             // alert("Hi")
             <View></View>

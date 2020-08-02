@@ -11,6 +11,8 @@ import EditTopup from "@screens/home/topup/EditTopup";
 import SimCardAdd from "@screens/leftmenu/actionSimCard/Add";
 import EditSimCard from "@screens/leftmenu/actionSimCard/Edit";
 import SimCardView from "@screens/leftmenu/actionSimCard/View";
+import StockCreate from "@screens/leftmenu/actionStock/create";
+import StockEdit from "@screens/leftmenu/actionStock/edit";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -71,7 +73,20 @@ export default createAppContainer(
         navigationOptions:({navigation})=>({
           headerShown:false,
         })
-      }
+      },
+      StockCreate:{
+        screen:StockCreate,
+        navigationOptions:({navigation})=>({
+          headerShown:false,
+        })
+      },
+      StockEdit:{
+        screen:StockEdit,
+        navigationOptions:({navigation})=>({
+          headerShown:false,
+        })
+      },
+
     },
     {
       initialRouteName: "DrawerNavigator",

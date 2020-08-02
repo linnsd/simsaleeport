@@ -1,7 +1,43 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  AsyncStorage,
+} from "react-native";
 
 const DRAWER_ITEMS = [
+  {
+    routeName: "Customer",
+    label: "Customers",
+    image: require("@images/customer.jpg"),
+  },
+  {
+    routeName: "SIMCard",
+    label: "SIMCard",
+    image: require("@images/card.png"),
+  },
+  {
+    routeName: "Topup",
+    label: "Topup",
+    image: require("@images/prepaid.png"),
+  },
+  {
+    routeName: "Stock",
+    label: "Stock",
+    image: require("@images/stock.jpg"),
+  },
+  {
+    routeName: "Logout",
+    label: "Logout",
+    image: require("@images/logout.jpg"),
+    customWidth: 30,
+    customHeight: 30,
+  },
+];
+const DRAWER_ITEMS_MYTEL = [
   {
     routeName: "Customer",
     label: "Customers",
@@ -27,18 +63,24 @@ const DRAWER_ITEMS = [
 ];
 
 export default class DrawerSideBar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      role_id: "",
+      name: "",
+    };
+  }
   navigate(routeName) {
-      if(routeName == "Logout"){
-          this.props.navigation.navigate("Login")
-      }else{
-        this.props.navigation.navigate(routeName);
-      }
-    
+    if (routeName == "Logout") {
+      this.props.navigation.navigate("Login");
+    } else {
+      this.props.navigation.navigate(routeName);
+    }
   }
 
   _renderItem(data, index) {
     return (
-      <View  key={index}>
+      <View key={index}>
         <TouchableOpacity
           style={[styles.linkBtn]}
           onPress={() => this.navigate(data.routeName)}
@@ -49,23 +91,35 @@ export default class DrawerSideBar extends React.Component {
       </View>
     );
   }
+  async componentDidMount() {
+    const role_id = await AsyncStorage.getItem("role_id");
+    const username = await AsyncStorage.getItem("name");
+    this.setState({ role_id: role_id, name: username });
+  }
 
   render() {
+    // alert(this.state.role_id);
     return (
       <View style={styles.container}>
         <View
           style={{
             alignItems: "center",
             height: 150,
-            backgroundColor: "#FE7F0A",
+            backgroundColor: this.state.role_id == "1" ? "#10AFEA" : "#73A8DE",
           }}
         >
           <Image source={require("@images/linn.png")} />
-          <Text style={{ color: "#ffffff", fontSize: 15 }}>HO Mytel</Text>
+          <Text style={{ color: "#ffffff", fontSize: 18 }}>
+            {this.state.name}
+          </Text>
         </View>
-        {DRAWER_ITEMS.map((data, index) => {
-          return this._renderItem(data, index);
-        })}
+        {this.state.role_id == "1"
+          ? DRAWER_ITEMS.map((data, index) => {
+              return this._renderItem(data, index);
+            })
+          : DRAWER_ITEMS_MYTEL.map((data, index) => {
+              return this._renderItem(data, index);
+            })}
       </View>
     );
   }

@@ -50,11 +50,22 @@ export default class Login extends React.Component {
           .then(function (response) {
             // console.log("Authorization is ", response.data);
             if (response.data.status == "1") {
+              // alert(response.data.user.role_id);
+              var roleid= response.data.user.role_id.toString();
+              var branchid= response.data.user.branch_id.toString();
+              var operatorid= response.data.user.operator_id.toString();
               AsyncStorage.multiSet(
-                [["access_token", response.data.access_token]],
+                [
+                  ["access_token", response.data.access_token],
+                  ["role_id",roleid ],
+                  ["branch_id",branchid],
+                  ["operator_id",operatorid],
+                  ["name",response.data.user.name],
+                ],
                 (err) => {
                   if (err) {
                     alert("Asynstorage Error");
+                    // console.log(err);
                   } else {
                     self.props.navigation.navigate("Home");
                   }
@@ -141,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#FE7F0A",
+    borderColor: "#10AFEA",
   },
   textInput: {
     margin: 10,
@@ -150,7 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: "center",
     borderRadius: 5,
-    borderColor: "#FE7F0A",
+    borderColor: "#10AFEA",
     elevation: 2,
     backgroundColor: "#ffffff",
     shadowOffset: { width: 0, height: 2 }, //IOS
@@ -164,8 +175,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#FE7F0A",
-    backgroundColor: "#FE7F0A",
+    borderColor: "#10AFEA",
+    backgroundColor: "#10AFEA",
     elevation: 2,
     shadowOffset: { width: 0, height: 2 }, //IOS
     shadowOpacity: 0.5, //IOS

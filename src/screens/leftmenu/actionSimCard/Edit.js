@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  AsyncStorage,
 } from "react-native";
 
 //import component
@@ -13,6 +14,7 @@ import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import DatePicker from "react-native-datepicker";
 import Moment from "moment";
+import SuccessModal from "@components/SuccessModal";
 
 //import service
 import { getToken } from "@services/GetToken";
@@ -61,6 +63,8 @@ export default class Add extends React.Component {
       nrcstates: [],
       nrcstate: { value: null, label: null },
       nrcstatus: { value: null, label: null },
+      role_id:"",
+      isOpenSuccessModel: false,
     };
   }
   componentWillMount() {
@@ -85,7 +89,7 @@ export default class Add extends React.Component {
     if (data.operator_id == "3") {
       this.setState({
         operator: {
-          value:data.operator_id,
+          value: data.operator_id,
           label: "Ooredoo",
         },
       });
@@ -93,20 +97,20 @@ export default class Add extends React.Component {
     if (this.props.navigation.getParam("data").operator_id == "4") {
       this.setState({
         operator: {
-          value:data.operator_id,
+          value: data.operator_id,
           label: "Mytel",
         },
       });
     }
     // alert("Props Data is ",this.props.navigation.getParam("data").id);
     this.setState({
-      id:data.id,
+      id: data.id,
       name: data.name,
       nrc_no: data.nrc_number,
       address: data.address,
       contact_phone: data.phone,
-      simcard_no: data.card_no ,
-      serial_no:data.serial ,
+      simcard_no: data.card_no,
+      serial_no: data.serial,
       imei1: data.imei,
       imei2: data.imei2,
       topupAmt: data.topup,
@@ -131,7 +135,8 @@ export default class Add extends React.Component {
 
   async componentDidMount() {
     const access_token = await getToken();
-    this.setState({ access_token: access_token });
+    const roleid = await AsyncStorage.getItem("role_id");
+    this.setState({ access_token: access_token,role_id : roleid });
     await this.getAllBranch();
     await this.getAllNrcCode();
     // await this.getAllNrcState();
@@ -192,11 +197,11 @@ export default class Add extends React.Component {
   };
   getAllNrcState = async (nrc_code) => {
     const self = this;
-    let bodyParam={
-      nrc_code:nrc_code,
+    let bodyParam = {
+      nrc_code: nrc_code,
     };
     axios
-      .post(getAllNrcStateApi,bodyParam,{
+      .post(getAllNrcStateApi, bodyParam, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + this.state.access_token,
@@ -249,7 +254,7 @@ export default class Add extends React.Component {
     };
     // console.log(bodyParam);
     axios
-      .post(url,bodyParam, {
+      .post(url, bodyParam, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + self.state.access_token,
@@ -257,7 +262,10 @@ export default class Add extends React.Component {
       })
       .then(function (response) {
         // console.log(response.data);
-        alert("Update Simcard Successfully")
+        self.setState({
+          isOpenSuccessModel: true,
+        })
+        // alert("Update Simcard Successfully");
       })
       .catch(function (err) {
         console.log("Update Error", err);
@@ -265,27 +273,33 @@ export default class Add extends React.Component {
   }
 
   _handleOnSelectBranch(value, label) {
-    this.setState(
-      {
-        branch: {
-          value: value,
-          label: label,
-        },
-      }
-      // () => this.getAllCustomerByID()
-    );
+    if(this.state.role_id == "1"){
+      this.setState(
+        {
+          branch: {
+            value: value,
+            label: label,
+          },
+        }
+        // () => this.getAllCustomerByID()
+      );
+    }
+   
   }
 
   _handleOnSelectOperator(value, label) {
-    this.setState(
-      {
-        operator: {
-          value: value,
-          label: label,
-        },
-      }
-      // () => this.getAllCustomerByID()
-    );
+    if(this.state.role_id == "1"){
+      this.setState(
+        {
+          operator: {
+            value: value,
+            label: label,
+          },
+        }
+        // () => this.getAllCustomerByID()
+      );
+    }
+   
   }
   _handleSelectNrcCode(value, label) {
     this.setState({
@@ -313,6 +327,9 @@ export default class Add extends React.Component {
     });
   }
 
+  _handleOnClose() {
+    this.setState({ isOpenSuccessModel: false });
+  }
   render() {
     // console.log("Edit Sim Card",this.props.navigation.getParam("data"));
     return (
@@ -413,6 +430,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.nrc_no}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ nrc_no: value })}
@@ -425,8 +443,9 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  multiline={true}
                   value={this.state.address}
-                  style={styles.textInputStyle}
+                  style={styles.textAreaStyle}
                   onChangeText={(value) => this.setState({ address: value })}
                 ></TextInput>
               </View>
@@ -437,6 +456,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.contact_phone}
                   style={styles.textInputStyle}
                   onChangeText={(value) =>
@@ -451,6 +471,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.simcard_no}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ simcard_no: value })}
@@ -464,6 +485,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.serial_no}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ serial_no: value })}
@@ -476,6 +498,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.imei1}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ imei1: value })}
@@ -488,6 +511,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.imei2}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ imei2: value })}
@@ -500,6 +524,7 @@ export default class Add extends React.Component {
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
+                  keyboardType="number-pad"
                   value={this.state.topupAmt}
                   style={styles.textInputStyle}
                   onChangeText={(value) => this.setState({ topupAmt: value })}
@@ -537,6 +562,11 @@ export default class Add extends React.Component {
             </View>
           </View>
         </ScrollView>
+        <SuccessModal
+          isOpen={this.state.isOpenSuccessModel}
+          text="Successfully SimCard updated"
+          onClose={() => this._handleOnClose()}
+        />
       </View>
     );
   }
@@ -570,13 +600,22 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     backgroundColor: "#ffffff",
   },
+  textAreaStyle: {
+    borderColor: "#ffffff",
+    borderWidth: 1,
+    minHeight: 80,
+    borderRadius: 5,
+    paddingLeft: 10,
+    backgroundColor: "#ffffff",
+    textAlignVertical:"top"
+  },
   btnContainer: {
     flex: 1,
     flexDirection: "row",
     marginLeft: 20,
   },
   backBtn: {
-    backgroundColor: "#5799FC",
+    backgroundColor: "orange",
     height: 40,
     alignItems: "center",
     justifyContent: "center",
@@ -585,7 +624,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#1FD449",
+    backgroundColor: "#73A8DE",
     height: 40,
     flex: 1,
     alignItems: "center",

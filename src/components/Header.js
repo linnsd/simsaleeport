@@ -1,7 +1,26 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  AsyncStorage,
+} from "react-native";
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      role_id: "",
+    };
+  }
+  async componentDidMount() {
+    const role_id = await AsyncStorage.getItem("role_id");
+    this.setState({
+      role_id: role_id,
+    });
+  }
   _OnPress() {
     if (this.props.Onpress) {
       this.props.Onpress();
@@ -9,7 +28,14 @@ export default class Header extends React.Component {
   }
   render() {
     return (
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: this.state.role_id == "1" ? "#10AFEA" : "#73A8DE",
+          },
+        ]}
+      >
         <TouchableOpacity onPress={() => this._OnPress()}>
           <Image
             source={
@@ -33,7 +59,7 @@ export default class Header extends React.Component {
 const styles = StyleSheet.create({
   container: {
     height: 50,
-    backgroundColor: "#FE7F0A",
+    // backgroundColor: "#FE7F0A",
     alignItems: "center",
     flexDirection: "row",
   },

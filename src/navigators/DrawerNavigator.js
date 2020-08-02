@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "react-navigation-drawer";
 import Customer from "@screens/leftmenu/customer";
 import SIMCard from "@screens/leftmenu/SIMCard";
 import Topup from "@screens/leftmenu/Topup";
+import Stock from "@screens/leftmenu/Stock";
 import Home from "@screens/home/Home";
 
 //import components
@@ -25,6 +26,9 @@ export default createAppContainer(
       Topup: {
         screen: Topup,
       },
+      Stock:{
+        screen:Stock,
+      }
     },
     {
       initialRouteName: "Home",

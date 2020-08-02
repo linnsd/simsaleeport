@@ -40,9 +40,14 @@ export default class CreateTopup extends React.Component {
       ISTOPUPTYPEERROR: false,
       ISQTYERROR: false,
       isOpenSuccessModel: false,
+      role_id : ""
     };
   }
   componentDidMount = async () => {
+    const roleid = await AsyncStorage.getItem("role_id");
+    this.setState({
+      role_id:roleid
+    })
     await this._getAllBranch();
     await this._getAllTopupType();
     await this._getEditData();
@@ -171,10 +176,16 @@ export default class CreateTopup extends React.Component {
       });
   };
   _handleOnselectBranch(value, label) {
-    this.setState({ branch: { value: value, label: label } });
+    if(this.state.role_id == "1"){
+      this.setState({ branch: { value: value, label: label } });
+    }
+   
   }
   _handleOnselectOperator(value, label) {
-    this.setState({ operator: { value: value, label: label } });
+    if(this.state.role_id == "1"){
+      this.setState({ operator: { value: value, label: label } });
+    }
+   
   }
   _handleOnselectTopup(value, label) {
     this.setState({ topup: { value: value, label: label } });
@@ -380,7 +391,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   backBtn: {
-    backgroundColor: "#5799FC",
+    backgroundColor: "orange",
     height: 40,
     alignItems: "center",
     justifyContent: "center",
@@ -389,7 +400,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#1FD449",
+    backgroundColor: "#73A8DE",
     height: 40,
     flex: 1,
     alignItems: "center",

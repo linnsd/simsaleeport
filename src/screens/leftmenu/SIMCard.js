@@ -10,6 +10,7 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  AsyncStorage,
 } from "react-native";
 
 //import component
@@ -66,6 +67,7 @@ export default class SIMCard extends React.Component {
       deleteid: [],
       isOpenSuccessModel: false,
       searchSimCard: [],
+      role_id:""
     };
     this.page = 1;
     this.AllSimCard = new AllSimCard();
@@ -73,7 +75,8 @@ export default class SIMCard extends React.Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const access_token = await getToken();
-    this.setState({ access_token: access_token });
+    const roleid = await AsyncStorage.getItem("role_id");
+    this.setState({ access_token: access_token,role_id:roleid });
     await this.getSimcard(this.page);
     await this.getAllBranch();
     this.focusListener = navigation.addListener("didFocus", async () => {
@@ -326,7 +329,7 @@ export default class SIMCard extends React.Component {
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "#1FD449",
+                backgroundColor: "#73A8DE",
                 width: "15%",
                 height: 40,
                 marginLeft: 10,
@@ -392,31 +395,36 @@ export default class SIMCard extends React.Component {
                   />
                 </View>
               </View>
-              <View style={[styles.searchContainer, { marginTop: "2%" }]}>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.branch}
-                    options={this.state.branchs}
-                    widthContainer="100%"
-                    placeholder="Select Branch..."
-                    onSelect={(value, label) =>
-                      this._handleOnSelectBranch(value, label)
-                    }
-                  />
+              {
+                this.state.role_id == "1" ? (
+                  <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.branch}
+                      options={this.state.branchs}
+                      widthContainer="100%"
+                      placeholder="Select Branch..."
+                      onSelect={(value, label) =>
+                        this._handleOnSelectBranch(value, label)
+                      }
+                    />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <DropDown
+                      value={this.state.operator}
+                      options={OPERATOR}
+                      widthContainer="100%"
+                      marginLeftContainer={5}
+                      placeholder="Select Operator..."
+                      onSelect={(value, label) =>
+                        this._handleOnSelectOperator(value, label)
+                      }
+                    />
+                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
-                  <DropDown
-                    value={this.state.operator}
-                    options={OPERATOR}
-                    widthContainer="100%"
-                    marginLeftContainer={5}
-                    placeholder="Select Operator..."
-                    onSelect={(value, label) =>
-                      this._handleOnSelectOperator(value, label)
-                    }
-                  />
-                </View>
-              </View>
+                ) : null
+              }
+          
             </View>
           ) : (
             // alert("Hi")
@@ -446,7 +454,7 @@ export default class SIMCard extends React.Component {
                 topup={item.topup}
                 model={item.model}
                 onPressEdit={()=>this._handleOnPressEdit(1,item)}
-                onPressDelete={()=>this._handleOnPressDelete(item)}
+                onPressDelete={() => this._handleOnPressDelete(item)}
                 onPressView={()=>this.handleOnPressView(2,item)}
                 arrIndex={1}
               />
@@ -462,7 +470,7 @@ export default class SIMCard extends React.Component {
           onPress={() => this.props.navigation.navigate("SimCardAdd")}
           style={styles.newBtn}
         >
-          <Image source={require("@images/add.png")} style={styles.btnImg} />
+          <Image source={require("@images/add1.png")} style={styles.btnImg} />
         </TouchableOpacity>
         <SuccessModal
           isOpen={this.state.isOpenSuccessModel}
