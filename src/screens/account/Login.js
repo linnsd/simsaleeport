@@ -22,12 +22,17 @@ export default class Login extends React.Component {
       user_id: "",
       pass: "",
       isOnline: false,
+      userid:null,
+
     };
   }
   componentDidMount = async () => {
     NetInfo.addEventListener((state) => {
       this.setState({ isOnline: state.isConnected });
     });
+    const user = await AsyncStorage.getItem('user_id');
+    const routeName =user !=null ? "Home" : "Login";
+    this.props.navigation.navigate(routeName);
   };
   handleLogin = async () => {
     if (this.state.user_id == "" || this.state.pass == "") {
@@ -48,12 +53,13 @@ export default class Login extends React.Component {
             },
           })
           .then(function (response) {
-            // console.log("Authorization is ", response.data);
+            console.log("Authorization is ", response.data);
             if (response.data.status == "1") {
               // alert(response.data.user.role_id);
               var roleid= response.data.user.role_id.toString();
               var branchid= response.data.user.branch_id.toString();
               var operatorid= response.data.user.operator_id.toString();
+              var id =  response.data.user.id.toString();
               AsyncStorage.multiSet(
                 [
                   ["access_token", response.data.access_token],
@@ -61,6 +67,7 @@ export default class Login extends React.Component {
                   ["branch_id",branchid],
                   ["operator_id",operatorid],
                   ["name",response.data.user.name],
+                  ["user_id",response.data.user.email],
                 ],
                 (err) => {
                   if (err) {
@@ -96,6 +103,12 @@ export default class Login extends React.Component {
       }
     }
   };
+  clearState() {
+    this.setState({
+      user_id: null,
+      pass: null,
+    });
+  }
   render() {
     // alert("Access_token","this.state.access_token");
     return (

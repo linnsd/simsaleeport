@@ -181,7 +181,7 @@ export default class Add extends React.Component {
         },
       })
       .then(function (response) {
-        // console.log(response.data.nrc);
+        console.log("Sim Card Add",response.data);
         self.setState({
           branch: "",
           operator: "",

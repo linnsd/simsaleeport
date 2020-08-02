@@ -72,6 +72,7 @@ export default class DrawerSideBar extends React.Component {
   }
   navigate(routeName) {
     if (routeName == "Logout") {
+      AsyncStorage.clear();
       this.props.navigation.navigate("Login");
     } else {
       this.props.navigation.navigate(routeName);

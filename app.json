@@ -1,14 +1,22 @@
 {
   "expo": {
-    "name": "simsale",
+    "name": "simsale report",
     "slug": "simsale",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/linn.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/linn.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.simsale.simsale",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.simsale.simsale",
+      "versionCode": 1
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -16,9 +24,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     }

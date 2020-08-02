@@ -100,7 +100,7 @@ export default class Customer extends React.Component {
       // })
       this.CustomerApi.getAllCustomer(page)
       .then(function (response) {
-        console.log("customer", response.data);
+        // console.log("customer", response.data);
         self.setState({
           // data: response.data.customers,
           data: [...self.state.data, ...response.data.customers],
