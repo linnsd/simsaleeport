@@ -19,6 +19,7 @@ import NRCCodeAdd from "@screens/leftmenu/actionNrcCode/add";
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
+import DashboardNavigator from "./DashoarbNavigator";
 
 export default createAppContainer(
   createStackNavigator(
@@ -29,6 +30,24 @@ export default createAppContainer(
           headerShown: false,
         }),
       },
+      // DashboardNavigator:{
+      //   screen: DashboardNavigator,
+      //   navigationOptions: ({ navigation }) => ({
+      //     headerTitle: "Linn Sale Report",
+      //     headerStyle: {
+      //       backgroundColor: "#FE7F0A",
+      //     },
+      //     headerTitleStyle: {
+      //       color: "#ffffff",
+      //     },
+      //     headerTitleAlign: {
+      //       alignItems: "center",
+      //       justifyContent: "center",
+      //     },
+
+      //     headerLeft: () => <HeaderLeft navigation={navigation} />,
+      //   }),
+      // },
       Home: {
         screen: Home,
         navigationOptions: ({ navigation }) => ({

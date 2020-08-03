@@ -24,16 +24,16 @@ const DRAWER_ITEMS = [
     label: "Topup",
     image: require("@images/prepaid.png"),
   },
-  {
-    routeName: "Stock",
-    label: "Stock",
-    image: require("@images/stock.jpg"),
-  },
-  {
-    routeName: "NRCCode",
-    label: "NRC Code",
-    image: require("@images/card.png"),
-  },
+  // {
+  //   routeName: "Stock",
+  //   label: "Stock",
+  //   image: require("@images/stock.jpg"),
+  // },
+  // {
+  //   routeName: "NRCCode",
+  //   label: "NRC Code",
+  //   image: require("@images/card.png"),
+  // },
   // {
   //   routeName: "NRCState",
   //   label: "NRC State",
@@ -81,10 +81,12 @@ export default class DrawerSideBar extends React.Component {
       name: "",
     };
   }
-  navigate(routeName) {
+ async navigate(routeName) {
     if (routeName == "Logout") {
+      await AsyncStorage.clear();
       this.props.navigation.navigate("Login");
-      AsyncStorage.clear();
+      return true;
+    // console.log(aa);
     } else {
       this.props.navigation.navigate(routeName);
     }

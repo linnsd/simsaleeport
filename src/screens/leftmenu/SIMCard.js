@@ -117,7 +117,7 @@ export default class SIMCard extends React.Component {
           isLoading: false,
           isFooterLoading: false,
         });
-        // console.log("SimCard Error", err);
+        console.log("SimCard Error", err);
       });
   };
 

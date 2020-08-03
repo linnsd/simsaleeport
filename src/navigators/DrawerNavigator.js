@@ -9,6 +9,7 @@ import NRCCode from "@screens/leftmenu/NRCCode";
 import NRCState from "@screens/leftmenu/NRCState";
 import Stock from "@screens/leftmenu/Stock";
 import Home from "@screens/home/Home";
+import DashboardNavigator from "./DashoarbNavigator";
 
 //import components
 import DrawerSideBar from "@components/DrawerSideBar";
@@ -18,6 +19,9 @@ export default createAppContainer(
     {
       Home: {
         screen: Home,
+      },
+      DashboardNavigator:{
+        screen:DashboardNavigator
       },
       Customer: {
         screen: Customer,

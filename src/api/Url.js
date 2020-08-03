@@ -11,6 +11,7 @@ export const getBranchApi = BaseUrl + "branch";
 //get topup type api
 export const getTopupApi = BaseUrl + "topupsetup";
 
+
 //create topup api
 export const createTopupApi = BaseUrl + "create_topup";
 
@@ -31,6 +32,7 @@ export const getalluserApi = BaseUrl + "user";
 
 //get all topup api
 export const getAlltopupApi = BaseUrl + "topup";
+
 
 //get nrc code
 export const getAllNrcCodeApi = BaseUrl + "nrccode";

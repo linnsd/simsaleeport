@@ -239,7 +239,7 @@ export default class Add extends React.Component {
       .get(getAllNrcCodeApi, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
+          Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
@@ -266,7 +266,7 @@ export default class Add extends React.Component {
     };
     // console.log("body",bodyParam);
     axios
-      .post(getAllNrcStateApi , bodyParam,{
+      .post(getAllNrcStateApi,bodyParam,{
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + self.state.access_token,
@@ -350,7 +350,7 @@ export default class Add extends React.Component {
   }
 
   render() {
-    // alert(this.state.branchid);
+    // alert(this.state.access_token);
     // console.log("nrc code",this.state.nrccode.value);
     // console.log("Create ticket",this.props.navigation.getParam("simcard").state_id);
     return (

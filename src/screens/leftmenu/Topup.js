@@ -21,6 +21,9 @@ import Loading from "@components/Loading";
 import SuccessModal from "@components/SuccessModal";
 import Moment from "moment";
 
+//import services
+import { getToken } from "@services/GetToken";
+
 //import Datepicker
 import { DrawerActions } from "react-navigation-drawer";
 
@@ -63,6 +66,7 @@ export default class Topup extends React.Component {
       isShow: false,
       isOpenSuccessModel: false,
       role_id: "",
+      access_token: null,
     };
     this.page = 1;
     this.BranchApi = new BranchApi();
@@ -70,38 +74,14 @@ export default class Topup extends React.Component {
     this.TopupTypeApi = new TopupTypeApi();
     this.UserApi = new UserApi();
   }
-  _handleOnPressEdit(arrIndex, data) {
-    // console.log(data);
-    if (arrIndex == 1) {
-      this.props.navigation.navigate("EditTopup", { data: data });
-    }
-  }
-  _handleOnPressDelete = async (item) => {
-    // alert(item.id);
-    const self = this;
-    var access_token = await AsyncStorage.getItem("access_token");
-    // console.log(getAlltopupApi);
-    axios
-      .delete(getAlltopupApi + "/" + item.id, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + access_token,
-        },
-      })
-      .then(function (response) {
-        // console.log(response.data);
-        self.setState({ isOpenSuccessModel: true });
-        // this._getAllTopup(this.page);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const access_token = await getToken();
     const roelid = await AsyncStorage.getItem("role_id");
     this.setState({
       role_id: roelid,
+      access_token:access_token
     });
     this.focusListener = navigation.addListener("didFocus", async () => {
       await this.setState({ isShow: false });
@@ -113,15 +93,44 @@ export default class Topup extends React.Component {
     await this._getAllTopup(this.page);
   };
 
+  _handleOnPressEdit(arrIndex, data) {
+    // console.log(data);
+    if (arrIndex == 1) {
+      this.props.navigation.navigate("EditTopup", { data: data });
+    }
+  }
+  _handleOnPressDelete = async (item) => {
+    // alert(item.id);
+    const self = this;
+    // var access_token = await AsyncStorage.getItem("access_token");
+    // console.log(getAlltopupApi);
+    axios
+      .delete(getAlltopupApi + "/" + item.id, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + this.state.access_token,
+        },
+      })
+      .then(function (response) {
+        // console.log(response.data);
+        self.setState({ isOpenSuccessModel: true });
+        // this._getAllTopup(this.page);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+ 
+
   _getAllBranch = async () => {
-    var access_token = await AsyncStorage.getItem("access_token");
+    // var access_token = await AsyncStorage.getItem("access_token");
     // console.log("Branch Access Token is", access_token);
     var self = this;
     axios
       .get(getBranchApi, {
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + access_token,
+          Authorization: "Bearer " + this.state.access_token,
         },
       })
       .then(function (response) {
@@ -147,13 +156,13 @@ export default class Topup extends React.Component {
 
   _getAllUser = async () => {
     var self = this;
-    var access_token = await AsyncStorage.getItem("access_token");
+    // var access_token = await AsyncStorage.getItem("access_token");
     // console.log(access_token);
     axios
       .get(getAllUserApi, {
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + access_token,
+          Authorization: "Bearer " + this.state.access_token,
         },
       })
       .then(function (response) {
@@ -180,13 +189,13 @@ export default class Topup extends React.Component {
 
   _getAllTopupType = async () => {
     var self = this;
-    var access_token = await AsyncStorage.getItem("access_token");
+    // var access_token = await AsyncStorage.getItem("access_token");
     // console.log(access_token);
     axios
       .get(getTopupApi, {
         headers: {
           Accept: "application/json",
-          Authorization: "Bearer " + access_token,
+          Authorization: "Bearer " + this.state.access_token,
         },
       })
       .then(function (response) {
@@ -222,7 +231,18 @@ export default class Topup extends React.Component {
     }
 
     const self = this; // *
-    this.AllTopup.getAllTopup(page)
+    let bodyParam = {
+      page: page,
+      form: new Date(),
+      to: new Date(),
+    };
+    axios
+    .post(getAlltopupApi,bodyParam,{
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + this.state.access_token,
+      },
+    })
       .then(function (response) {
         self.setState({
           tempBusiness: response.data.topup,
@@ -233,7 +253,7 @@ export default class Topup extends React.Component {
         });
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("Topup Error",error);
         self.setState({
           isLoading: false,
           refreshing: false,

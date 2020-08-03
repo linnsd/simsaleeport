@@ -53,7 +53,7 @@ export default class Login extends React.Component {
             },
           })
           .then(function (response) {
-            console.log("Authorization is ", response.data);
+            // console.log("Authorization is ",  response.data.access_token);
             if (response.data.status == "1") {
               // alert(response.data.user.role_id);
               var roleid= response.data.user.role_id.toString();
