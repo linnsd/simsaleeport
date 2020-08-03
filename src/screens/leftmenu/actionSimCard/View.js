@@ -5,10 +5,92 @@ import Moment from "moment";
 //import component
 import Header from "@components/Header";
 
+
+const OPERATOR = [
+  { value: 1, label: "MPT" },
+  { value: 2, label: "Telenor" },
+  { value: 3, label: "Ooredoo" },
+  { value: 4, label: "Mytel" },
+];
 export default class SimCardView extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      operator: { value: null, label: null },
+      branch:{value : null, label :null},
+      branchs:[]
+    };
   }
+
+  componentDidMount = async () => {
+    const operatorid = this.props.navigation.getParam("data").operator_id;
+    const branchid = this.props.navigation.getParam("data").branch_id;
+    if (operatorid == "1") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "MPT",
+        },
+      });
+    }
+    if (operatorid == "2") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Telenor",
+        },
+      });
+    }
+    if (operatorid == "3") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Ooredoo",
+        },
+      });
+    }
+    if (operatorid == "4") {
+      this.setState({
+        operator: {
+          value: operatorid,
+          label: "Mytel",
+        },
+      });
+    }
+
+    if (branchid == "1") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "HO",
+        },
+      });
+    }
+    if (branchid == "2") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 1",
+        },
+      });
+    }
+    if (branchid == "3") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "Linn 2",
+        },
+      });
+    }
+    if (branchid == "4") {
+      this.setState({
+        branch: {
+          value: branchid,
+          label: "MPT Brand Shop",
+        },
+      });
+    }
+  };
   render() {
       let data=this.props.navigation.getParam("data");
     // console.log("View",this.props.navigation.getParam("data"));
@@ -27,6 +109,32 @@ export default class SimCardView extends React.Component {
           <View style={styles.textInputContainer}>
             <TextInput
                 value={Moment(data.created_at).format("DD-MM-YYYY")}
+              style={styles.textInputStyle}
+              editable={false}
+            ></TextInput>
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.labelStyle}>Branch</Text>
+          </View>
+          <View style={styles.textInputContainer}>
+            <TextInput
+              value={this.state.branch.label}
+              style={styles.textInputStyle}
+              editable={false}
+            ></TextInput>
+          </View>
+        </View>
+
+        <View style={styles.formContainer}>
+          <View style={styles.textContainer}>
+            <Text style={styles.labelStyle}>Operator</Text>
+          </View>
+          <View style={styles.textInputContainer}>
+            <TextInput
+              value={this.state.operator.label}
               style={styles.textInputStyle}
               editable={false}
             ></TextInput>

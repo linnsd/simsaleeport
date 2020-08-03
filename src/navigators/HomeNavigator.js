@@ -13,6 +13,9 @@ import EditSimCard from "@screens/leftmenu/actionSimCard/Edit";
 import SimCardView from "@screens/leftmenu/actionSimCard/View";
 import StockCreate from "@screens/leftmenu/actionStock/create";
 import StockEdit from "@screens/leftmenu/actionStock/edit";
+import NRCCodeEdit from "@screens/leftmenu/actionNrcCode/edit";
+import NRCCodeAdd from "@screens/leftmenu/actionNrcCode/add";
+
 
 //import Navigators
 import DrawerNavigator from "./DrawerNavigator";
@@ -86,6 +89,19 @@ export default createAppContainer(
           headerShown:false,
         })
       },
+      NRCCodeEdit:{
+        screen:NRCCodeEdit,
+        navigationOptions:({navigation})=>({
+          headerShown:false,
+        })
+      },
+      NRCCodeAdd:{
+        screen:NRCCodeAdd,
+        navigationOptions:({navigation})=>({
+          headerShown:false,
+        })
+      }
+  
 
     },
     {

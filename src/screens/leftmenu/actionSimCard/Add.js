@@ -181,7 +181,7 @@ export default class Add extends React.Component {
         },
       })
       .then(function (response) {
-        console.log("Sim Card Add",response.data);
+        // console.log("Sim Card Add",response.data);
         self.setState({
           branch: "",
           operator: "",
@@ -212,7 +212,7 @@ export default class Add extends React.Component {
       .get(getBranchApi, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
+          Authorization: "Bearer " + self.state.access_token,
         },
       })
       .then(function (response) {
@@ -412,9 +412,9 @@ export default class Add extends React.Component {
                   value={this.state.operator}
                   options={OPERATOR}
                   widthContainer="100%"
-                  // onSelect={(value, label) =>
-                  //   this._handleOnSelectOperator(value, label)
-                  // }
+                  onSelect={(value, label) =>
+                    this._handleOnSelectOperator(value, label)
+                  }
                 ></DropDown>
               </View>
             </View>

@@ -30,6 +30,17 @@ const DRAWER_ITEMS = [
     image: require("@images/stock.jpg"),
   },
   {
+    routeName: "NRCCode",
+    label: "NRC Code",
+    image: require("@images/card.png"),
+  },
+  // {
+  //   routeName: "NRCState",
+  //   label: "NRC State",
+  //   image: require("@images/secure.png"),
+  // },
+
+  {
     routeName: "Logout",
     label: "Logout",
     image: require("@images/logout.jpg"),
@@ -72,8 +83,8 @@ export default class DrawerSideBar extends React.Component {
   }
   navigate(routeName) {
     if (routeName == "Logout") {
-      AsyncStorage.clear();
       this.props.navigation.navigate("Login");
+      AsyncStorage.clear();
     } else {
       this.props.navigation.navigate(routeName);
     }

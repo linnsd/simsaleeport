@@ -173,10 +173,6 @@ export default class Stock extends React.Component {
         console.log("Delete Sim Card Error", error);
       });
   };
-  _handleOnPress() {
-    this.props.navigation.dispatch(DrawerActions.openDrawer());
-  }
-
   _handleOnClose = () => {
     this.setState({ isOpenSuccessModel: false });
     this.getAllStock();

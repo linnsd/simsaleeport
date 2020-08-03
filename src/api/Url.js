@@ -35,6 +35,9 @@ export const getAlltopupApi = BaseUrl + "topup";
 //get nrc code
 export const getAllNrcCodeApi = BaseUrl + "nrccode";
 
+//create nrc code
+export const createNrcCodeApi = BaseUrl + "create_nrccode";
+
 //get nrc state
 export const getAllNrcStateApi = BaseUrl + "nrcstate";
 
