@@ -13,13 +13,13 @@ export default createAppContainer(
       GraphChart: {
         screen: GraphChart,
         navigationOptions: () => ({
-          tabBarLabel: "GraphChart",
+          tabBarLabel: "Bar Chart",
         }),
       },
       LineChart: {
         screen: LineChart,
         navigationOptions: () => ({
-          tabBarLabel: "Line Chart",
+          tabBarLabel: "Pie Chart",
         }),
       },
     },
@@ -40,7 +40,7 @@ export default createAppContainer(
           height: 50,
         },
         labelStyle: {
-          fontSize: 18,
+          fontSize: 15,
           fontWeight: "bold",
           // marginTop: 30,
           // lineHeight: 40,

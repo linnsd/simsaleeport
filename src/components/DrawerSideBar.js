@@ -81,12 +81,12 @@ export default class DrawerSideBar extends React.Component {
       name: "",
     };
   }
- async navigate(routeName) {
+  async navigate(routeName) {
     if (routeName == "Logout") {
       await AsyncStorage.clear();
       this.props.navigation.navigate("Login");
       return true;
-    // console.log(aa);
+      // console.log(aa);
     } else {
       this.props.navigation.navigate(routeName);
     }
@@ -119,7 +119,7 @@ export default class DrawerSideBar extends React.Component {
           style={{
             alignItems: "center",
             height: 150,
-            backgroundColor: this.state.role_id == "1" ? "#10AFEA" : "#73A8DE",
+            backgroundColor: this.state.role_id == "1" ? "#73A8DE" : "#73A8DE",
           }}
         >
           <Image source={require("@images/linn.png")} />

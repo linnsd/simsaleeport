@@ -1,4 +1,4 @@
-export const BaseUrl = "http://128.199.79.79/simsale-dev/public/api/";
+export const BaseUrl = "http://128.199.79.79/simsale/public/api/";
 // get customers
 export const getCustomersapi = BaseUrl + "customers?page=";
 

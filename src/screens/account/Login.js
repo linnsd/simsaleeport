@@ -31,7 +31,7 @@ export default class Login extends React.Component {
       this.setState({ isOnline: state.isConnected });
     });
     const user = await AsyncStorage.getItem('user_id');
-    const routeName =user !=null ? "Home" : "Login";
+    const routeName =user !=null ? "HDashboardNavigator" : "Login";
     this.props.navigation.navigate(routeName);
   };
   handleLogin = async () => {
@@ -74,7 +74,7 @@ export default class Login extends React.Component {
                     alert("Asynstorage Error");
                     // console.log(err);
                   } else {
-                    self.props.navigation.navigate("Home");
+                    self.props.navigation.navigate("HDashboardNavigator");
                   }
                 }
               );
@@ -83,7 +83,7 @@ export default class Login extends React.Component {
                 user_id: response.data.email,
                 pass: response.data.password,
               });
-              self.props.navigation.navigate("Home");
+              self.props.navigation.navigate("HDashboardNavigator");
             } else {
               // alert("Invalid Username or Password");
               ToastAndroid.show(
