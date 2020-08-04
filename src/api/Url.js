@@ -56,3 +56,6 @@ export const getAllStockApi = BaseUrl + "stocks";
 
 //create stock api
 export const createStockApi = BaseUrl + "create_stocks";
+
+//getAllDashboard
+export const getAllDashboardApi = BaseUrl + "dashboard";

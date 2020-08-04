@@ -272,7 +272,7 @@ export default class CreateTopup extends React.Component {
       <View style={styles.container}>
         <Header
           name="Topup"
-          onPress={() => this.props.navigation.navigate("Topup")}
+          Onpress={() => this.props.navigation.navigate("Topup")}
         />
         <ScrollView>
           <View style={{ marginTop: 10 }}>
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#73A8DE",
+    backgroundColor: "#5A7FEC",
     height: 40,
     flex: 1,
     alignItems: "center",

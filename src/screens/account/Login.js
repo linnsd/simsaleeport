@@ -53,7 +53,7 @@ export default class Login extends React.Component {
             },
           })
           .then(function (response) {
-            // console.log("Authorization is ",  response.data.access_token);
+            // console.log("Authorization is ",  response.data);
             if (response.data.status == "1") {
               // alert(response.data.user.role_id);
               var roleid= response.data.user.role_id.toString();
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#10AFEA",
+    borderColor: "#5A7FEC",
   },
   textInput: {
     margin: 10,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: "center",
     borderRadius: 5,
-    borderColor: "#10AFEA",
+    borderColor: "#5A7FEC",
     elevation: 2,
     backgroundColor: "#ffffff",
     shadowOffset: { width: 0, height: 2 }, //IOS
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#10AFEA",
-    backgroundColor: "#10AFEA",
+    borderColor: "#5A7FEC",
+    backgroundColor: "#5A7FEC",
     elevation: 2,
     shadowOffset: { width: 0, height: 2 }, //IOS
     shadowOpacity: 0.5, //IOS

@@ -14,6 +14,7 @@ import Header from "@components/Header";
 import DropDown from "@components/DropDown";
 import DatePicker from "react-native-datepicker";
 import SuccessModal from "@components/SuccessModal";
+import ErrorText from "@components/ErrorText";
 import Moment from "moment";
 
 //import axios
@@ -66,7 +67,19 @@ export default class Add extends React.Component {
       createDate: null,
       serialNO: "",
       isOpenSuccessModel: false,
-      role_id:""
+      role_id:"",
+      ISERRORBRANCH:false,
+      ISERROROPERATOR:false,
+      ISERRORNAME:false,
+      ISERRRORNRC_CODE:false,
+      ISERRRORNRC_STATE:false,
+      ISERRORNRC_STATUS:false,
+      ISERRORNRC:false,
+      ISERRORADDRESS:false,
+      ISERRORPHONE:false,
+      ISERRORSIMCARD:false,
+      ISERRORSERIALNO:false,
+      ISERRORMODEL:false
     };
   }
 
@@ -152,59 +165,124 @@ export default class Add extends React.Component {
     // await this.getAllNrcState();
   }
   createSimcard = async () => {
-    var self = this;
-    let bodyParam = {
-      branch_id: self.state.branch.value,
-      operator_id: self.state.operator.value,
-      code_id: self.state.nrccode.value,
-      state_id: self.state.nrcstate.value,
-      name: self.state.name,
-      // nrc_number: self.state.nrc,
-      nrc: self.state.nrc,
-      nrc_status: self.state.nrcstatus.value,
-      address: self.state.address,
-      phone: self.state.phone,
-      imei: self.state.imei1,
-      imei2: self.state.imei2,
-      model: self.state.model,
-      topup: self.state.topupAmt,
-      card: self.state.simcardNo,
-      serial: self.state.serialNO,
-      created_at: new Date(),
-      updated_at: new Date(),
-    };
-    axios
-      .post(creatSimcardApi, bodyParam, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + this.state.access_token,
-        },
-      })
-      .then(function (response) {
-        // console.log("Sim Card Add",response.data);
-        self.setState({
-          branch: "",
-          operator: "",
-          nrccode: "",
-          nrcstate: "",
-          name: "",
-          nrc: "",
-          nrc_status: "",
-          address: "",
-          phone: "",
-          imei1: "",
-          imei2: "",
-          model: "",
-          topupAmt: "",
-          simcardNo: "",
-          serialNO: "",
-          isOpenSuccessModel: true,
+    
+    let isError = false;
+    if (this.state.branch.value == null) {
+      // alert("Helo");
+      this.setState({ ISERRORBRANCH: true });
+      isError = true;
+    }
+    if (this.state.operator.value == null) {
+      // alert("Helo");
+      this.setState({ ISERROROPERATOR: true });
+      isError = true;
+    }
+    if (this.state.name == "") {
+      // alert("Helo");
+      this.setState({ ISERRORNAME: true });
+      isError = true;
+    }
+    if (this.state.nrccode.value == null) {
+      // alert("Helo");
+      this.setState({ ISERRRORNRC_CODE: true });
+      isError = true;
+    }
+    if (this.state.nrcstate.value == null) {
+      // alert("Helo");
+      this.setState({ ISERRRORNRC_STATE: true });
+      isError = true;
+    }
+    if (this.state.nrcstatus.value == null) {
+      // alert("Helo");
+      this.setState({ ISERRORNRC_STATUS: true });
+      isError = true;
+    }
+    if (this.state.nrc == "") {
+      // alert("Helo");
+      this.setState({ ISERRORNRC: true });
+      isError = true;
+    }
+    if (this.state.address == "") {
+      // alert("Helo");
+      this.setState({ ISERRORADDRESS: true });
+      isError = true;
+    }
+    if (this.state.phone == "") {
+      // alert("Helo");
+      this.setState({ ISERRORPHONE: true });
+      isError = true;
+    }
+    if (this.state.simcardNo == "") {
+      // alert("Helo");
+      this.setState({ ISERRORSIMCARD: true });
+      isError = true;
+    }
+    if (this.state.serialNO == "") {
+      // alert("Helo");
+      this.setState({ ISERRORSERIALNO: true });
+      isError = true;
+    }
+    if (this.state.model == "") {
+      // alert("Helo");
+      this.setState({ ISERRORMODEL: true });
+      isError = true;
+    }
+    if(!isError){
+      var self = this;
+      let bodyParam = {
+        branch_id: self.state.branch.value,
+        operator_id: self.state.operator.value,
+        code_id: self.state.nrccode.value,
+        state_id: self.state.nrcstate.value,
+        name: self.state.name,
+        // nrc_number: self.state.nrc,
+        nrc: self.state.nrc,
+        nrc_status: self.state.nrcstatus.value,
+        address: self.state.address,
+        phone: self.state.phone,
+        imei: self.state.imei1,
+        imei2: self.state.imei2,
+        model: self.state.model,
+        topup: self.state.topupAmt,
+        card: self.state.simcardNo,
+        serial: self.state.serialNO,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+      axios
+        .post(creatSimcardApi, bodyParam, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + this.state.access_token,
+          },
+        })
+        .then(function (response) {
+          // console.log("Sim Card Add",response.data);
+          self.setState({
+            branch: "",
+            operator: "",
+            nrccode: "",
+            nrcstate: "",
+            name: "",
+            nrc: "",
+            nrc_status: "",
+            address: "",
+            phone: "",
+            imei1: "",
+            imei2: "",
+            model: "",
+            topupAmt: "",
+            simcardNo: "",
+            serialNO: "",
+            isOpenSuccessModel: true,
+          });
+          // alert("Create SimCard Successfully")
+        })
+        .catch(function (err) {
+          console.log("Create SimCard Error", err);
         });
-        // alert("Create SimCard Successfully")
-      })
-      .catch(function (err) {
-        console.log("Create SimCard Error", err);
-      });
+    }
+   
   };
   getAllBranch = async () => {
     const self = this;
@@ -298,6 +376,7 @@ export default class Add extends React.Component {
           value: value,
           label: label,
         },
+        ISERRORBRANCH:false
       }
       // () => this.getAllCustomerByID()
     );
@@ -312,7 +391,9 @@ export default class Add extends React.Component {
             value: value,
             label: label,
           },
-        }
+          ISERROROPERATOR:false
+        },
+      
         // () => this.getAllCustomerByID()
       );
     }
@@ -324,7 +405,9 @@ export default class Add extends React.Component {
       nrccode: {
         value: value,
         label: label,
+      
       },
+      ISERRRORNRC_CODE:false
     }
     );
     this.getAllNrcState(value);
@@ -334,7 +417,9 @@ export default class Add extends React.Component {
       nrcstate: {
         value: value,
         label: label,
+      
       },
+      ISERRRORNRC_STATE:false
     });
   }
   _handleSelectStatus(value, label) {
@@ -342,7 +427,9 @@ export default class Add extends React.Component {
       nrcstatus: {
         value: value,
         label: label,
+       
       },
+      ISERRORNRC_STATUS:false
     });
   }
   _handleOnClose() {
@@ -401,6 +488,10 @@ export default class Add extends React.Component {
                     this._handleOnSelectBranch(value, label)
                   }
                 ></DropDown>
+                <ErrorText
+                  errMessage="Please Select branch"
+                  isShow={this.state.ISERRORBRANCH}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -416,6 +507,10 @@ export default class Add extends React.Component {
                     this._handleOnSelectOperator(value, label)
                   }
                 ></DropDown>
+                 <ErrorText
+                  errMessage="Please Select Operator"
+                  isShow={this.state.ISERROROPERATOR}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -426,8 +521,12 @@ export default class Add extends React.Component {
                 <TextInput
                   style={styles.textInputStyle}
                   value={this.state.name}
-                  onChangeText={(value) => this.setState({ name: value })}
+                  onChangeText={(value) => this.setState({ name: value ,ISERRORNAME:false})}
                 ></TextInput>
+                 <ErrorText
+                  errMessage="Please Enter Customer Name"
+                  isShow={this.state.ISERRORNAME}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -437,10 +536,10 @@ export default class Add extends React.Component {
               <View
                 style={[
                   styles.textInputContainer,
-                  { flexDirection: "row", justifyContent: "space-between" },
+                  { flexDirection: "row", justifyContent: "space-between",flex:1 },
                 ]}
               >
-                <View>
+                <View style={{flex:1}}>
                   <DropDown
                     value={this.state.nrccode}
                     options={this.state.nrccodes}
@@ -449,8 +548,12 @@ export default class Add extends React.Component {
                     // widthContainer="100%"
                     onSelect={(value,label)=>this._handleSelectNrcCode(value,label)}
                   ></DropDown>
+                   <ErrorText
+                  errMessage="Please Select NRC Code"
+                  isShow={this.state.ISERRRORNRC_CODE}
+                />
                 </View>
-                <View>
+                <View style={{flex:1,marginRight:45}}>
                   <DropDown
                     value={this.state.nrcstate}
                     options={this.state.nrcstates}
@@ -459,8 +562,12 @@ export default class Add extends React.Component {
                       this._handleSelectState(value, label)
                     }
                   ></DropDown>
+                    <ErrorText
+                  errMessage="Please Select NRC State"
+                  isShow={this.state.ISERRRORNRC_STATE}
+                />
                 </View>
-
+                <View style={{flex:1}}>
                 <DropDown
                   value={this.state.nrcstatus}
                   options={NRC_STATUS}
@@ -470,6 +577,13 @@ export default class Add extends React.Component {
                     this._handleSelectStatus(value, label)
                   }
                 ></DropDown>
+                  <ErrorText
+                  errMessage="Please Select NRC Status"
+                  isShow={this.state.ISERRORNRC_STATUS}
+                />
+                </View>
+
+             
               </View>
             </View>
 
@@ -482,8 +596,12 @@ export default class Add extends React.Component {
                   keyboardType="number-pad"
                   style={styles.textInputStyle}
                   value={this.state.nrc}
-                  onChangeText={(value) => this.setState({ nrc: value })}
+                  onChangeText={(value) => this.setState({ nrc: value ,ISERRORNRC:false})}
                 ></TextInput>
+                   <ErrorText
+                  errMessage="Please Enter NRC Number"
+                  isShow={this.state.ISERRORNRC}
+                />
               </View>
             </View>
 
@@ -496,9 +614,13 @@ export default class Add extends React.Component {
                   style={styles.textAreaStyle}
                   value={this.state.address}
                   onChangeText={(value) => {
-                    this.setState({ address: value });
+                    this.setState({ address: value ,ISERRORADDRESS:false});
                   }}
                 ></TextInput>
+                   <ErrorText
+                  errMessage="Please Enter Customer Address"
+                  isShow={this.state.ISERRORADDRESS}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -511,9 +633,13 @@ export default class Add extends React.Component {
                   style={styles.textInputStyle}
                   value={this.state.phone}
                   onChangeText={(value) => {
-                    this.setState({ phone: value });
+                    this.setState({ phone: value ,ISERRORPHONE:false});
                   }}
                 ></TextInput>
+                  <ErrorText
+                  errMessage="Please Enter Phone Number"
+                  isShow={this.state.ISERRORPHONE}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -526,8 +652,12 @@ export default class Add extends React.Component {
                   keyboardType="number-pad"
                   style={styles.textInputStyle}
                   value={this.state.simcardNo}
-                  onChangeText={(value) => this.setState({ simcardNo: value })}
+                  onChangeText={(value) => this.setState({ simcardNo: value ,ISERRORSIMCARD:false})}
                 ></TextInput>
+                  <ErrorText
+                  errMessage="Please Enter Simcard Number"
+                  isShow={this.state.ISERRORSIMCARD}
+                />
                 {/* <TextInput
                   style={[styles.textInputStyle, { marginTop: 10 }]}
                 ></TextInput> */}
@@ -542,8 +672,12 @@ export default class Add extends React.Component {
                   keyboardType="number-pad"
                   style={styles.textInputStyle}
                   value={this.state.serialNO}
-                  onChangeText={(value) => this.setState({ serialNO: value })}
+                  onChangeText={(value) => this.setState({ serialNO: value ,ISERRORSERIALNO:false})}
                 ></TextInput>
+                 <ErrorText
+                  errMessage="Please Enter Serial Number"
+                  isShow={this.state.ISERRORSERIALNO}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -593,8 +727,12 @@ export default class Add extends React.Component {
                 <TextInput
                   style={styles.textInputStyle}
                   value={this.state.model}
-                  onChangeText={(value) => this.setState({ model: value })}
+                  onChangeText={(value) => this.setState({ model: value,ISERRORMODEL:false })}
                 ></TextInput>
+                   <ErrorText
+                  errMessage="Please Enter Model Number"
+                  isShow={this.state.ISERRORMODEL}
+                />
               </View>
             </View>
             <View style={styles.formContainer}>
@@ -677,7 +815,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#1FD449",
+    backgroundColor: "#5A7FEC",
     height: 40,
     flex: 1,
     alignItems: "center",

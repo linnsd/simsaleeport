@@ -32,11 +32,14 @@ export default class Header extends React.Component {
         style={[
           styles.container,
           {
-            backgroundColor: this.state.role_id == "1" ? "#10AFEA" : "#73A8DE",
+            backgroundColor: this.state.role_id == "1" ? "#5A7FEC" : "#5A7FEC",
           },
         ]}
       >
-        <TouchableOpacity onPress={() => this._OnPress()}>
+        <TouchableOpacity
+          onPress={() => this._OnPress()}
+          style={{ width: 50 }}
+        >
           <Image
             source={
               this.props.img
@@ -58,10 +61,12 @@ export default class Header extends React.Component {
 }
 const styles = StyleSheet.create({
   container: {
-    height: 50,
+    // height:50,
     // backgroundColor: "#FE7F0A",
     alignItems: "center",
     flexDirection: "row",
+    height: 50,
+    // flex:1
   },
   text: {
     textAlign: "center",
@@ -70,10 +75,12 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 18,
     fontWeight: "bold",
+    // paddingTop: 30,
   },
   img: {
     width: 25,
     height: 25,
     marginLeft: 10,
+    // marginTop: 40,
   },
 });

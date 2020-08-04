@@ -6,7 +6,7 @@ export default class Loading extends React.Component {
     return (
       <View style={styles.loadingContainer}>
         <Image
-          source={require("@images/loading.gif")}
+          source={require("@images/loading1.gif")}
           style={styles.loadingImage}
         />
       </View>

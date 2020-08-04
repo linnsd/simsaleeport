@@ -58,32 +58,39 @@ export default class GraphChart extends React.Component {
     super(props);
     this.state = {
       name: "",
+      roleid: "",
     };
   }
   async componentDidMount() {
     const user_name = await AsyncStorage.getItem("name");
+    const role_id = await AsyncStorage.getItem("role_id");
     this.setState({
       name: user_name,
+      roleid: role_id,
     });
   }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Sale Report For {this.state.name}</Text>
-        <ScrollView>
-          <View style={styles.barchartContainer}>
-            <PieChart
-              data={data}
-              width={screenWidth}
-              height={220}
-              chartConfig={chartConfig}
-              accessor="population"
-              backgroundColor="transparent"
-              paddingLeft="15"
-              absolute
-            />
+        {this.state.roleid == "1" ? (
+          <View>
+            <Text style={styles.text}>Sale Report For {this.state.name}</Text>
+            <ScrollView>
+              <View style={styles.barchartContainer}>
+                <PieChart
+                  data={data}
+                  width={screenWidth}
+                  height={220}
+                  chartConfig={chartConfig}
+                  accessor="population"
+                  backgroundColor="transparent"
+                  paddingLeft="15"
+                  absolute
+                />
+              </View>
+            </ScrollView>
           </View>
-        </ScrollView>
+        ) : <Text style={{textAlignVertical:"center",flex:1,textAlign:"center"}}>Coming Soon...</Text>}
       </View>
     );
   }

@@ -14,7 +14,7 @@ export default createAppContainer(
         navigationOptions: ({ navigation }) => ({
           headerTitle: "Linn Sale Report",
           headerStyle: {
-            backgroundColor: "#73A8DE",
+            backgroundColor: "#5A7FEC",
           },
           headerTitleStyle: {
             color: "#ffffff",

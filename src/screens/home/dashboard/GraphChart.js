@@ -11,6 +11,10 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import VerticalBarGraph from "@chartiful/react-native-vertical-bar-graph";
 const screenWidth = Dimensions.get("window").width;
 
+const axios = require("axios");
+import {getAllDashboardApi} from "@api/Url";
+import { acc } from "react-native-reanimated";
+
 // const data = {
 //   labels: ["January", "February", "March", "April", "May", "June"],
 //   datasets: [
@@ -37,15 +41,43 @@ export default class GraphChart extends React.Component {
     this.state = {
       name: "",
       roleid: "",
+      operatorid:"",
+      dashboard:[],
+      access_token:null
     };
   }
   async componentDidMount() {
     const user_name = await AsyncStorage.getItem("name");
     const role_id = await AsyncStorage.getItem("role_id");
+    const operator_id = await AsyncStorage.getItem("operator_id");
+    const access_token = await AsyncStorage.getItem("access_token");
     this.setState({
       name: user_name,
       roleid: role_id,
+      operatorid:operator_id,
+      access_token:access_token
     });
+    await this._getAllDashboard();
+  }
+  _getAllDashboard=async()=>{
+    const self =this;
+    let bodyParam = {
+      role_id:this.state.roleid,
+      operator_id:this.state.operatorid
+    }
+    axios
+    .post(getAllDashboardApi,bodyParam,{
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + self.state.access_token,
+      },
+    })
+    .then(function(response){
+      console.log(response.data);
+    })
+    .catch(function(error){
+      console.log(error);
+    })
   }
 
   render() {
@@ -79,13 +111,13 @@ export default class GraphChart extends React.Component {
             <View>
               <View style={styles.barchartContainer}>
                 <VerticalBarGraph
-                  data={[20, 45, 28, 80, 99, 43]}
-                  labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+                  data={[20, 45, 100]}
+                  labels={["Today", "Monthly", "Yearly"]}
                   width={Dimensions.get("window").width}
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#73A8DE"
+                  barColor="#5A7FEC"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -105,13 +137,13 @@ export default class GraphChart extends React.Component {
               </View>
               <View style={styles.secondBardChart}>
                 <VerticalBarGraph
-                  data={[20, 45, 28, 80, 99, 43]}
-                  labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+                  data={[20, 45, 100]}
+                  labels={["Today", "Monthly", "Yearly"]}
                   width={Dimensions.get("window").width}
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#73A8DE"
+                  barColor="#5A7FEC"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -131,13 +163,13 @@ export default class GraphChart extends React.Component {
               </View>
               <View style={styles.secondBardChart}>
                 <VerticalBarGraph
-                  data={[20, 45, 28, 80, 99, 43]}
-                  labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+                  data={[20, 45, 100]}
+                  labels={["Today", "Monthly", "Yearly"]}
                   width={Dimensions.get("window").width}
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#73A8DE"
+                  barColor="#5A7FEC"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -157,13 +189,13 @@ export default class GraphChart extends React.Component {
               </View>
               <View style={styles.secondBardChart}>
                 <VerticalBarGraph
-                  data={[20, 45, 28, 80, 99, 43]}
-                  labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+                  data={[20, 45, 100]}
+                  labels={["Today", "Monthly", "Yearly"]}
                   width={Dimensions.get("window").width}
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#73A8DE"
+                  barColor="#5A7FEC"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -185,13 +217,13 @@ export default class GraphChart extends React.Component {
           ) : (
             <View style={styles.barchartContainer}>
               <VerticalBarGraph
-                data={[20, 45, 28, 80, 99, 43]}
-                labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+                data={[20, 45, 100]}
+                labels={["Today", "Monthly", "Yearly"]}
                 width={Dimensions.get("window").width}
                 height={200}
                 barRadius={5}
                 barWidthPercentage={0.65}
-                barColor="#73A8DE"
+                barColor="#5A7FEC"
                 baseConfig={{
                   hasXAxisBackgroundLines: false,
                   xAxisLabelStyle: {

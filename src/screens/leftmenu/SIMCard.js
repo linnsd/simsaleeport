@@ -329,7 +329,7 @@ export default class SIMCard extends React.Component {
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "#73A8DE",
+                backgroundColor: "#5A7FEC",
                 width: "15%",
                 height: 40,
                 marginLeft: 10,
@@ -470,7 +470,7 @@ export default class SIMCard extends React.Component {
           onPress={() => this.props.navigation.navigate("SimCardAdd")}
           style={styles.newBtn}
         >
-          <Image source={require("@images/add1.png")} style={styles.btnImg} />
+          <Image source={require("@images/addblue.png")} style={styles.btnImg} />
         </TouchableOpacity>
         <SuccessModal
           isOpen={this.state.isOpenSuccessModel}

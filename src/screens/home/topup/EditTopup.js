@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#73A8DE",
+    backgroundColor: "#5A7FEC",
     height: 40,
     flex: 1,
     alignItems: "center",
