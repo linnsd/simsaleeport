@@ -1,8 +1,8 @@
 import { createAppContainer } from "react-navigation";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 //import Screens
-import GraphChart from "@screens/home/dashboard/GraphChart";
-import LineChart from "@screens/home/dashboard/LineChart";
+import Simcard from "@screens/home/dashboard/Simcard";
+import Topup from "@screens/home/dashboard/Topup";
 
 //import React
 import React from "react";
@@ -10,22 +10,22 @@ import React from "react";
 export default createAppContainer(
   createMaterialTopTabNavigator(
     {
-      GraphChart: {
-        screen: GraphChart,
+      Simcard: {
+        screen: Simcard,
         navigationOptions: () => ({
-          tabBarLabel: "Bar Chart",
+          tabBarLabel: "Sim Card",
         }),
       },
-      LineChart: {
-        screen: LineChart,
+      Topup: {
+        screen: Topup,
         navigationOptions: () => ({
-          tabBarLabel: "Pie Chart",
+          tabBarLabel: "Topup",
         }),
       },
     },
 
     {
-      initialRouteName: "GraphChart",
+      initialRouteName: "Simcard",
       tabBarOptions: {
         //   scrollEnabled:true,
         upperCaseLabel: false,

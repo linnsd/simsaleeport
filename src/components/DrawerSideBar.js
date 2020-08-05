@@ -122,7 +122,7 @@ export default class DrawerSideBar extends React.Component {
             backgroundColor: this.state.role_id == "1" ? "#5E82EC" : "#5E82EC",
           }}
         >
-          <Image source={require("@images/linn.png")} />
+          <Image source={require("@images/linnlogo.png")} style={{width:150,height:100}}/>
           <Text style={{ color: "#ffffff", fontSize: 18 }}>
             {this.state.name}
           </Text>

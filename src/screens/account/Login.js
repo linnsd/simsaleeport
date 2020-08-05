@@ -115,8 +115,8 @@ export default class Login extends React.Component {
       <View style={styles.container}>
         <View style={styles.secondContainer}>
           <Image
-            source={require("@images/linn.png")}
-            style={{ width: 100, height: 100 }}
+            source={require("@images/linnlogo.png")}
+            style={{ width: 120, height: 75 }}
           />
           <View style={styles.loginForm}>
             <TextInput

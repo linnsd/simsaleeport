@@ -4,9 +4,9 @@
     "slug": "simsale",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/linn.png",
+    "icon": "./assets/images/logo2.png",
     "splash": {
-      "image": "./assets/images/linn.png",
+      "image": "./assets/images/logo2.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

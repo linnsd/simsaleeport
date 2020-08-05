@@ -12,7 +12,7 @@ import VerticalBarGraph from "@chartiful/react-native-vertical-bar-graph";
 const screenWidth = Dimensions.get("window").width;
 
 const axios = require("axios");
-import {getAllDashboardApi} from "@api/Url";
+import { getAllDashboardApi } from "@api/Url";
 import { acc } from "react-native-reanimated";
 
 // const data = {
@@ -41,9 +41,11 @@ export default class GraphChart extends React.Component {
     this.state = {
       name: "",
       roleid: "",
-      operatorid:"",
-      dashboard:[],
-      access_token:null
+      operatorid: "",
+      dashboard: [],
+      access_token: null,
+      data: [],
+     
     };
   }
   async componentDidMount() {
@@ -54,33 +56,52 @@ export default class GraphChart extends React.Component {
     this.setState({
       name: user_name,
       roleid: role_id,
-      operatorid:operator_id,
-      access_token:access_token
+      operatorid: operator_id,
+      access_token: access_token,
     });
     await this._getAllDashboard();
   }
-  _getAllDashboard=async()=>{
-    const self =this;
+  _getAllDashboard = async () => {
+    const self = this;
     let bodyParam = {
-      role_id:this.state.roleid,
-      operator_id:this.state.operatorid
-    }
+      role_id: this.state.roleid,
+      operator_id: this.state.operatorid,
+    };
     axios
-    .post(getAllDashboardApi,bodyParam,{
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + self.state.access_token,
-      },
-    })
-    .then(function(response){
-      console.log(response.data);
-    })
-    .catch(function(error){
-      console.log(error);
-    })
-  }
+      .post(getAllDashboardApi, bodyParam, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + self.state.access_token,
+        },
+      })
+      .then(function (response) {
+        let arr = [];
+        var nodata = [0,0,0];
+        let datas = response.data.data.length > 0 ? response.data.data : nodata;
+        self.setState({
+         data:datas
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   render() {
+    // console.log("final",this.state.data);
+    // var nodata = [0,0,0];
+    // var data = this.state.data.length > 0 ? this.state.data.data : nodata;
+    var first = this.state.data.length>0?this.state.data[0]:0;
+    var sec =  this.state.data.length>0?this.state.data[1]:0;
+    var third =  this.state.data.length>0 ? this.state.data[2] : 0;
+    // alert(third);
+    // console.log(this.state.data);
+    first = parseInt(first);
+    sec = parseInt(sec);
+    thd =parseInt(third);
+    // alert(thd);
+
+    var arrdata = [first,sec,1000];
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Sale Report For {this.state.name}</Text>
@@ -117,7 +138,7 @@ export default class GraphChart extends React.Component {
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#5A7FEC"
+                  barColor="#0E5CF8"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -143,7 +164,33 @@ export default class GraphChart extends React.Component {
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#5A7FEC"
+                  barColor="#0E5CF8"
+                  baseConfig={{
+                    hasXAxisBackgroundLines: false,
+                    xAxisLabelStyle: {
+                      position: "left",
+                      // prefix: "$",
+                    },
+                  }}
+                  style={{
+                    marginBottom: 30,
+                    padding: 10,
+                    paddingTop: 20,
+                    //   borderRadius: 20,
+                    backgroundColor: `#ffffff`,
+                    width: Dimensions.get("window").width,
+                  }}
+                />
+              </View>
+              <View style={styles.secondBardChart}>
+                <VerticalBarGraph
+                  data={[20, 45, 100]}
+                  labels={["Today", "Monthly", "Yearly"]}
+                  width={Dimensions.get("window").width}
+                  height={6000}
+                  barRadius={5}
+                  barWidthPercentage={0.65}
+                  barColor="#0E5CF8"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -169,33 +216,7 @@ export default class GraphChart extends React.Component {
                   height={200}
                   barRadius={5}
                   barWidthPercentage={0.65}
-                  barColor="#5A7FEC"
-                  baseConfig={{
-                    hasXAxisBackgroundLines: false,
-                    xAxisLabelStyle: {
-                      position: "left",
-                      // prefix: "$",
-                    },
-                  }}
-                  style={{
-                    marginBottom: 30,
-                    padding: 10,
-                    paddingTop: 20,
-                    //   borderRadius: 20,
-                    backgroundColor: `#ffffff`,
-                    width: Dimensions.get("window").width,
-                  }}
-                />
-              </View>
-              <View style={styles.secondBardChart}>
-                <VerticalBarGraph
-                  data={[20, 45, 100]}
-                  labels={["Today", "Monthly", "Yearly"]}
-                  width={Dimensions.get("window").width}
-                  height={200}
-                  barRadius={5}
-                  barWidthPercentage={0.65}
-                  barColor="#5A7FEC"
+                  barColor="#0E5CF8"
                   baseConfig={{
                     hasXAxisBackgroundLines: false,
                     xAxisLabelStyle: {
@@ -217,13 +238,13 @@ export default class GraphChart extends React.Component {
           ) : (
             <View style={styles.barchartContainer}>
               <VerticalBarGraph
-                data={[20, 45, 100]}
+                data={arrdata}
                 labels={["Today", "Monthly", "Yearly"]}
                 width={Dimensions.get("window").width}
                 height={200}
                 barRadius={5}
                 barWidthPercentage={0.65}
-                barColor="#5A7FEC"
+                barColor="#0E5CF8"
                 baseConfig={{
                   hasXAxisBackgroundLines: false,
                   xAxisLabelStyle: {
