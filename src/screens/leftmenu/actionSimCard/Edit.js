@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveBtn: {
-    backgroundColor: "#5A7FEC",
+    backgroundColor: "#0470DD",
     height: 40,
     flex: 1,
     alignItems: "center",

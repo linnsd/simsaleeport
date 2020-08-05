@@ -32,14 +32,11 @@ export default class Header extends React.Component {
         style={[
           styles.container,
           {
-            backgroundColor: this.state.role_id == "1" ? "#5A7FEC" : "#5A7FEC",
+            backgroundColor: this.state.role_id == "1" ? "#0470DD" : "#0470DD",
           },
         ]}
       >
-        <TouchableOpacity
-          onPress={() => this._OnPress()}
-          style={{ width: 50 }}
-        >
+        <TouchableOpacity onPress={() => this._OnPress()} style={{ width: 50 }}>
           <Image
             source={
               this.props.img

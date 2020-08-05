@@ -119,7 +119,7 @@ export default class DrawerSideBar extends React.Component {
           style={{
             alignItems: "center",
             height: 150,
-            backgroundColor: this.state.role_id == "1" ? "#5E82EC" : "#5E82EC",
+            backgroundColor: this.state.role_id == "1" ? "#0470DD" : "#0470DD",
           }}
         >
           <Image source={require("@images/linnlogo.png")} style={{width:150,height:100}}/>

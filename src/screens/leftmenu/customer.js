@@ -282,7 +282,7 @@ export default class Customer extends React.Component {
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "#5A7FEC",
+                backgroundColor: "#0470DD",
                 width: "15%",
                 height: 40,
                 marginLeft: 10,

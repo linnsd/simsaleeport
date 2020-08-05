@@ -1,19 +1,19 @@
 import React from "react";
-import {View,Text,StyleSheet} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
-export default class Topup extends React.Component{
-    render(){
-        return(
-            <View style={styles.container}>
-                <Text>Coming Soon. . .</Text>
-            </View>
-        )
-    }
+export default class Topup extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>Coming Soon. . .</Text>
+      </View>
+    );
+  }
 }
 const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        justifyContent:"center",
-        alignItems:"center"
-    }
-})
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

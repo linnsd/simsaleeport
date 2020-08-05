@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 10,
+    // fontWeight:"bold"
   },
   secondContainer: {
     margin: 10,

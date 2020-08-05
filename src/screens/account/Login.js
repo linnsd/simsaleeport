@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#5A7FEC",
+    borderColor: "#0470DD",
   },
   textInput: {
     margin: 10,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     textAlign: "center",
     borderRadius: 5,
-    borderColor: "#5A7FEC",
+    borderColor: "#0470DD",
     elevation: 2,
     backgroundColor: "#ffffff",
     shadowOffset: { width: 0, height: 2 }, //IOS
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#5A7FEC",
-    backgroundColor: "#5A7FEC",
+    borderColor: "#0470DD",
+    backgroundColor: "#0470DD",
     elevation: 2,
     shadowOffset: { width: 0, height: 2 }, //IOS
     shadowOpacity: 0.5, //IOS
