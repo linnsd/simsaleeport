@@ -496,7 +496,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Operator</Text>
+                <Text style={styles.labelStyle}>Operator*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <DropDown
@@ -515,7 +515,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Name</Text>
+                <Text style={styles.labelStyle}>Name*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
@@ -531,7 +531,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>NRC</Text>
+                <Text style={styles.labelStyle}>NRC*</Text>
               </View>
               <View
                 style={[
@@ -589,7 +589,7 @@ export default class Add extends React.Component {
 
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>NRC Number</Text>
+                <Text style={styles.labelStyle}>NRC Number*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
@@ -607,7 +607,7 @@ export default class Add extends React.Component {
 
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Address</Text>
+                <Text style={styles.labelStyle}>Address*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
@@ -625,7 +625,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Contact Phone</Text>
+                <Text style={styles.labelStyle}>Contact Phone*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
@@ -644,7 +644,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Sim Card No</Text>
+                <Text style={styles.labelStyle}>Sim Card No*</Text>
                 {/* <Text></Text> */}
               </View>
               <View style={styles.textInputContainer}>
@@ -665,7 +665,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Serial Number</Text>
+                <Text style={styles.labelStyle}>Serial Number*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput
@@ -721,7 +721,7 @@ export default class Add extends React.Component {
             </View>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Model</Text>
+                <Text style={styles.labelStyle}>Model*</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <TextInput

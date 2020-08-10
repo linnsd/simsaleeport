@@ -67,7 +67,7 @@ export default class SIMCard extends React.Component {
       deleteid: [],
       isOpenSuccessModel: false,
       searchSimCard: [],
-      role_id:""
+      role_id: "",
     };
     this.page = 1;
     this.AllSimCard = new AllSimCard();
@@ -76,7 +76,7 @@ export default class SIMCard extends React.Component {
     const { navigation } = this.props;
     const access_token = await getToken();
     const roleid = await AsyncStorage.getItem("role_id");
-    this.setState({ access_token: access_token,role_id:roleid });
+    this.setState({ access_token: access_token, role_id: roleid });
     await this.getSimcard(this.page);
     await this.getAllBranch();
     this.focusListener = navigation.addListener("didFocus", async () => {
@@ -98,7 +98,7 @@ export default class SIMCard extends React.Component {
       to: new Date(),
       page: page,
     };
-    axios
+    axios;
     this.AllSimCard.getAllSimcard(page)
       .then(function (response) {
         // console.log("Sim Card",response.data.customers);
@@ -148,7 +148,6 @@ export default class SIMCard extends React.Component {
       });
   };
 
-
   getSimCardById() {
     // alert(this.state.branch.value);
     const self = this; // *
@@ -196,20 +195,25 @@ export default class SIMCard extends React.Component {
         },
       },
       () => this.getSimCardById()
-     
     );
   }
 
-  _handleSearchKeyword = async (keyword,date,seconddate,branch_id,operator_id) => {
+  _handleSearchKeyword = async (
+    keyword,
+    date,
+    seconddate,
+    branch_id,
+    operator_id
+  ) => {
     // alert(keyword);
     const self = this;
     // this.setState({ keyword: keyword })
     let param = {
       from: date,
-      to:seconddate,
+      to: seconddate,
       keyword: keyword,
-      branch_id:branch_id,
-      operator_id:operator_id
+      branch_id: branch_id,
+      operator_id: operator_id,
     };
     axios
       .post(getSimcardapi, param, {
@@ -226,8 +230,6 @@ export default class SIMCard extends React.Component {
         // console.log(err);
       });
   };
-
- 
 
   onRefresh = () => {
     this.setState({
@@ -257,26 +259,26 @@ export default class SIMCard extends React.Component {
       return null;
     }
   };
-  _handleOnPressEdit(arrIndex,item) {
+  _handleOnPressEdit(arrIndex, item) {
     // console.log(item);
-    if(arrIndex == 1){
+    if (arrIndex == 1) {
       this.props.navigation.navigate("EditSimCard", {
         data: item,
       });
     }
- }
+  }
 
- handleOnPressView(arrIndex,item){
-   if(arrIndex == 2){
-     this.props.navigation.navigate("SimCardView",{
-       data:item
-     })
-   }
- }
+  handleOnPressView(arrIndex, item) {
+    if (arrIndex == 2) {
+      this.props.navigation.navigate("SimCardView", {
+        data: item,
+      });
+    }
+  }
   _handleOnPressDelete = async (item) => {
-    const self=this;
+    const self = this;
     axios
-      .delete(deleteSimcardApi + item.id,{
+      .delete(deleteSimcardApi + item.id, {
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + self.state.access_token,
@@ -288,7 +290,7 @@ export default class SIMCard extends React.Component {
       .catch(function (error) {
         console.log("Delete Sim Card Error", error);
       });
-  }
+  };
   _handleOnPress() {
     this.props.navigation.dispatch(DrawerActions.openDrawer());
   }
@@ -303,7 +305,7 @@ export default class SIMCard extends React.Component {
     if (this.state.isLoading) {
       return <Loading />;
     }
-    const { isSearched, data,searchSimCard } = this.state;
+    const { isSearched, data, searchSimCard } = this.state;
     const dataList = isSearched ? searchSimCard : data;
     return (
       <View style={styles.container}>
@@ -337,8 +339,15 @@ export default class SIMCard extends React.Component {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={() => this._handleSearchKeyword(this.state.keyword,this.state.changeDate,
-                this.state.secondChangeDate,this.state.branch.value,this.state.operator.value)}
+              onPress={() =>
+                this._handleSearchKeyword(
+                  this.state.keyword,
+                  this.state.changeDate,
+                  this.state.secondChangeDate,
+                  this.state.branch.value,
+                  this.state.operator.value
+                )
+              }
             >
               <Image
                 source={require("@images/search.png")}
@@ -395,9 +404,8 @@ export default class SIMCard extends React.Component {
                   />
                 </View>
               </View>
-              {
-                this.state.role_id == "1" ? (
-                  <View style={[styles.searchContainer, { marginTop: "2%" }]}>
+              {this.state.role_id == "1" ? (
+                <View style={[styles.searchContainer, { marginTop: "2%" }]}>
                   <View style={{ flex: 1 }}>
                     <DropDown
                       value={this.state.branch}
@@ -422,9 +430,7 @@ export default class SIMCard extends React.Component {
                     />
                   </View>
                 </View>
-                ) : null
-              }
-          
+              ) : null}
             </View>
           ) : (
             // alert("Hi")
@@ -453,9 +459,9 @@ export default class SIMCard extends React.Component {
                 serialno={item.serial}
                 topup={item.topup}
                 model={item.model}
-                onPressEdit={()=>this._handleOnPressEdit(1,item)}
+                onPressEdit={() => this._handleOnPressEdit(1, item)}
                 onPressDelete={() => this._handleOnPressDelete(item)}
-                onPressView={()=>this.handleOnPressView(2,item)}
+                onPressView={() => this.handleOnPressView(2, item)}
                 arrIndex={1}
               />
             </View>
@@ -470,7 +476,10 @@ export default class SIMCard extends React.Component {
           onPress={() => this.props.navigation.navigate("SimCardAdd")}
           style={styles.newBtn}
         >
-          <Image source={require("@images/addblue.png")} style={styles.btnImg} />
+          <Image
+            source={require("@images/addblue.png")}
+            style={styles.btnImg}
+          />
         </TouchableOpacity>
         <SuccessModal
           isOpen={this.state.isOpenSuccessModel}

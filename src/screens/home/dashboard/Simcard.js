@@ -17,6 +17,18 @@ export default class Simcard extends React.Component {
       today: "",
       month: "",
       year: "",
+      mpttoday: "",
+      mptmonth: "",
+      mptyear: "",
+      telenortoday: "",
+      telenormonth: "",
+      telenoryear: "",
+      ooredootoday: "",
+      oordeoomonth: "",
+      ooredooyear: "",
+      myteltoday: "",
+      mytelmonth: "",
+      mytelyear: "",
     };
   }
   async componentDidMount() {
@@ -46,11 +58,26 @@ export default class Simcard extends React.Component {
         },
       })
       .then(function (response) {
-        console.log(response.data.data[2]);
+        // console.log(response.data);
         self.setState({
           today: response.data.data ? response.data.data[0] : "0",
           month: response.data.data ? response.data.data[1] : "0",
           year: response.data.data ? response.data.data[2] : "0",
+          mpttoday: response.data.data ? response.data.data[0] : "0",
+          mptmonth: response.data.data ? response.data.data[1] : "0",
+          mptyear: response.data.data ? response.data.data[2] : "0",
+
+          telenortoday: response.data.data ? response.data.data[3] : "0",
+          telenormonth: response.data.data ? response.data.data[4] : "0",
+          telenoryear: response.data.data ? response.data.data[5] : "0",
+
+          ooredootoday: response.data.data ? response.data.data[6] : "0",
+          oordeoomonth: response.data.data ? response.data.data[7] : "0",
+          ooredooyear: response.data.data ? response.data.data[8] : "0",
+
+          myteltoday: response.data.data ? response.data.data[9] : "0",
+          mytelmonth: response.data.data ? response.data.data[10] : "0",
+          mytelyear: response.data.data ? response.data.data[11] : "0",
         });
       })
       .catch(function (error) {
@@ -62,7 +89,158 @@ export default class Simcard extends React.Component {
     //   console.log(this.state.today);
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Report Sim Card For {this.state.name}</Text>
+        {this.state.roleid == "1" ? (
+          <View>
+            <ScrollView>
+              <Text style={[styles.text, { marginLeft: 10 }]}>For Mpt</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: 10,
+                }}
+              >
+                <View style={styles.cardContiner}>
+                  <Text>Today</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.mpttoday}</Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Monthly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.mptmonth}</Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Yeraly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.mptyear}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={[styles.text, { marginLeft: 10 }]}>For Telenor</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: 10,
+                }}
+              >
+                <View style={styles.cardContiner}>
+                  <Text>Today</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>
+                      {this.state.telenortoday}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Monthly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>
+                      {this.state.telenormonth}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Yeraly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.telenoryear}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={[styles.text, { marginLeft: 10 }]}>For Ooredoo</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: 10,
+                }}
+              >
+                <View style={styles.cardContiner}>
+                  <Text>Today</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>
+                      {this.state.ooredootoday}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Monthly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>
+                      {this.state.oordeoomonth}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Yeraly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.ooredooyear}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={[styles.text, { marginLeft: 10 }]}>For Mytel</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  margin: 10,
+                }}
+              >
+                <View style={styles.cardContiner}>
+                  <Text>Today</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.myteltoday}</Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Monthly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.mytelmonth}</Text>
+                  </View>
+                </View>
+                <View style={styles.cardContiner}>
+                  <Text>Yeraly</Text>
+                  <View style={styles.thirdContainer}>
+                    <Text style={styles.secText}>{this.state.mytelyear}</Text>
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <Text style={styles.text}>
+              Report Sim Card For {this.state.name}
+            </Text>
+            <View style={styles.secondContainer}>
+              <View style={styles.cardContiner}>
+                <Text>Today</Text>
+                <View style={styles.thirdContainer}>
+                  <Text style={styles.secText}>{this.state.today}</Text>
+                </View>
+              </View>
+              <View style={styles.cardContiner}>
+                <Text>Monthly</Text>
+                <View style={styles.thirdContainer}>
+                  <Text style={styles.secText}>{this.state.month}</Text>
+                </View>
+              </View>
+              <View style={styles.cardContiner}>
+                <Text>Yeraly</Text>
+                <View style={styles.thirdContainer}>
+                  <Text style={styles.secText}>{this.state.year}</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+        {/* <Text style={styles.text}>Report Sim Card For {this.state.name}</Text>
         <View style={styles.secondContainer}>
           <View style={styles.cardContiner}>
             <Text>Today</Text>
@@ -82,7 +260,7 @@ export default class Simcard extends React.Component {
               <Text style={styles.secText}>{this.state.year}</Text>
             </View>
           </View>
-        </View>
+        </View> */}
       </View>
     );
   }

@@ -63,7 +63,7 @@ export default class Add extends React.Component {
       nrcstates: [],
       nrcstate: { value: null, label: null },
       nrcstatus: { value: null, label: null },
-      role_id:"",
+      role_id: "",
       isOpenSuccessModel: false,
     };
   }
@@ -136,7 +136,7 @@ export default class Add extends React.Component {
   async componentDidMount() {
     const access_token = await getToken();
     const roleid = await AsyncStorage.getItem("role_id");
-    this.setState({ access_token: access_token,role_id : roleid });
+    this.setState({ access_token: access_token, role_id: roleid });
     await this.getAllBranch();
     await this.getAllNrcCode();
     // await this.getAllNrcState();
@@ -228,9 +228,10 @@ export default class Add extends React.Component {
   _handleUpdate() {
     const self = this;
     // console.log(self.props.navigation.getParam("data"));
-    const url = updateSimcardApi + self.props.navigation.getParam("data").id;
+    const url =
+      updateSimcardApi + self.props.navigation.getParam("data").customer_id;
     // console.log(url);
-    // console.log(self.props.navigation.getParam("data").id);
+    // alert(self.props.navigation.getParam("data").id);
     let bodyParam = {
       branch_id: self.state.branch.value,
       operator_id: self.state.operator.value,
@@ -264,7 +265,7 @@ export default class Add extends React.Component {
         // console.log(response.data);
         self.setState({
           isOpenSuccessModel: true,
-        })
+        });
         // alert("Update Simcard Successfully");
       })
       .catch(function (err) {
@@ -273,7 +274,7 @@ export default class Add extends React.Component {
   }
 
   _handleOnSelectBranch(value, label) {
-    if(this.state.role_id == "1"){
+    if (this.state.role_id == "1") {
       this.setState(
         {
           branch: {
@@ -284,11 +285,10 @@ export default class Add extends React.Component {
         // () => this.getAllCustomerByID()
       );
     }
-   
   }
 
   _handleOnSelectOperator(value, label) {
-    if(this.state.role_id == "1"){
+    if (this.state.role_id == "1") {
       this.setState(
         {
           operator: {
@@ -299,7 +299,6 @@ export default class Add extends React.Component {
         // () => this.getAllCustomerByID()
       );
     }
-   
   }
   _handleSelectNrcCode(value, label) {
     this.setState({
@@ -344,7 +343,7 @@ export default class Add extends React.Component {
           <View style={{ marginTop: 10 }}>
             <View style={styles.formContainer}>
               <View style={styles.textContainer}>
-                <Text style={styles.labelStyle}>Branch*</Text>
+                <Text style={styles.labelStyle}>Branch</Text>
               </View>
               <View style={styles.textInputContainer}>
                 <DropDown
@@ -607,7 +606,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 10,
     backgroundColor: "#ffffff",
-    textAlignVertical:"top"
+    textAlignVertical: "top",
   },
   btnContainer: {
     flex: 1,

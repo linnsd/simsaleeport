@@ -75,6 +75,7 @@ export default class GraphChart extends React.Component {
         },
       })
       .then(function (response) {
+        console.log(response.data);
         let arr = [];
         var nodata = [0,0,0];
         let datas = response.data.data.length > 0 ? response.data.data : nodata;

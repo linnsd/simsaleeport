@@ -2,7 +2,7 @@ import { createAppContainer } from "react-navigation";
 import { createMaterialTopTabNavigator } from "react-navigation-tabs";
 //import Screens
 import Simcard from "@screens/home/dashboard/Simcard";
-import Topup from "@screens/home/dashboard/Topup";
+import Dtopup from "@screens/home/dashboard/Topup";
 
 //import React
 import React from "react";
@@ -16,8 +16,8 @@ export default createAppContainer(
           tabBarLabel: "Sim Card",
         }),
       },
-      Topup: {
-        screen: Topup,
+      Dtopup: {
+        screen: Dtopup,
         navigationOptions: () => ({
           tabBarLabel: "Topup",
         }),

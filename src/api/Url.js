@@ -1,3 +1,5 @@
+import { RecyclerViewBackedScrollViewBase } from "react-native";
+
 export const BaseUrl = "http://128.199.79.79/simsale/public/api/";
 // get customers
 export const getCustomersapi = BaseUrl + "customers?page=";
@@ -47,7 +49,7 @@ export const getAllNrcStateApi = BaseUrl + "nrcstate";
 export const updateSimcardApi = BaseUrl + "cards/";
 
 //delete sim card
-export const deleteSimcardApi = BaseUrl + "cards/";
+export const deleteSimcardApi = BaseUrl + "deletecard/";
 //get all user api
 export const getAllUserApi = BaseUrl + "user";
 
